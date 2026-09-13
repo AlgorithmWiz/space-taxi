@@ -10,6 +10,7 @@ import { Explosion } from './explosion.js';
 import { createPassenger, posePassenger } from './passenger.js';
 import { riderFor } from './riders.js';
 import { SKINS, applyTaxiSkin } from './skins.js';
+import { createTaxi } from './taxi.js';
 
 const random = (seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; })(1984);
 const metal = (color, roughness = .55, metalness = .35) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
@@ -121,73 +122,7 @@ export class World {
     }
   }
   makeTaxi() {
-    this.taxi = new THREE.Group(); this.stage.add(this.taxi);
-    const yellow = metal(0xe8b728, .3, .55), trim = metal(0x162635, .38, .65), silver = metal(0x8295a0, .25, .8);
-    const windowMaterial = new THREE.MeshPhysicalMaterial({ color: 0x123e52, metalness: .65, roughness: .13, clearcoat: 1, emissive: 0x12384d, emissiveIntensity: .4 });
-    yellow.name = 'taxi-paint'; trim.name = 'taxi-trim'; windowMaterial.name = 'taxi-glass';
-    const accent = metal(0xd9f5ed, .25, .7); accent.name = 'taxi-accent';
-    mesh(rounded(2.7, .65, 1.25, .16), yellow, this.taxi, 0, -.02, 0);
-    mesh(rounded(2.5, .19, 1.2, .06), trim, this.taxi, 0, -.35, 0);
-    mesh(rounded(1.65, .73, 1.04, .15), yellow, this.taxi, -.15, .55, 0);
-    mesh(rounded(1.42, .51, 1.07, .1), windowMaterial, this.taxi, -.15, .56, 0);
-    box(this.taxi, yellow, .065, .62, 1.1, -.27, .54);
-    box(this.taxi, trim, 1.25, .035, .015, -.18, .32, .552);
-    box(this.taxi, yellow, 1.59, .11, 1.11, -.15, .91);
-    const sign = mesh(rounded(.64, .29, .28, .04), glow(0xffe695, .7), this.taxi, -.15, 1.12);
-    box(this.taxi, trim, .8, .055, .4, -.15, .96);
-    mesh(new THREE.PlaneGeometry(.5, .25), new THREE.MeshBasicMaterial({ map: labelTexture('TAXI', '#243322'), transparent: true }), sign, 0, 0, .146);
-    for (let i = 0; i < 15; i++) {
-      for (let row = 0; row < 2; row++) if ((i + row) % 2 === 0) {
-        box(this.taxi, trim, .135, .10, .018, -1.04 + i * .147, .08 + row * .1, .633);
-        box(this.taxi, trim, .135, .10, .018, -1.04 + i * .147, .08 + row * .1, -.633);
-      }
-    }
-    box(this.taxi, silver, .23, .045, .04, -.13, .02, .65);
-    for (const z of [-.44, .44]) {
-      mesh(rounded(.12, .21, .25, .04), glow(0xe5faff, 4), this.taxi, 1.34, -.03, z);
-      mesh(rounded(.1, .18, .23, .03), glow(0xff5a36, 2.5), this.taxi, -1.35, -.03, z);
-      mesh(new THREE.CylinderGeometry(.19, .22, .2, 16), trim, this.taxi, -.87, -.45, z);
-      mesh(new THREE.CylinderGeometry(.19, .22, .2, 16), trim, this.taxi, .86, -.45, z);
-    }
-    this.gearGroup = new THREE.Group(); this.taxi.add(this.gearGroup);
-    for (const x of [-.84, .84]) for (const z of [-.44, .44]) {
-      const leg = mesh(new THREE.CylinderGeometry(.035, .05, .4, 8), silver, this.gearGroup, x, -.61, z); leg.rotation.z = x > 0 ? -.12 : .12;
-      mesh(rounded(.45, .1, .25, .035), trim, this.gearGroup, x, -.82, z);
-      box(this.gearGroup, glow(0x8fe8e8, 1.2), .25, .025, .02, x, -.79, z + .13);
-    }
-    this.flames = [];
-    for (const x of [-.84, .84]) for (const z of [-.44, .44]) {
-      const flame = mesh(new THREE.ConeGeometry(.16, .85, 12, 1, true), new THREE.MeshBasicMaterial({ color: 0x77ddff, transparent: true, opacity: .7, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }), this.taxi, x, -.8, z);
-      flame.rotation.z = Math.PI; this.flames.push(flame);
-    }
-    this.engineLight = new THREE.PointLight(0x64d5ff, 4, 7, 2); this.engineLight.position.set(0, -1, 1); this.taxi.add(this.engineLight);
-    this.engineLight.name = 'taxi-engine-light';
-    this.sideFlames=[-1,1].map(side=>{
-      const flame=mesh(new THREE.ConeGeometry(.13,.7,10,1,true),new THREE.MeshBasicMaterial({color:0x93e6ff,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}),this.taxi,side*1.3,-.06,.15);
-      flame.rotation.z=-side*Math.PI/2;flame.userData.side=side;flame.visible=false;return flame;
-    });
-    const stripe = box(this.taxi, silver, .21, .03, 1.05, .95, .321); stripe.rotation.z = .07;
-    for (const flame of [...this.flames, ...this.sideFlames]) flame.material.name = 'taxi-engine';
-    for (const pattern of ['stripe', 'rescue', 'luxury']) {
-      const decals = new THREE.Group(); decals.userData.pattern = pattern; this.taxi.add(decals);
-      if (pattern === 'stripe') {
-        for (const z of [-.23, .23]) {
-          box(decals, accent, .53, .018, .13, 1.0, .318, z);
-          box(decals, accent, 1.55, .018, .13, -.15, .973, z);
-        }
-        for (const z of [-.646, .646]) box(decals, accent, 2.3, .055, .014, 0, -.14, z);
-      } else if (pattern === 'rescue') {
-        for (const z of [-.654, .654]) {
-          box(decals, accent, .43, .09, .012, .72, -.01, z);
-          box(decals, accent, .09, .42, .012, .72, -.01, z);
-          box(decals, accent, .3, .09, .012, -.86, -.12, z);
-        }
-        box(decals, accent, 1.56, .02, .16, -.15, .974, .34);
-      } else {
-        for (const z of [-.65, .65]) for (const y of [-.16, .26]) box(decals, accent, 2.25, .027, .012, 0, y, z);
-        for (const z of [-.36, .36]) box(decals, accent, .43, .015, .04, 1, .327, z);
-      }
-    }
+    Object.assign(this, createTaxi()); this.stage.add(this.taxi);
     this.setSkin(SKINS[0]);
   }
   setSkin(skin) {

@@ -93,18 +93,11 @@ export function buildDressing(parent,level){
   const g=new THREE.Group();parent.add(g);const animations=[],ambientAnimations=[];
   const dark=material('#263748'),accent=material(level.color,.8),steel=material('#6d8497');
   const theme=level.theme;
-  // A softly lit orbital structure adds depth behind each themed playfield.
+  // Soft atmospheric color adds depth without outlines across the playfield.
   const haze=add(g,new THREE.PlaneGeometry(90,55),new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
     uniforms:{tint:{value:new THREE.Color(level.color)}},
     vertexShader:'varying vec2 p;void main(){p=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader:'varying vec2 p;uniform vec3 tint;void main(){float mist=exp(-dot(p*vec2(1.3,2.),p*vec2(1.3,2.))*2.);gl_FragColor=vec4(tint,mist*.06);}' }),0,3,-19);
-  const arch=torus(g,new THREE.MeshBasicMaterial({color:level.color,transparent:true,opacity:.1,depthWrite:false}),0,-14,-16,32,.07,Math.PI);
-  for(let i=0;i<12;i++){
-    const a=.17+i*Math.PI/13,x=Math.cos(a)*32,y=-14+Math.sin(a)*32;
-    const panel=box(g,material('#233448'),x,y,-15.8,1.5,.4,.16);panel.rotation.z=a+Math.PI/2;
-    const marker=box(g,new THREE.MeshBasicMaterial({color:level.color,transparent:true,opacity:.28}),x,y,-15.6,.55,.06,.02);marker.rotation.z=a+Math.PI/2;
-    ambientAnimations.push(t=>{marker.material.opacity=.17+Math.pow(Math.max(0,Math.sin(t*.55-i*.6)),3)*.3;});
-  }
   const dustPositions=new Float32Array(48*3);
   for(let i=0;i<48;i++)dustPositions.set([(i*17.17)%52-26,(i*7.39)%34-15,-11-(i%5)],i*3);
   const dustGeo=new THREE.BufferGeometry();dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));

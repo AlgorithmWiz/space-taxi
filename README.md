@@ -93,7 +93,9 @@ Rare skins need **both** the level milestone and the credits. Reach a campaign l
 
 Paint, trim, windows, decals, and exhaust colors change; handling and collision geometry stay identical. Purchased skins are permanent in this browser and free to switch between. Previewing a locked skin does not equip it. Returning from the garage restores the equipped skin. Rewards save immediately and are deduplicated by shift, level, and passenger, so replaying a saved checkpoint cannot claim the same fare again. If browser storage is unavailable, the garage clearly reports session-only saving.
 
-Platforms now have recessed faceplates, inset light tracks, segmented deck details, and animated landing lights. Theme-colored atmospheric layers, orbital structures, dust, distant spacecraft, and an orbiting satellite add subtle background motion. Decorative ambient motion respects the system’s reduced-motion preference.
+The taxi has a cyberpunk design with faceted armor, a swept dark-glass canopy, slim LED headlights, illuminated sill trim, four lift turbines, and a neon roof sign. Skin colors also tint the running lights. The menu, flying taxi, and garage portraits share this model; handling, landing-foot positions, and skin unlock requirements are unchanged.
+
+Platforms now have recessed faceplates, inset light tracks, segmented deck details, and animated landing lights. Theme-colored atmospheric layers, dust, distant spacecraft, and an orbiting satellite add subtle background motion. The large decorative orbital arch has been removed. Decorative ambient motion respects the system’s reduced-motion preference.
 
 ## Passengers, explosions, and music
 

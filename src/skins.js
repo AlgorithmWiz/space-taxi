@@ -18,8 +18,9 @@ export function applyTaxiSkin(taxi, skin) {
     }
     if (mat?.name === 'taxi-trim') mat.color.set(skin.trim);
     if (mat?.name === 'taxi-accent') mat.color.set(skin.accent);
-    if (mat?.name === 'taxi-glass') { mat.color.set(skin.glass); mat.emissive.set(skin.glass); }
+    if (mat?.name === 'taxi-glass') { mat.color.set(skin.glass).multiplyScalar(.38); mat.emissive.set(skin.glass); }
     if (mat?.name === 'taxi-engine') mat.color.set(skin.engine);
+    if (mat?.name === 'taxi-neon') { mat.color.set(skin.engine); mat.emissive.set(skin.engine); }
     if (object.name === 'taxi-engine-light') object.color.set(skin.engine);
     if (object.userData.pattern) object.visible = object.userData.pattern === skin.pattern;
   });
