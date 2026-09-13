@@ -21,5 +21,6 @@ export function parseProgress(raw){
   }catch{return {cleared:[],checkpoint:null};}
 }
 export function checkpoint(flight,sector=flight.sector){
+  if(flight.debug) return null;
   return {sector,startSector:flight.startSector,score:flight.score,lives:flight.lives,delivered:flight.delivered,totalTime:flight.totalTime,runId:flight.runId};
 }

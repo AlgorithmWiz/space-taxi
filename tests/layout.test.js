@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {LEVELS} from '../src/levels.js';
-import {padPose,intersectsRect} from '../src/environment.js';
+import {padPose,intersectsRect,intersectsPolygon,obstaclePose} from '../src/environment.js';
 
 // A conservative cabin-sized flood fill checks spatial reachability. Dynamic doors
 // are treated as open here; their timing, switch states and collisions are tested
@@ -10,8 +10,8 @@ test('all 28 layouts connect the spawn, every pad, switches, and the exit',()=>{
   const failures=[],step=.5,minX=-23,minY=-12,nx=93,ny=58;
   for(const level of LEVELS){
     const pads=level.pads.map(p=>({...p,...padPose(p,60)}));
-    const solids=[...level.obstacles,...pads.map(p=>({x:p.x,y:p.y-(p.depth||.64)/2,w:p.w,h:p.depth||.64}))];
-    const safe=(x,y)=>!solids.some(o=>intersectsRect(x,y,o));
+    const solids=[...level.obstacles.map(o=>obstaclePose(o,60)),...pads.map(p=>({x:p.x,y:p.y-(p.depth||.64)/2,w:p.w,h:p.depth||.64}))];
+    const safe=(x,y)=>!solids.some(o=>intersectsRect(x,y,o))&&!(level.terrain||[]).some(o=>intersectsPolygon(x,y,o));
     const free=new Uint8Array(nx*ny),visited=new Uint8Array(nx*ny);
     for(let iy=0;iy<ny;iy++)for(let ix=0;ix<nx;ix++)free[iy*nx+ix]=safe(minX+ix*step,minY+iy*step)?1:0;
     const near=(x,y,r=1)=>{const out=[];for(let iy=Math.max(0,Math.floor((y-r-minY)/step));iy<Math.min(ny,Math.ceil((y+r-minY)/step)+1);iy++)for(let ix=Math.max(0,Math.floor((x-r-minX)/step));ix<Math.min(nx,Math.ceil((x+r-minX)/step)+1);ix++){const id=iy*nx+ix;if(free[id]&&Math.hypot(minX+ix*step-x,minY+iy*step-y)<=r)out.push(id);}return out;};

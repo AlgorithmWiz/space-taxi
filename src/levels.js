@@ -1,5 +1,7 @@
 import { BONUS_LEVELS } from './bonus-levels.js';
 import { EXIT } from './environment.js';
+import { shootingStarsTerrain, caveWallOutline, snowGround, umbrellaHull } from './terrain-layouts.js';
+import { crossfireShots } from './crossfire.js';
 export const CLASSIC_COUNT = 24, MYSTERY_INDEX = 24, BONUS_START = 25;
 export const SHIFTS = [
   { name: 'Morning shift', label: '01–08 · FIND YOUR WINGS', start: 0, end: 7 },
@@ -7,7 +9,7 @@ export const SHIFTS = [
   { name: 'Night shift', label: '17–24 · EARN YOUR STRIPES', start: 16, end: 23 },
 ];
 const p = (id, x, y, w = 6, extra = {}) => ({ id, x, y, w, name: `Pad ${id}`, kind: 'platform', ...extra });
-const f = (x, y, w = 5) => p('F', x, y, w, { fuel: true, name: 'Refueling' });
+const f = (x, y, w = 5) => p('F', x, y, w, { name: 'Fuel cache' });
 const w = (x, y, width, h, extra = {}) => ({ x, y, w: width, h, kind: 'wall', ...extra });
 const circuit = ids => ids.map((id, i) => [id, ids[i + 1] ?? EXIT]);
 const towers = () => [p(1,-17,5,12,{kind:'tower',depth:.64}),p(2,-13,-6,7,{kind:'tower',depth:6}),p(3,10,-6,8,{kind:'tower',depth:6}),p(4,-2,-9,10,{kind:'tower',depth:3}),p(5,18,5,10,{kind:'tower',depth:17})];
@@ -16,16 +18,16 @@ const originals = [
   classic('Short -n- Sweet','candy','Land at Pad 1. Your first passenger wants to go up.',[p(1,-5,-10,15)],{
     color:'#f7a7d2',spawn:{x:-5,y:1.5},obstacles:[w(14,-3.7,1.3,17,{angle:-.64,material:'candy'})],
   }),
-  classic('The Beach','beach','Cloud, pier, parasol. Three stops with a sea view.',[p(1,-17,10,10,{style:'cloud'}),p(2,-8,-8,20,{style:'pier'}),p(3,12,6,9,{style:'parasol'})],{
-    color:'#79e3e0',spawn:{x:0,y:7},obstacles:[w(14,-3,.5,17,{material:'pole'}),w(-19.5,-5.7,.7,7,{angle:.75,material:'wood'})],
+  classic('The Beach','beach','Cloud, lounger, parasol. Three stops with a sea view.',[p(1,-17,10,10,{style:'cloud',depth:1.55}),p(2,-8,-8,20,{style:'lounger',depth:.28}),p(3,12,6,9,{style:'parasol',depth:.18})],{
+    color:'#79e3e0',spawn:{x:0,y:7},obstacles:[w(12,-3,.5,17,{material:'pole'}),w(-19.5,-5.7,.7,7,{angle:.48,material:'wood'})],
   }),
   classic('Skyscrapers','city','Five rooftops. Brake before dropping between the towers.',towers(),{color:'#97cbff',spawn:{x:0,y:10}}),
-  classic('Taxi Trainer','training','Nine landing tests. Pad F keeps the training shift running.',[
+  classic('Taxi Trainer','training','Nine landing tests. Pad F has one +35 fuel canister.',[
     p(1,-18,3,5),p(2,15,-10,6),p(3,-6,11,6),p(4,-1,-5,6),p(5,12,10,6),p(6,20,5,5),p(7,-14,-3,5),p(8,15,-1,8),p(9,-20,-8,6),f(20,-6),
   ],{color:'#80dff2'}),
-  classic('Beanstalk','garden','Leaves grow into pads. A quick first pickup finds a shortcut.',[
-    p(1,-4.8,-10,7.5,{kind:'leaf'}),...Array.from({length:8},(_,i)=>p(i+2,i%2?-4.8:4.8,-7+Math.floor(i/2)*5,7.5,{kind:'leaf',growAt:8+Math.floor(i/2)*6})),
-  ],{color:'#b8ef77',spawn:{x:-14,y:9},obstacles:[w(0,0,.8,25,{material:'stem'})],growing:true,fuelRate:.48}),
+  classic('Beanstalk','garden','Leaves unfurl alternately up the stalk. A quick pickup finds a shortcut.',
+    Array.from({length:9},(_,i)=>p(i+1,(i%2?1:-1)*4.75,-10.5+i*2.8,8.4,{kind:'leaf',depth:.35,...(i?{growAt:8+(i-1)*3.2}:{})})),
+  {color:'#b8ef77',spawn:{x:-14,y:9},obstacles:[w(0,0,.8,26,{material:'stem',grows:true})],growing:true,fuelRate:.48}),
   classic('Taxi Pong','pong','The ball crosses the table. Pick your moment to land.',[p(1,-16,-4,7),p(2,15,-4,7),p(3,18,11,10)],{
     color:'#80e6c0',obstacles:[w(0,-5,40,.55,{material:'table'}),w(0,-2.7,.35,3.7,{material:'net'})],
     hazards:[{kind:'pong',path:'bounce',x:0,y:3,range:20,rangeY:5.5,speed:.65,radius:.52}],
@@ -39,12 +41,16 @@ const originals = [
     beams:[{gate:'a',x:10.5,y:4,w:.22,h:4},{gate:'b',x:10.5,y:-3.2,w:.22,h:5.5},{gate:'c',x:0,y:-6,w:20.2,h:.22},{gate:'d',x:-10.5,y:-3.2,w:.22,h:5.5},{gate:'e',x:-10.5,y:4,w:.22,h:4}],
     switches:[{x:6,y:5.5,toggles:['a','b'],label:'A+B'},{x:6,y:-.2,toggles:['b','c'],label:'B+C'},{x:0,y:-2.5,toggles:['c','d'],label:'C+D'},{x:-6,y:-.2,toggles:['d','e'],label:'D+E'},{x:-6,y:5.5,toggles:['e'],label:'E'}],
   }),
-  classic('Crossfire','cannon','Two cannons sweep the sky. Platforms are not bomb shelters.',[p(1,-19,7),p(2,-19,0),p(3,-19,-7),p(4,0,-10,9),p(5,19,-7),p(6,19,0),p(7,19,7)],{
-    color:'#ffad97',hazards:Array.from({length:6},(_,i)=>({kind:'cannon',path:'shot',x:i%2?22:-22,y:-11,vx:(i%2?-1:1)*(4.2+i*.25),vy:2.2+(i%3)*.65,period:10,duration:8.5,phase:i*1.7,radius:.34})),
-    obstacles:[w(-23,0,1.2,27,{material:'cannon'}),w(23,0,1.2,27,{material:'cannon'})],
+  classic('Crossfire','cannon','Watch both cannons. Pads 2 and 6 are exposed to incoming fire.',[
+    p(1,-20.2,9.8,7.6,{style:'bastion'}),p(2,-20.2,2.8,7.6,{style:'bastion'}),p(3,-20.2,-5.4,7.6,{style:'bastion'}),
+    p(4,0,-9.6,12.6,{style:'bastion'}),p(5,20.2,-5.4,7.6,{style:'bastion'}),p(6,20.2,2.8,7.6,{style:'bastion'}),p(7,20.2,9.8,7.6,{style:'bastion'}),
+  ],{
+    color:'#d3a79f',spawn:{x:0,y:13},hazards:crossfireShots(),
+    obstacles:[w(-26,2.25,4,31.5,{material:'cannon'}),w(26,2.25,4,31.5,{material:'cannon'}),
+      w(0,-12.02,1.6,3.56,{material:'cannon'}),w(0,-14.5,56,2,{material:'cannon'})],
   }),
-  classic('Shooting Stars','meteors','Falling stars drift across your route. Keep an eye on the sky.',[p(1,-20,0,6,{kind:'tower',depth:.64}),p(2,-7,-6,8),p(3,9,-11,7),p(4,-1,-11,7),p(5,17,-6,8),f(-20,-10)],{
-    color:'#ffd987',obstacles:[w(1,-2.5,6,5,{kind:'rock'}),w(21,-2,4,4,{kind:'rock'})],
+  classic('Shooting Stars','meteors','Thread the rock passages. The lower-left cache holds one +35 fuel canister.',[p(1,-19,0,6,{kind:'terrain',depth:.18}),p(2,-7,-6,8,{kind:'terrain',depth:.18}),p(3,5.5,-12.5,7,{kind:'terrain',depth:.18}),p(4,-3,-12.5,6,{kind:'terrain',depth:.18}),p(5,13.25,-7.3,6.5,{kind:'terrain',depth:.18}),{...f(-19.25,-12.5,6.5),kind:'terrain',depth:.18}],{
+    color:'#ffd987',terrain:shootingStarsTerrain,
     hazards:[-18,-8,4,14,21].map((x,i)=>({kind:'star',path:'fall',x,radius:.42,speed:2.2+i*.2,drift:2.5,phase:i*7})),
   }),
   classic('Magnets','magnet','Gravity pulls upward. Hold S or ↓ to descend onto a pad.',[p(1,-19,-5),p(2,-9,-6),p(3,1,-9),p(4,11,-6),p(5,20,-5)],{
@@ -62,8 +68,8 @@ const originals = [
   classic('Electroids','electric','Four electrical bands. Follow the moving gaps, one at a time.',[p(1,-17,-11,8)],{
     color:'#a2f6d0',spawn:{x:12,y:13},beams:[-6,-.5,5,10].map((y,i)=>({y,gap:10,range:12,center:0,speed:.34+i*.04,phase:i*1.7,kind:'electric'})),
   }),
-  classic('Blizzard','snow','Gusts change direction. Fly low for shelter; avoid the snowflakes.',[p(1,-9,-10,16,{style:'snow'}),p(2,9,-10,12,{style:'snow'}),p(3,20,-10,7,{style:'snow'})],{
-    color:'#bdefff',weather:true,spawn:{x:0,y:6},obstacles:[w(-16,-4,.7,13,{material:'tree'}),w(5,-4,.7,13,{material:'tree'}),w(17,-7,.55,6,{material:'tree'})],
+  classic('Blizzard','snow','Land on the snow clearings. Gusts bend the trees; fly low for shelter.',[p(1,-9,-10,16,{style:'snow',kind:'terrain',depth:.12}),p(2,9,-10,12,{style:'snow',kind:'terrain',depth:.12}),p(3,20,-10,7,{style:'snow',kind:'terrain',depth:.12})],{
+    color:'#bdefff',weather:true,terrain:snowGround,spawn:{x:0,y:6},obstacles:[w(-16,-3.5,.7,13,{material:'tree'}),w(5,-3.5,.7,13,{material:'tree'}),w(17,-7,.55,6,{material:'tree'})],
     hazards:[-21,-8,0,11,20].map((x,i)=>({kind:'snow',path:'fall',x,radius:.3,drift:3.2,speed:1.45+i*.09,phase:i*6.3})),
   }),
   classic('Interference','radio','The radio band disrupts steering. Stay clear of the towers.',[p(1,-8,-5),p(2,1,-11,7),p(3,-17,-3),p(4,5,-2),p(5,18,-4),p(6,19,-11,5),p(7,13,5,7),f(-13,-11)],{
@@ -98,5 +104,18 @@ export const LEVELS = [
   {...mystery,number:25,shift:3},
   ...BONUS_LEVELS.map((level,index)=>({...level,number:index+26,shift:3,theme:['orbital','crystal','refinery'][index],hint:level.subtitle,bonus:true,pads:level.pads.map(p=>({...p,kind:'island'}))})),
 ];
+
+// Supply is deliberately sparse. A canister is consumed once per level attempt,
+// including across lost taxis. No pad provides an unlimited fuel service.
+for(const [index,level]of LEVELS.entries()){
+  for(const pad of level.pads)delete pad.fuel;
+  const cache=[3,9,12,16,23].includes(index)?'F':index===27?1:null;
+  if(cache===null)level.pads=level.pads.filter(p=>p.id!=='F');
+  level.fuelCanisters=cache===null?[]:[{id:'reserve',padId:cache,amount:index===12?45:35}];
+  if(level.theme==='beach')level.terrain=[umbrellaHull(level.pads[2])];
+  if(['teleport','maze'].includes(level.theme)){
+    level.terrain=level.obstacles.map(caveWallOutline);level.obstacles=[];
+  }
+}
 
 

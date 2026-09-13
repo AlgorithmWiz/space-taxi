@@ -46,10 +46,10 @@ test('crashing with a passenger restores the same pickup without advancing the r
   f.crash('test'); advance(f, 1.6);
   assert.equal(f.passenger, false); assert.equal(f.targetId, 2); assert.equal(f.routeIndex, 0);
 });
-test('depot refuels, charges earnings, and never produces a negative balance', () => {
+test('ordinary depots no longer provide unlimited refueling', () => {
   const f = originalFlight(); f.fuel = 20; f.score = 100; advance(f, 1);
-  assert.ok(f.fuel > 37 && f.fuel < 39); assert.ok(f.score < 100 && f.score > 89);
-  f.score = 0; advance(f, 1); assert.equal(f.score, 0);
+  assert.equal(f.fuel,20); assert.equal(f.score,100);
+  advance(f,10);assert.equal(f.fuel,20);
 });
 test('all routes in all sectors can finish and the exit advances or wins', () => {
   for (let index = 0; index < 3; index++) {

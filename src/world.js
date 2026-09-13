@@ -4,13 +4,17 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { LEVELS } from './levels.js';
-import { padPose, hazardPose } from './environment.js';
+import { padPose, levelHazardPose, obstaclePose, fuelCanisterPose } from './environment.js';
+import { buildSolidTerrain } from './caves.js';
+import { buildLandingObject, buildFuelCanister } from './landing-props.js';
 import { buildObstacle, buildHazard, buildMechanisms, buildDressing } from './scenery.js';
 import { Explosion } from './explosion.js';
-import { createPassenger, posePassenger } from './passenger.js';
+import { createPassenger, posePassenger, PASSENGER_SCALE } from './passenger.js';
 import { riderFor } from './riders.js';
 import { SKINS, applyTaxiSkin } from './skins.js';
 import { createTaxi } from './taxi.js';
+import { artFor } from './art-direction.js';
+import { surfaceMaterial } from './surface-materials.js';
 
 const random = (seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; })(1984);
 const metal = (color, roughness = .55, metalness = .35) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
@@ -42,18 +46,18 @@ export class World {
   constructor(container) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.22;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.08;
     this.renderer.setClearColor(0x080e19); container.appendChild(this.renderer.domElement);
     this.scene = new THREE.Scene(); this.scene.fog = new THREE.FogExp2(0x0b1422, .005);
     this.camera = new THREE.OrthographicCamera(-30, 30, 18, -18, .1, 250);
     this.camera.position.set(0, 6, 65); this.camera.lookAt(0, 1, 0);
     this.composer = new EffectComposer(this.renderer); this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.bloom = new UnrealBloomPass(new THREE.Vector2(1280, 800), .36, .55, 1.05);
+    this.bloom = new UnrealBloomPass(new THREE.Vector2(1280, 800), .18, .45, 1.15);
     this.composer.addPass(this.bloom); this.composer.addPass(new OutputPass());
-    this.scene.add(new THREE.HemisphereLight(0x9fbcd9, 0x0a0c25, 2.2));
-    const key = new THREE.DirectionalLight(0xffead1, 3.4); key.position.set(-12, 20, 30); this.scene.add(key);
-    const rim = new THREE.DirectionalLight(0x7cabff, 3); rim.position.set(5, 4, -12); this.scene.add(rim);
-    const fill = new THREE.DirectionalLight(0xa680fa, 1.8); fill.position.set(15, -6, 5); this.scene.add(fill);
+    this.ambientLight = new THREE.HemisphereLight(0xd0d7dd, 0x17171a, 1.6); this.scene.add(this.ambientLight);
+    const key = new THREE.DirectionalLight(0xffefd8, 2.2); key.position.set(-12, 20, 30); this.scene.add(key);
+    this.rimLight = new THREE.DirectionalLight(0xc4cbd1, 1.1); this.rimLight.position.set(5, 4, -12); this.scene.add(this.rimLight);
+    const fill = new THREE.DirectionalLight(0xb6bbc4, .5); fill.position.set(15, -6, 5); this.scene.add(fill);
     this.stage = new THREE.Group(); this.scene.add(this.stage);
     this.levelGroup = new THREE.Group(); this.stage.add(this.levelGroup);
     this.background(); this.makeTaxi(); this.makeParticles();this.explosion=new Explosion(this.stage);
@@ -73,13 +77,13 @@ export class World {
   background() {
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const skyMaterial = new THREE.ShaderMaterial({
-      uniforms: { time: { value: 0 } }, depthWrite: false,
+      uniforms: { time: { value: 0 }, zenith:{value:new THREE.Color()}, horizon:{value:new THREE.Color()}, clouds:{value:0} }, depthWrite: false,
       vertexShader: 'varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader: `varying vec2 vUv;uniform float time;
+      fragmentShader: `varying vec2 vUv;uniform float time;uniform vec3 zenith;uniform vec3 horizon;uniform float clouds;
         float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
         float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
         float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+vec2(7.1);a*=.5;}return v;}
-        void main(){vec2 uv=vUv;float n=fbm(uv*7.+vec2(time*.002,-time*.001));float mist=fbm(uv*12.+n*2.+time*.001);float band=exp(-pow((uv.y-.54+(uv.x-.5)*.29+n*.17)*6.,2.));vec3 c=vec3(.006,.011,.023);c+=vec3(.065,.032,.13)*mist*band*.65;c+=vec3(.007,.022,.04)*pow(n,2.)*1.5;c+=vec3(.05,.018,.035)*exp(-length((uv-vec2(.75,.68))*vec2(3.,5.)))*mist;gl_FragColor=vec4(c,1.);}`,
+        void main(){vec2 uv=vUv;float n=fbm(uv*vec2(9.,19.)+vec2(time*.001,0.));vec3 c=mix(horizon,zenith,smoothstep(.25,.72,uv.y));c=mix(c,c*.55+vec3(.025),clouds*smoothstep(.32,.8,n)*.6);gl_FragColor=vec4(c,1.);}`,
     });
     this.skyMaterial = skyMaterial;
     mesh(new THREE.PlaneGeometry(260, 170), skyMaterial, this.scene, 0, 5, -80);
@@ -91,35 +95,6 @@ export class World {
     const starGeometry = new THREE.BufferGeometry(); starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     this.stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ vertexColors: true, size: .075, sizeAttenuation: true, transparent: true, opacity: .9, depthWrite: false })); this.scene.add(this.stars);
-    const planetMat = new THREE.ShaderMaterial({
-      vertexShader: 'varying vec3 vNormal;varying vec3 vPosition;void main(){vNormal=normalize(normalMatrix*normal);vPosition=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader: `varying vec3 vNormal;varying vec3 vPosition;void main(){vec3 n=normalize(vNormal);float light=max(0.,dot(n,normalize(vec3(-.8,.6,.5))));float stripes=sin(vPosition.y*1.2+sin(vPosition.x*.3)*.7)*.04;float rim=pow(1.-max(0.,n.z),3.);vec3 c=mix(vec3(.015,.021,.05),vec3(.13+stripes,.22+stripes,.32+stripes),light*.8);c+=vec3(.1,.26,.3)*rim*.6;gl_FragColor=vec4(c,1.);}`,
-    });
-    this.planet = mesh(new THREE.SphereGeometry(10.5, 64, 48), planetMat, this.scene, 29, 15, -45);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x63858a, side: THREE.DoubleSide, transparent: true, opacity: .13, depthWrite: false });
-    const ring = mesh(new THREE.RingGeometry(13.5, 18.2, 128), ringMat, this.scene, 29, 15, -45); ring.rotation.set(1.13, .2, -.4);
-    const orbit = mesh(new THREE.RingGeometry(19, 19.05, 128), new THREE.MeshBasicMaterial({ color: 0x8dadb1, side: THREE.DoubleSide, transparent: true, opacity: .18 }), this.scene, 29, 15, -45); orbit.rotation.copy(ring.rotation);
-    // A distant orbital horizon grounds the floating flight zone.
-    const horizon = mesh(new THREE.SphereGeometry(95, 64, 48), metal(0x101c30, 1, 0), this.scene, 0, -110, -55);
-    const halo = mesh(new THREE.SphereGeometry(95.5, 64, 48), new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexShader: 'varying vec3 n;void main(){n=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}', fragmentShader: 'varying vec3 n;void main(){float a=pow(1.-abs(n.z),6.);gl_FragColor=vec4(.1,.35,.65,a*.36);}' }), this.scene, 0, -110, -55);
-    horizon.rotation.z = -.1; halo.rotation.z = -.1;
-    // Distant craft live behind the flight zone and never participate in collisions.
-    this.traffic = [];
-    for (let i = 0; i < 5; i++) {
-      const craft = new THREE.Group(); this.scene.add(craft);
-      box(craft, metal(0x567184, .5), 1.1, .16, .28);
-      box(craft, metal(0x34485e), .48, .09, 1.2, -.05, 0);
-      box(craft, glow(i % 2 ? 0xc5a9e4 : 0x8ddadf, .6), .09, .07, .18, -.58, 0);
-      const trail = box(craft, new THREE.MeshBasicMaterial({ color: 0x729cb4, transparent: true, opacity: .1, depthWrite: false }), 3.8, .025, .025, -2.4, 0);
-      craft.scale.setScalar(.45 + i * .06);
-      this.traffic.push({ craft, trail, offset: i * 19, height: 19 - i * 7, speed: .5 + i * .16 });
-    }
-    this.satellite = new THREE.Group(); this.scene.add(this.satellite);
-    mesh(new THREE.OctahedronGeometry(.42), metal(0x94a6b8), this.satellite);
-    for (const x of [-1.15, 1.15]) {
-      box(this.satellite, metal(0x334b74, .3), 1.4, .65, .06, x);
-      for (let k = 0; k < 4; k++) box(this.satellite, metal(0x83afbd), .025, .62, .075, x - .53 + k * .35);
-    }
   }
   makeTaxi() {
     Object.assign(this, createTaxi()); this.stage.add(this.taxi);
@@ -156,94 +131,65 @@ export class World {
     }
     return portraits;
   }
-  makeIsland(pad, theme, index) {
-    const group = new THREE.Group(); group.position.set(pad.x, pad.y, 0); this.levelGroup.add(group);
-    if (pad.kind === 'island') {
-      const rockMat = metal(index === 1 ? 0x3e315e : index === 2 ? 0x4a3835 : 0x283546, .98, .12);
-      const rock = mesh(new THREE.CylinderGeometry(pad.w * .45, pad.w * .14, 2.8, 7, 2), rockMat, group, 0, -1.95, -.35);
-      rock.scale.z = .51; rock.rotation.y = .16;
-      for (let i = 0; i < 6; i++) {
-      const pebble = mesh(new THREE.IcosahedronGeometry(.35 + random() * .65, 0), rockMat, group, (random() - .5) * pad.w * .65, -2.7 - random() * .8, (random() - .5) * 1.2);
-      pebble.scale.set(.6, 1.1 + random(), .7); pebble.rotation.set(random(), random(), random());
+  makeIsland(pad, theme) {
+    const art=this.art, group=new THREE.Group();
+    group.position.set(pad.x,pad.y,0);this.levelGroup.add(group);
+    const organic=pad.kind==='leaf', cloud=pad.style==='cloud';
+    const natural=organic||cloud||['timber','felt','snow','enamel'].includes(art.material);
+    const deck=this.deckMaterial;
+    const edge=metal(new THREE.Color(art.surface).multiplyScalar(.55),.86,.15);
+    const markings=metal('#cec5aa',.95,.02);
+    const special=buildLandingObject(group,pad);
+    if(pad.kind==='island'){
+      const rockMat=metal(art.surface,.98,.05);
+      const rock=mesh(new THREE.CylinderGeometry(pad.w*.45,pad.w*.14,2.8,9,2),rockMat,group,0,-1.95,-.35);rock.scale.z=.51;
+      for(let i=0;i<5;i++){
+        const pebble=mesh(new THREE.IcosahedronGeometry(.4+random()*.6),rockMat,group,(random()-.5)*pad.w*.6,-2.8,(random()-.5)*1.2);
+        pebble.scale.set(.6,1.2+random(),.7);
       }
-    } else if (pad.kind === 'tower' && pad.depth > .7) {
-      box(group, metal(0x29374b), pad.w, pad.depth, 3.3, 0, -pad.depth / 2, -.1);
-      const windows = glow(theme, .45);
-      for (let y = -1.2; y > -pad.depth + .6; y -= 1.35) for (let x = -pad.w / 2 + .7; x < pad.w / 2 - .3; x += 1.15) {
-        box(group, windows, .28, .4, .025, x, y, 1.57);
+    }else if(pad.kind==='tower'&&pad.depth>.7){
+      box(group,deck,pad.w,pad.depth,3.3,0,-pad.depth/2,-.1);
+      for(let y=-1.1;y>-pad.depth+.5;y-=1.35)for(let x=-pad.w/2+.65;x<pad.w/2-.3;x+=1.1){
+        box(group,edge,.52,.64,.04,x,y,1.57);
+        box(group,glow('#b8a37c',.13),.28,.38,.05,x,y,1.6);
       }
-    } else if (pad.kind === 'leaf') {
-      const leaf = mesh(new THREE.SphereGeometry(1, 16, 10), metal(0x527e46), group, 0, -.4, -.2); leaf.scale.set(pad.w / 2, .27, 1.8);
+      for(let y=-1.9;y>-pad.depth;y-=2.7)box(group,edge,pad.w,.08,.06,0,y,1.6);
     }
-    const deck = metal(0x394b56, .62, .65), edge = metal(0x152a36, .52, .62), light = glow(theme, 1.7);
-    mesh(rounded(pad.w, .42, 3.5, .13), deck, group, 0, -.24);
-    mesh(rounded(pad.w + .13, .19, 3.55, .07), edge, group, 0, -.53);
-    box(group, light, pad.w - .25, .045, .07, 0, -.16, 1.8);
-    box(group, light, .055, .035, 3.3, -pad.w / 2 + .2, -.018);
-    box(group, light, .055, .035, 3.3, pad.w / 2 - .2, -.018);
-    for (let i = 0; i < 8; i++) {
-      const stripe = box(group, i % 2 === 0 ? metal(0xc8b958) : edge, .26, .14, .016, -pad.w / 2 + .3 + i * .28, -.35, 1.79);
-      stripe.rotation.z = -.3;
-    }
-    for (const x of [-pad.w / 2 + .3, pad.w / 2 - .3]) {
-      box(group, metal(0x65808a), .1, .5, .1, x, .2, -1.48);
-      mesh(new THREE.SphereGeometry(.09, 8, 6), light, group, x, .46, -1.48);
-    }
-    // Touchdown markings and large pad numerals, painted on the deck.
-    const ring = mesh(new THREE.RingGeometry(.85, .9, 48), new THREE.MeshBasicMaterial({ color: theme, side: THREE.DoubleSide, transparent: true, opacity: .55 }), group, 0, -.018, 0);
-    ring.rotation.x = -Math.PI / 2;
-    const number = mesh(new THREE.PlaneGeometry(1.55, .78), new THREE.MeshBasicMaterial({ map: labelTexture(String(pad.id), theme), transparent: true, depthWrite: false }), group, 0, 0, .1); number.rotation.x = -Math.PI / 2;
-    const sign = mesh(new THREE.PlaneGeometry(1.05, .52), new THREE.MeshBasicMaterial({ map: labelTexture(String(pad.id), '#c2dbe4'), transparent: true }), group, 0, -.28, 1.81);
-    sign.renderOrder = 2;
-    // Recessed faceplates and inset light tracks stay inside the existing deck silhouette.
-    const alloy = metal(index === 1 ? 0x615975 : index === 0 ? 0x627d79 : 0x627183, .35, .75);
-    for (const x of [-pad.w / 2 + .55, pad.w / 2 - .55]) {
-      mesh(rounded(.65, .29, .12, .04), alloy, group, x, -.36, 1.79);
-      for (let k = 0; k < 3; k++) box(group, edge, .045, .14, .02, x - .16 + k * .16, -.36, 1.862);
-    }
-    for (let x = -pad.w / 2 + 1.15; x < pad.w / 2 - .8; x += .7) {
-      box(group, edge, .035, .014, 2.8, x, -.017, -.1);
-      box(group, alloy, .27, .018, .09, x, -.014, 1.42);
-      box(group, light, .12, .018, .08, x, -.012, -1.35);
-    }
-    const pulse = box(group, new THREE.MeshBasicMaterial({ color: theme, transparent: true, opacity: .8, depthWrite: false }), .55, .045, .02, 0, -.16, 1.85);
-    const halo = mesh(new THREE.RingGeometry(.7, .75, 40, 1, 0, Math.PI * 1.4), new THREE.MeshBasicMaterial({ color: theme, transparent: true, opacity: .35, side: THREE.DoubleSide, depthWrite: false }), group, 0, -.63, 0);
-    halo.rotation.x = Math.PI / 2;
-    const beacon = new THREE.Group(); group.add(beacon);
-    const targetRing = mesh(new THREE.TorusGeometry(1.25, .025, 5, 60), glow(theme, 2), beacon, 0, .07); targetRing.rotation.x = Math.PI / 2;
-    const cone = mesh(new THREE.CylinderGeometry(1.25, 1.25, 2.8, 48, 1, true), new THREE.ShaderMaterial({ transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, uniforms: { tint: { value: new THREE.Color(theme) } }, vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}', fragmentShader: 'varying vec2 vUv;uniform vec3 tint;void main(){float a=pow(1.-vUv.y,2.)*.11;gl_FragColor=vec4(tint,a);}' }), beacon, 0, 1.45);
-    if (pad.fuel) {
-      const station = new THREE.Group(); station.position.set(-pad.w / 2 + 1, .04, -1.1); group.add(station);
-      mesh(rounded(.7, 1.4, .65, .08), metal(0x6e8390), station, 0, .7);
-      box(station, glow(0x82f4c3, 1), .42, .37, .03, 0, 1, .34);
-      box(station, edge, .28, .11, .05, 0, .46, .35);
-      const hose = new THREE.CatmullRomCurve3([new THREE.Vector3(.35, 1.12, 0), new THREE.Vector3(.7, .95, 0), new THREE.Vector3(.65, .3, .1), new THREE.Vector3(.36, .54, .3)]);
-      mesh(new THREE.TubeGeometry(hose, 12, .045, 6, false), edge, station);
-      const tank = mesh(new THREE.CylinderGeometry(.5, .5, 1.5, 16), metal(0x3d626d), group, pad.w / 2 - .9, .75, -1.2);
-      box(group, light, .3, .1, .08, tank.position.x, 1.2, -.67);
-    } else if (index === 0) {
-      for (let i = 0; i < 3; i++) {
-        const tx = -pad.w / 2 + .6 + i * .8, ty = .65 + random() * .5;
-        mesh(new THREE.CylinderGeometry(.035, .08, ty, 6), metal(0x567774), group, tx, ty / 2, -1.2);
-        const tree = mesh(new THREE.IcosahedronGeometry(.43, 1), metal(i % 2 ? 0x608d76 : 0x3b756d), group, tx, ty, -1.2); tree.scale.set(.8, 1.5, .8);
+    if(organic){
+      const leaf=mesh(new THREE.SphereGeometry(1,24,12),deck,group,0,-.25,-.1);leaf.scale.set(pad.w/2,.25,1.75);
+      box(group,markings,pad.w*.88,.018,.035,0,-.04,.1);
+      for(const side of [-1,1])for(let x=-pad.w/2+.65;x<pad.w/2-.3;x+=.85){
+        const vein=box(group,metal('#6c814f',.95,.01),.03,.015,1.4,x,-.045,side*.6);vein.rotation.y=side*-.45;
       }
-      const shelter = mesh(new THREE.SphereGeometry(1.1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0x729fae, roughness: .17, metalness: .6, transparent: true, opacity: .44, side: THREE.DoubleSide }), group, pad.w / 2 - 1.2, .08, -1.15);
-      shelter.scale.set(1, .8, .7);
-      box(group, edge, 2.3, .13, 1.6, shelter.position.x, .08, -1.1);
-    } else if (index === 1) {
-      for (let i = 0; i < 5; i++) {
-        const crystal = mesh(new THREE.ConeGeometry(.22 + random() * .15, .9 + random() * 1.5, 5), metal(i % 2 ? 0x8462b4 : 0x528cb2, .22, .5), group, (i < 3 ? -1 : 1) * (pad.w / 2 - .45 - random() * .7), .55, -1.3);
-        crystal.rotation.z = (random() - .5) * .5;
+    }else if(special){
+      // The cloud, canvas furniture and terrain itself supply the landing surface.
+    }else{
+      mesh(rounded(pad.w,.42,3.5,.1),deck,group,0,-.24);
+      box(group,edge,pad.w,.14,3.5,0,-.52);
+      if(art.material==='snow')box(group,metal('#c4cdc9',1,0),pad.w,.09,3.5,0,-.045);
+      if(art.material==='timber')for(let x=-pad.w/2+.6;x<pad.w/2;x+=.6)box(group,edge,.035,.012,3.3,x,-.018);
+      if(!natural)for(const x of [-pad.w/2+.35,pad.w/2-.35]){
+        box(group,markings,.55,.14,.02,x,-.28,1.77);
+        for(let i=0;i<3;i++)box(group,edge,.07,.14,.025,x-.18+i*.18,-.28,1.79);
       }
-    } else {
-      for (let i = 0; i < 3; i++) {
-        mesh(new THREE.CylinderGeometry(.28, .33, 1.1 + i * .28, 12), metal(0x6e5951), group, -pad.w / 2 + .7 + i * .55, .65, -1.3);
-        box(group, light, .25, .12, .07, -pad.w / 2 + .7 + i * .55, .75, -.96);
-      }
-      box(group, edge, 1.2, 1.4, .7, pad.w / 2 - 1, .75, -1.35);
     }
-    const person = this.makePerson(group, pad.w * .28);
-    this.padObjects.push({ group, beacon, ring: targetRing, person, pad, pulse, halo });
+    // Small painted touchdown brackets leave both the approach and pad silhouette clear.
+    for(const side of [-1,1]){
+      box(group,markings,.06,.015,1.3,side*Math.min(2.2,pad.w*.3),.008,.05);
+      for(const z of [-.6,.7])box(group,markings,.45,.015,.06,side*(Math.min(2.2,pad.w*.3)-.18),.008,z);
+    }
+    const number=mesh(new THREE.PlaneGeometry(1.55,.78),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#dad3bb'),transparent:true,depthWrite:false}),group,0,.01,.1);number.rotation.x=-Math.PI/2;
+    mesh(new THREE.PlaneGeometry(1.05,.52),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#d9d3c4'),transparent:true}),group,0,-.28,1.81);
+    const pulse=box(group,new THREE.MeshBasicMaterial({color:theme,transparent:true,opacity:.22,depthWrite:false}),.16,.04,.02,0,-.17,1.82);
+    const halo=mesh(new THREE.RingGeometry(.7,.72,32),new THREE.MeshBasicMaterial({color:theme,transparent:true,opacity:.1,side:THREE.DoubleSide,depthWrite:false}),group,0,-.63,0);halo.rotation.x=Math.PI/2;halo.visible=false;
+    const beacon=new THREE.Group();group.add(beacon);
+    const targetRing=mesh(new THREE.TorusGeometry(1.25,.025,5,48),glow(theme,.7),beacon,0,.06);targetRing.rotation.x=-Math.PI/2;
+    if(!natural&&!special){
+      box(group,edge,.55,.28,.55,pad.w/2-.65,.14,-1.4);
+      for(let i=0;i<3;i++)box(group,markings,.04,.015,.4,pad.w/2-.8+i*.15,.29,-1.4);
+    }
+    const person=this.makePerson(group,pad.w*.28);
+    this.padObjects.push({group,beacon,ring:targetRing,person,pad,pulse,halo});
   }
   makePerson(parent, x) {
     return createPassenger(parent,x);
@@ -257,14 +203,24 @@ export class World {
     this.explosion.trigger(x,y,vx,vy);this.burst(x,y,'orange',120);this.shake=.9;
   }
   setLevel(index) {
-    disposeGroup(this.levelGroup); this.padObjects = []; this.hazardObjects = [];
+    disposeGroup(this.levelGroup); this.padObjects = []; this.hazardObjects = [];this.obstacleObjects=[];this.fuelObjects=[];
     this.departures=[];this.explosion.clear();
     for(const particle of this.particles)particle.life=0;
-    this.index = index; const level = LEVELS[index];
-    const skin = ['garden', 'beach', 'snow', 'candy', 'orbital', 'museum'].includes(level.theme) ? 0 : ['teleport', 'crystal', 'puzzle'].includes(level.theme) ? 1 : 2;
-    level.pads.forEach(pad => this.makeIsland(pad, level.color, skin));
+    this.index=index;this.art=artFor(LEVELS[index]);
+    const level={...LEVELS[index],color:this.art.accent};
+    this.skyMaterial.uniforms.zenith.value.set(this.art.zenith);
+    this.skyMaterial.uniforms.horizon.value.set(this.art.horizon);
+    this.skyMaterial.uniforms.clouds.value=this.art.clouds;
+    this.scene.fog.color.set(this.art.zenith);
+    this.stars.visible=this.art.stars;
+    this.rimLight.color.set(this.art.accent);
+    this.deckMaterial=surfaceMaterial(this.art.material,this.art.surface);
+    level.pads.forEach(pad => this.makeIsland(pad, level.color));
+    buildSolidTerrain(this.levelGroup,level);
+    for(const item of level.fuelCanisters||[])this.fuelObjects.push({item,group:buildFuelCanister(this.levelGroup,item)});
     for (const obstacle of level.obstacles) {
-      if (level.original || index === 24) { buildObstacle(this.levelGroup, obstacle, level.color); continue; }
+      if(obstacle.material==='tree')continue; // The wind-bent tree model supplies the trunk too.
+      if (level.original || index === 24) { const group=buildObstacle(this.levelGroup, obstacle, level.color,level.theme);this.obstacleObjects.push({group,obstacle}); continue; }
       const group = new THREE.Group(); group.position.set(obstacle.x, obstacle.y, 0); this.levelGroup.add(group);
       const body = mesh(new THREE.DodecahedronGeometry(1, 0), metal(level.theme === 'crystal' ? 0x44375d : 0x574339, .88), group);
       body.scale.set(obstacle.w * .6, obstacle.h * .65, 1.2); body.rotation.z = .2;
@@ -325,13 +281,7 @@ export class World {
     this.skyMaterial.uniforms.time.value = ambientTime;
     this.stars.rotation.z = Math.sin(ambientTime * .015) * .014;
     this.stars.material.opacity = .84 + Math.sin(ambientTime * .35) * .06;
-    this.planet.rotation.y = ambientTime * .004;
-    for (const { craft, offset, height, speed } of this.traffic) {
-      craft.position.set(((ambientTime * speed + offset) % 110) - 55, height + Math.sin(ambientTime * .04 + offset) * 1.2, -37);
-      craft.rotation.z = .06 * Math.sin(ambientTime * .04 + offset);
-    }
-    this.satellite.position.set(29 + Math.cos(ambientTime * .024 + 2) * 19, 15 + Math.sin(ambientTime * .024 + 2) * 5, -31);
-    this.satellite.rotation.set(.3, ambientTime * .045, -.35);
+
     this.taxi.visible = isMenu || (!flight.crashTime && flight.status !== 'over');
     if (isMenu) {
       this.taxi.position.set(1.5 + Math.sin(time * .27) * 1.1, 7.5 + Math.sin(time * .8) * .38, 3);
@@ -369,6 +319,8 @@ export class World {
     });
     this.particleGeometry.attributes.position.needsUpdate = true; this.particleGeometry.attributes.color.needsUpdate = true;
     const levelTime = isMenu ? time % 120 + 40 : flight.time;
+    for(const {group,obstacle}of this.obstacleObjects){const pose=obstaclePose(obstacle,levelTime);group.position.set(pose.x,pose.y,0);group.rotation.z=pose.angle||0;group.scale.y=pose.h/obstacle.h;}
+    for(const {group,item}of this.fuelObjects){const pose=fuelCanisterPose(item,LEVELS[this.index],levelTime);group.position.set(pose.x,pose.y,1.05);group.visible=isMenu||!flight.fuelUsed.has(item.id);}
     for (const { group, pad, beacon, ring, person, pulse, halo } of this.padObjects) {
       const pose = padPose(pad, levelTime);
       group.position.x = pose.x; group.position.y = pose.y;
@@ -388,10 +340,10 @@ export class World {
       if(age>3){disposeGroup(d.person);this.levelGroup.remove(d.person);this.departures.splice(i,1);continue;}
       const x=THREE.MathUtils.lerp(d.from,-d.pad.w*.33,Math.min(1,age/2));
       posePassenger(d.person,{time:levelTime,profile:d.profile,x:pose.x+x,walk:age<2?1:0,departing:true});
-      d.person.position.y=pose.y;d.person.scale.setScalar(1.45*Math.min(1,(3-age)*2));
+      d.person.position.y=pose.y;d.person.scale.setScalar(PASSENGER_SCALE*Math.min(1,(3-age)*2));
     }
     this.hazardObjects.forEach((h, i) => {
-      const spec = LEVELS[this.index].hazards[i], pos = hazardPose(spec, levelTime);
+      const spec = LEVELS[this.index].hazards[i], pos = levelHazardPose(spec, levelTime,LEVELS[this.index]);
       h.position.set(pos.x, pos.y, 0); h.visible = pos.active !== false;
       if (!isPaused) { h.rotation.x += dt * .3; h.rotation.z += dt * .4; }
     });

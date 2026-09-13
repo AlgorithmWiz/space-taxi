@@ -13,8 +13,8 @@ export function applyTaxiSkin(taxi, skin) {
   taxi.traverse(object => {
     const mat = object.material;
     if (mat?.name === 'taxi-paint') {
-      mat.color.set(skin.paint); mat.roughness = skin.id === 'auric' ? .23 : .3;
-      mat.metalness = skin.id === 'auric' ? .85 : .55;
+      mat.color.set(skin.paint); mat.roughness = skin.id === 'auric' ? .38 : .55;
+      mat.metalness = skin.id === 'auric' ? .72 : .4;
     }
     if (mat?.name === 'taxi-trim') mat.color.set(skin.trim);
     if (mat?.name === 'taxi-accent') mat.color.set(skin.accent);

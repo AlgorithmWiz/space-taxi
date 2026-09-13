@@ -33,14 +33,14 @@ function label(text, color) {
 // The same model supplies the flight zone, departures hero, and all skin portraits.
 // Landing feet, roof height, and thruster anchors retain the existing flight dimensions.
 export function createTaxi() {
-  const taxi = new THREE.Group(); taxi.name = 'TX-84 cyber taxi';
-  const paint = new THREE.MeshPhysicalMaterial({ color: 0xe8b728, roughness: .3, metalness: .55, clearcoat: .4, clearcoatRoughness: .32 });
+  const taxi = new THREE.Group(); taxi.name = 'TX-84 work taxi';
+  const paint = new THREE.MeshPhysicalMaterial({ color: 0xe8b728, roughness: .55, metalness: .4, clearcoat: .15, clearcoatRoughness: .45 });
   const trim = metal(0x162635, .48), alloy = metal(0x81929f, .25, .85), rubber = metal(0x090f18, .75, .15);
   const glass = new THREE.MeshPhongMaterial({ color: 0x123e52, specular: 0x102a38, shininess: 28, emissive: 0x123e52, emissiveIntensity: .12, side: THREE.DoubleSide });
-  const accent = metal(0x8295a0, .26), neon = light(0x77ddff, 1.6);
+  const accent = metal(0x8295a0, .5), neon = light(0xe5d2a8, .2);
   paint.name = 'taxi-paint'; trim.name = 'taxi-trim'; glass.name = 'taxi-glass';
   accent.name = 'taxi-accent'; neon.name = 'taxi-neon';
-  const headlight = light(0xc8f5ff, 2.5), tailLight = light(0xff4973, 1.8);
+  const headlight = light(0xf6e4c9, .9), tailLight = light(0xb9463a, .65);
 
   // Faceted armor over a recessed graphite chassis.
   profile(taxi, trim, [[-1.34,-.22],[-1.23,.14],[1.22,.13],[1.38,-.19],[1.11,-.39],[-1.07,-.39]], 1.15, 0, .025);
@@ -105,7 +105,7 @@ export function createTaxi() {
   // Low-profile roof sign: dark housing and legible illuminated lettering.
   box(taxi, trim, .48, .09, .20, -.15, .972);
   profile(taxi, trim, [[-.54,1.015],[-.49,1.203],[.18,1.203],[.23,1.015]], .25, 0, .012);
-  const taxiLabel = label('TAXI', '#b4f7ff');
+  const taxiLabel = label('TAXI', '#e1d5b8');
   for (const side of [-1, 1]) {
     const text = mesh(taxi, new THREE.PlaneGeometry(.58,.18), taxiLabel, -.155, 1.109, side * .139);
     if (side < 0) text.rotation.y = Math.PI;

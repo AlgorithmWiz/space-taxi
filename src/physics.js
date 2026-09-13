@@ -1,11 +1,15 @@
 import { LEVELS, MYSTERY_INDEX, BONUS_START } from './levels.js';
-import { EXIT, clamp, padPose, hazardPose, beamSegments, intersectsRect, distanceToSegment, environmentalForce } from './environment.js';
+import { EXIT, clamp, padPose, levelHazardPose, obstaclePose, intersectsPolygon, fuelCanisterPose, beamSegments, intersectsRect, distanceToSegment, environmentalForce } from './environment.js';
 export { clamp } from './environment.js';
 export const SHIP = { halfWidth:1.02, halfHeight:.46, roof:1.22, feet:.86, safeVertical:3, safeHorizontal:2.2 };
 
 export class Flight {
-  constructor(onEvent = () => {}) { this.onEvent = onEvent; this.reset(); }
-  emit(type, data = {}) { this.onEvent({type,...data}); }
+  constructor(onEvent = () => {}, {debug=false} = {}) { this.onEvent = onEvent; this.debug=debug===true; this.reset(); }
+  emit(type, data = {}) { this.onEvent({type,...data,debug:this.debug}); }
+  debugJump(index) {
+    if(!this.debug || !Number.isInteger(index) || !LEVELS[index]) return false;
+    this.reset(index); return true;
+  }
   reset(sector = 0) {
     this.runId=globalThis.crypto?.randomUUID?.()||`run-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     this.score=0; this.lives=3; this.delivered=0; this.totalTime=0; this.startSector=sector; this.completed=[];
@@ -16,13 +20,13 @@ export class Flight {
     this.status='playing'; this.sector=index; this.level=LEVELS[index]; this.routes=this.level.routes.map(r=>[...r]);
     this.routeIndex=0; this.passenger=false; this.fareTime=0; this.exitOpen=false;
     this.time=0; this.serviceTime=0; this.crashTime=0; this.fuel=100;
-    this.switches=new Set(); this.switchContacts=new Set(); this.resetTime=0; this.portalCooldown=0; this.bounceCooldown=0;
+    this.switches=new Set(); this.switchContacts=new Set(); this.fuelUsed=new Set(); this.resetTime=0; this.portalCooldown=0; this.bounceCooldown=0;
     this.respawn(); this.emit('sector',{index});
   }
   respawn() {
     const pad=this.level.pads[0], pose=padPose(pad,this.time), spawn=this.level.spawn;
     this.x=spawn?.x ?? pose.x; this.y=spawn?.y ?? pose.y+SHIP.feet;
-    this.vx=0; this.vy=0; this.gear=true; this.landed=spawn?null:pad.id;
+    this.vx=0; this.vy=0; this.landed=spawn?null:pad.id; this.gear=this.landed!==null;
     this.dockOffset=0; this.thrust=0; this.horizontal=0; this.fuel=Math.max(this.fuel,65);
     this.invulnerable=1.5; this.portalCooldown=.8;
   }
@@ -42,7 +46,8 @@ export class Flight {
   toggleGear() { if(this.status==='playing'&&!this.crashTime&&this.landed===null) { this.gear=!this.gear; if(this.gear)this.horizontal=0; this.emit('gear',{down:this.gear}); } }
   crash(reason) {
     if(this.crashTime||this.status!=='playing') return;
-    this.lives--; this.crashTime=1.5; this.thrust=0; this.horizontal=0; this.emit('crash',{reason,x:this.x,y:this.y,vx:this.vx,vy:this.vy});
+    if(!this.debug) this.lives--;
+    this.crashTime=1.5; this.thrust=0; this.horizontal=0; this.emit('crash',{reason,x:this.x,y:this.y,vx:this.vx,vy:this.vy});
     if(this.passenger) { this.passenger=false; this.fareTime=0; this.exitOpen=false; this.emit('passenger-reset'); }
     this.serviceTime=0;
   }
@@ -59,6 +64,13 @@ export class Flight {
     this.emit(this.isFinalLevel?'win':'sector-complete');
   }
   interact() {
+    for(const item of this.level.fuelCanisters||[]){
+      if(this.fuelUsed.has(item.id)||this.fuel>100-item.amount)continue;
+      const pos=fuelCanisterPose(item,this.level,this.time);
+      if(this.landed!==item.padId&&Math.hypot(this.x-pos.x,this.y+.3-pos.y)>1.35)continue;
+      const amount=Math.min(item.amount,100-this.fuel);this.fuel+=amount;this.fuelUsed.add(item.id);
+      this.emit('fuel-collected',{amount,capacity:item.amount,id:item.id});
+    }
     const contacts=new Set();
     for(const [i,s] of (this.level.switches||[]).entries()) {
       if(Math.hypot(this.x-s.x,this.y+.3-s.y)>1.2) continue;
@@ -91,7 +103,7 @@ export class Flight {
     }
     if(this.invulnerable>0) return false;
     for(const hazard of this.level.hazards||[]) {
-      const pos=hazardPose(hazard,this.time);
+      const pos=levelHazardPose(hazard,this.time,this.level);
       if(pos.active===false||Math.hypot(this.x-pos.x,this.y+.2-pos.y)>hazard.radius+.8) continue;
       if(hazard.kind==='rebound') {
         if(this.bounceCooldown>0) continue;
@@ -102,7 +114,6 @@ export class Flight {
     return false;
   }
   service(pad,dt) {
-    if(pad.fuel&&this.fuel<100) { const refill=Math.min(100-this.fuel,dt*18); this.fuel+=refill; this.score=Math.max(0,this.score-refill*.55); }
     this.serviceTime+=dt;
     if(this.serviceTime<.9||pad.id!==this.targetId) return;
     this.serviceTime=0;
@@ -125,7 +136,7 @@ export class Flight {
     this.time+=dt; this.totalTime+=dt;
     if(this.crashTime>0) {
       this.crashTime-=dt;
-      if(this.crashTime<=0) { this.crashTime=0; if(this.lives<=0) { this.status='over'; this.emit('gameover'); } else { this.respawn(); this.emit('respawn'); } }
+      if(this.crashTime<=0) { this.crashTime=0; if(this.lives<=0&&!this.debug) { this.status='over'; this.emit('gameover'); } else { this.respawn(); this.emit('respawn'); } }
       return;
     }
     this.invulnerable=Math.max(0,this.invulnerable-dt); this.portalCooldown=Math.max(0,this.portalCooldown-dt); this.bounceCooldown=Math.max(0,this.bounceCooldown-dt);
@@ -165,7 +176,7 @@ export class Flight {
         if(Math.abs(this.x-pose.x)>pose.w/2-SHIP.halfWidth) { this.crash('Center both landing feet on the pad.'); return; }
         if(-relativeVy>SHIP.safeVertical||Math.abs(this.vx-pose.vx)>SHIP.safeHorizontal) { this.crash('A little softer! Match the pad and brake before touchdown.'); return; }
         this.y=pose.y+SHIP.feet; this.vx=pose.vx; this.vy=pose.vy; this.landed=pad.id; this.dockOffset=this.x-pose.x;
-        this.thrust=0; this.serviceTime=0; this.emit('land',{pad:pad.id,fuel:!!pad.fuel}); return;
+        this.thrust=0; this.serviceTime=0; this.emit('land',{pad:pad.id}); this.interact(); return;
       }
       const depth=pad.depth||.64;
       if(this.y-SHIP.halfHeight<pose.y-.06&&this.y+SHIP.roof>pose.y-depth) { this.crash('Watch the spaceport walls and platform undersides.'); return; }
@@ -174,7 +185,8 @@ export class Flight {
         if(rockDepth>.64&&rockDepth<3.35&&Math.abs(this.x-pose.x)<pose.w*(.45-.31*clamp((rockDepth-.55)/2.8,0,1))+SHIP.halfWidth) { this.crash('Watch the rock beneath the spaceport.'); return; }
       }
     }
-    for(const obstacle of this.level.obstacles) if(intersectsRect(this.x,this.y,obstacle)) { this.crash('Give the scenery a little more room.'); return; }
+    for(const obstacle of this.level.obstacles) if(intersectsRect(this.x,this.y,obstaclePose(obstacle,this.time))) { this.crash('Give the scenery a little more room.'); return; }
+    for(const terrain of this.level.terrain||[]) if(intersectsPolygon(this.x,this.y,terrain)) { this.crash('Watch the jagged terrain and narrow passages.'); return; }
     if(this.checkDanger()) return;
     if(this.y>15.2&&this.exitOpen&&Math.abs(this.x)<4.2) { this.finishLevel(); return; }
     if(this.x<-24||this.x>24||this.y<-13.5||this.y>18) this.crash('Stay inside the flight zone.');

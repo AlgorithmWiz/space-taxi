@@ -5,12 +5,85 @@ export const EXIT = 'EXIT';
 export function padPose(pad, time = 0) {
   const m = pad.motion || {}, phase = time * (m.speed || .35) + (m.phase || 0);
   const growth = pad.growAt === undefined ? 1 : clamp((time - pad.growAt) / 2, 0, 1);
-  return { x: pad.x + Math.sin(phase) * (m.x || 0), y: pad.y + Math.sin(phase) * (m.y || 0), vx: Math.cos(phase) * (m.x || 0) * (m.speed || .35), vy: Math.cos(phase) * (m.y || 0) * (m.speed || .35), w: pad.w * growth, active: growth > .98, growth };
+  const leaf=pad.kind==='leaf',side=Math.sign(pad.x),growing=leaf&&growth>0&&growth<1;
+  return { x: (leaf?side*(.55+pad.w*growth/2):pad.x) + Math.sin(phase) * (m.x || 0), y: pad.y + Math.sin(phase) * (m.y || 0), vx: growing?side*pad.w/4:Math.cos(phase) * (m.x || 0) * (m.speed || .35), vy: Math.cos(phase) * (m.y || 0) * (m.speed || .35), w: pad.w * growth, active: growth === 1, growth };
+}
+export const windAngle=time=>-.055*Math.sin(time*.65)-.016*Math.sin(time*1.8);
+export function obstaclePose(o,time=0){
+  if(o.material==='stem'&&o.grows){const top=Math.min(13.1,-9.5+Math.max(0,time-6)*.93),bottom=-13;return {...o,y:(top+bottom)/2,h:top-bottom};}
+  if(o.material==='tree'){const angle=windAngle(time),base=o.y-o.h/2;return {...o,angle,x:o.x-Math.sin(angle)*o.h/2,y:base+Math.cos(angle)*o.h/2};}
+  return o;
+}
+
+export function pointInPolygon(x,y,points){
+  let inside=false;
+  for(let i=0,j=points.length-1;i<points.length;j=i++){
+    const [ax,ay]=points[i],[bx,by]=points[j];
+    if((ay>y)!==(by>y)&&x<(bx-ax)*(y-ay)/(by-ay)+ax)inside=!inside;
+  }
+  return inside;
+}
+function segmentBox(ax,ay,bx,by,left,right,bottom,top){
+  let lo=0,hi=1;const dx=bx-ax,dy=by-ay;
+  for(const [p,q]of[[-dx,ax-left],[dx,right-ax],[-dy,ay-bottom],[dy,top-ay]]){
+    if(Math.abs(p)<1e-10){if(q<0)return null;continue;}
+    const t=q/p;if(p<0)lo=Math.max(lo,t);else hi=Math.min(hi,t);if(lo>hi)return null;
+  }
+  return lo;
+}
+export function intersectsPolygon(x,y,terrain,halfWidth=1.02,bottom=.46,roof=1.22){
+  const points=terrain.points,left=x-halfWidth,right=x+halfWidth,low=y-bottom,top=y+roof;
+  if([[left,low],[left,top],[right,low],[right,top]].some(([a,b])=>pointInPolygon(a,b,points)))return true;
+  for(let i=0;i<points.length;i++){const [ax,ay]=points[i],[bx,by]=points[(i+1)%points.length];if(segmentBox(ax,ay,bx,by,left,right,low,top)!==null)return true;}
+  return false;
+}
+export function fuelCanisterPose(item,level,time=0){
+  const pad=level.pads.find(p=>p.id===item.padId),pose=padPose(pad,time);
+  return {x:pose.x+Math.min(pose.w/2-1,2.2),y:pose.y+.7};
+}
+
+// Sweep each shot from its launch point: a struck surface absorbs it for the
+// rest of that firing cycle, preventing it reappearing beyond the obstruction.
+const shotImpacts=new WeakMap();
+export function levelHazardPose(h,time,level){
+  const pos=hazardPose(h,time);if(h.path!=='shot'||pos.active===false)return pos;
+  const age=pos.age,radius=h.radius||.2;
+  const fixed=!level.pads.some(p=>p.motion||p.growAt!==undefined)&&!level.obstacles.some(o=>o.grows||o.material==='tree');
+  if(fixed){
+    if(!shotImpacts.has(level))shotImpacts.set(level,new WeakMap());const cache=shotImpacts.get(level);
+    if(!cache.has(h)){
+      const duration=h.duration||7,end={x:h.x+h.vx*duration,y:h.y+h.vy*duration};let impact=Infinity;
+      const solids=[...level.pads.map(p=>({x:p.x,y:p.y-(p.depth||.64)/2,w:p.w,h:p.depth||.64})),...level.obstacles];
+      for(const o of solids){
+        const a=o.angle||0,c=Math.cos(a),s=Math.sin(a),local=p=>({x:(p.x-o.x)*c+(p.y-o.y)*s,y:-(p.x-o.x)*s+(p.y-o.y)*c}),from=local(h),to=local(end);
+        const t=segmentBox(from.x,from.y,to.x,to.y,-o.w/2-radius,o.w/2+radius,-o.h/2-radius,o.h/2+radius);if(t!==null)impact=Math.min(impact,t*duration);
+      }
+      if(level.terrain?.length)for(let t=0;t<Math.min(impact,duration);t+=.02)if(level.terrain.some(o=>intersectsPolygon(h.x+h.vx*t,h.y+h.vy*t,o,radius,radius,radius))){impact=t;break;}
+      cache.set(h,impact);
+    }
+    return {...pos,active:age<cache.get(h)};
+  }
+  const steps=Math.max(1,Math.ceil(age/.04));
+  let previous={x:h.x,y:h.y};
+  for(let i=1;i<=steps;i++){
+    const t=age*i/steps,clock=time-age+t,current={x:h.x+h.vx*t,y:h.y+h.vy*t};
+    const solids=[...level.pads.map(p=>{const q=padPose(p,clock);return q.growth>.01?{x:q.x,y:q.y-(p.depth||.64)/2,w:q.w,h:p.depth||.64}:null;}).filter(Boolean),...level.obstacles.map(o=>obstaclePose(o,clock))];
+    for(const o of solids){
+      const a=o.angle||0,c=Math.cos(a),s=Math.sin(a),local=p=>({x:(p.x-o.x)*c+(p.y-o.y)*s,y:-(p.x-o.x)*s+(p.y-o.y)*c}),from=local(previous),to=local(current);
+      if(segmentBox(from.x,from.y,to.x,to.y,-o.w/2-radius,o.w/2+radius,-o.h/2-radius,o.h/2+radius)!==null)return {...pos,active:false};
+    }
+    if((level.terrain||[]).some(o=>intersectsPolygon(current.x,current.y,o,radius,radius,radius)))return {...pos,active:false};
+    previous=current;
+  }
+  return pos;
 }
 export function hazardPose(h, time) {
   const phase = time * (h.speed || .5) + (h.phase || 0);
   if (h.path === 'fall') { const p = mod(time * (h.speed || 3) + (h.phase || 0), 33); return { x: h.x + Math.sin(p * .16 + (h.phase || 0)) * (h.drift || 0), y: 19 - p }; }
-  if (h.path === 'shot') { const p = mod(time + (h.phase || 0), h.period || 9); return { x: h.x + p * h.vx, y: h.y + p * h.vy, active: p < (h.duration || 7) }; }
+  if (h.path === 'shot') {
+    const elapsed = time - (h.startsAt || 0), age = mod(elapsed + (h.phase || 0), h.period || 9);
+    return { x: h.x + age * h.vx, y: h.y + age * h.vy, age, active: elapsed >= 0 && age < (h.duration || 7) };
+  }
   if (h.path === 'bounce') { const wave = p => 1 - Math.abs(mod(p, 4) - 2); return { x: h.x + wave(phase) * (h.range || 17), y: h.y + wave(phase * .73 + 1) * (h.rangeY || 6) }; }
   return { x: h.x + Math.sin(phase) * (h.range || 0), y: h.y + Math.sin(phase * (h.ratio || 1) + .4) * (h.rangeY || 0) };
 }

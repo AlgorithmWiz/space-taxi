@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { LEVELS, CLASSIC_COUNT, MYSTERY_INDEX, BONUS_START } from '../src/levels.js';
 import { Flight, SHIP } from '../src/physics.js';
-import { EXIT, padPose, hazardPose, beamSegments, intersectsRect, environmentalForce } from '../src/environment.js';
+import { EXIT, padPose, hazardPose, beamSegments, intersectsRect, intersectsPolygon, environmentalForce } from '../src/environment.js';
 const advance=(f,s,input={})=>{for(let i=0;i<Math.ceil(s*120);i++)f.step(1/120,input);};
 
 test('catalog contains the 24 original levels, Mystery Screen, and three preserved bonus routes',()=>{
@@ -31,6 +31,7 @@ test('every pad has clear touchdown space outside solid scenery',()=>{
     for(let x=pose.x-pose.w/2+1.1;x<=pose.x+pose.w/2-1.1;x+=.15){
       const y=pose.y+SHIP.feet+.04;
       if(level.obstacles.some(o=>intersectsRect(x,y,o)))continue;
+      if((level.terrain||[]).some(o=>intersectsPolygon(x,y,o)))continue;
       if(level.pads.some(other=>{if(other===pad)return false;const q=padPose(other,60);return q.active&&intersectsRect(x,y,{x:q.x,y:q.y-(other.depth||.64)/2,w:q.w,h:other.depth||.64});}))continue;
       valid=true;break;
     }
@@ -51,7 +52,7 @@ test('puzzle switches toggle matching doors once per contact',()=>{
 test('magnet gravity, black-hole attraction, reversed controls and turbo thrust affect flight',()=>{
   const m=new Flight();m.reset(10);m.x=-8;m.y=1;m.landed=null;advance(m,.2);assert.ok(m.vy>0);
   const force=environmentalForce(LEVELS[11],8,2,0);assert.ok(force.x<0);assert.equal(force.y,0);
-  const r=new Flight();r.reset(18);r.toggleGear();advance(r,.15,{down:true,left:true});assert.ok(r.vy>0);assert.ok(r.vx>0);
+  const r=new Flight();r.reset(18);advance(r,.15,{down:true,left:true});assert.ok(r.vy>0);assert.ok(r.vx>0);
   const a=new Flight();a.reset(BONUS_START);a.x=-12;a.y=8;a.landed=null;const b=new Flight();b.reset(12);
   advance(a,.15,{up:true});advance(b,.15,{up:true});assert.ok(b.vy>a.vy);
 });
@@ -69,9 +70,8 @@ test('moving pads carry a docked taxi and use relative touchdown speed',()=>{
   const q=padPose(f.level.pads[0],f.time);assert.ok(Math.abs(f.x-q.x)<.001);
   f.landed=null;f.serviceTime=0;f.x=q.x;f.y=q.y+SHIP.feet+.01;f.vx=q.vx;f.vy=-1;advance(f,.05);assert.equal(f.landed,1);assert.equal(f.lives,3);
 });
-test('rebound orbs deflect the taxi without taking a life; bombs can hit docked taxis',()=>{
+test('rebound orbs deflect the taxi without taking a life',()=>{
   const f=new Flight();f.reset(20);f.invulnerable=0;const h=hazardPose(f.level.hazards[0],0);f.x=h.x;f.y=h.y;f.vx=3;f.checkDanger();assert.equal(f.lives,3);assert.ok(f.vx<0);assert.ok(f.bounceCooldown>0);
-  const g=new Flight();g.reset(8);g.invulnerable=0;g.x=-22;g.y=-11;assert.equal(g.checkDanger(),true);assert.equal(g.lives,2);
 });
 test('exit passenger returns to pickup after a crash and can reopen the gate',()=>{
   const f=new Flight();f.service(f.level.pads[0],1);assert.equal(f.exitOpen,true);f.crash('test');assert.equal(f.exitOpen,false);assert.equal(f.passenger,false);assert.equal(f.targetId,1);

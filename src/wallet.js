@@ -15,7 +15,8 @@ export function parseWallet(raw) {
       campaignLevel: Number.isInteger(value.campaignLevel) && value.campaignLevel >= 1 && value.campaignLevel <= 24 ? value.campaignLevel : 1 };
   } catch { return emptyWallet(); }
 }
-export function creditFare(state, { runId, sector, riderIndex, earned }) {
+export function creditFare(state, { runId, sector, riderIndex, earned, debug=false }) {
+  if(debug) return state;
   const receipt = `${runId}:${sector}:${riderIndex}`;
   if (!validReceipt(receipt) || !Number.isInteger(sector) || sector < 0 || sector > 27 || !Number.isInteger(riderIndex) || riderIndex < 0 || riderIndex > 999 || !Number.isInteger(earned) || earned < 1 || earned > 500 || state.receipts.includes(receipt)) return state;
   return { ...state, balance: Math.min(MAX_CREDITS, state.balance + earned), earned: Math.min(MAX_CREDITS, state.earned + earned), receipts: [...state.receipts, receipt] };

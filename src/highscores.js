@@ -20,6 +20,7 @@ export function parseScores(raw){
   }catch{return {version:1,pilot:'ACE',entries:[]};}
 }
 export function entryFromFlight(flight,name,date=new Date().toISOString()){
+  if(flight.debug) return null;
   const e={id:flight.runId,name,score:Math.floor(flight.score),start:flight.startSector,level:flight.sector,delivered:flight.delivered,seconds:Math.floor(flight.totalTime),date,finished:flight.status==='won'};
   return validEntry(e)?normalize(e):null;
 }
