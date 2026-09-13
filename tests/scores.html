@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Space Taxi leaderboard checks</title><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../interface.css">
+<style>body{display:grid;place-items:center}.test-controls{position:fixed;top:12px;left:15px;right:15px;display:flex;gap:10px;z-index:25;flex-wrap:wrap}.test-controls button{background:#244252;padding:10px;font-size:12px;border-radius:4px}.fixture-card{max-height:calc(100vh - 100px);overflow:auto}.fixture-card h2{font:52px var(--display);margin:15px 0}.fixture-label{font:10px var(--mono);color:#89aabb}.fixture-card>#score-entry{margin-top:25px}</style>
+<div class="test-controls"><button id="samples">Add sample scores</button><button id="record">Record sample run</button><button id="show">Open high scores</button><button id="cleanup">Clear test data</button></div><section class="overlay-card fixture-card"><div class="fixture-label">ISOLATED TEST STORAGE · DOES NOT CHANGE GAME SCORES</div><h2>Nice flying, cabbie.</h2><div class="overlay-stats">006900 CR</div><div id="form-host"></div></section>
+<script type="module">
+import {Scoreboard} from '../src/scoreboard.js';
+const source=new DOMParser().parseFromString(await(await fetch('../index.html')).text(),'text/html');
+document.body.append(source.getElementById('scores-dialog'));
+document.getElementById('form-host').append(source.getElementById('score-entry'));
+const key='space-taxi-scores-qa';let board=new Scoreboard({storageKey:key});
+const fixture=(id,score,start=0,sector=4)=>({runId:id,score,startSector:start,sector,delivered:Math.floor(score/450),totalTime:180+score/30,status:'sector-complete'});
+document.getElementById('samples').onclick=()=>{for(let i=0;i<12;i++)board.record(fixture(`fixture-${i}`,3000+i*350,0,Math.min(23,i+1)));board.record(fixture('fixture-free',5200,8,10));board.record(fixture('fixture-bonus',4800,25,27));board.open();};
+document.getElementById('record').onclick=()=>board.present(fixture('fixture-current',6900));
+document.getElementById('show').onclick=()=>board.open();
+document.getElementById('cleanup').onclick=()=>{localStorage.removeItem(key);location.reload();};
+</script></html>

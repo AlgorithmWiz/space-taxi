@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Space Taxi garage checks</title><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../interface.css">
+<script type="importmap">{"imports":{"three":"../vendor/three/build/three.module.js","three/addons/":"../vendor/three/addons/"}}</script>
+<style>.test-controls{position:fixed;top:12px;left:15px;display:flex;gap:10px;z-index:25;flex-wrap:wrap}.test-controls button{background:#244252;padding:10px;font-size:13px;border-radius:4px}.test-status{position:fixed;bottom:20px;left:25px;font:14px var(--body);background:#142638;padding:12px;border-radius:5px}</style>
+<div id="scene"></div><div class="test-controls"><button id="credit">Complete test rides (+10,000 CR)</button><button id="milestone">Reach test campaign level 8</button><button id="show">Open garage</button><button id="cleanup">Clear test data</button></div><div class="test-status">ISOLATED GARAGE TEST · <span id="wallet-balance"></span> · <span id="taxi-skin-name"></span></div>
+<script type="module">
+import {World} from '../src/world.js'; import {Flight} from '../src/physics.js'; import {FareWallet} from '../src/wallet.js'; import {Garage} from '../src/garage.js';
+const source=new DOMParser().parseFromString(await(await fetch('../index.html')).text(),'text/html');document.body.append(source.getElementById('garage-dialog'));
+const key='space-taxi-garage-qa',wallet=new FareWallet({storageKey:key});
+const world=new World(document.getElementById('scene')),flight=new Flight();
+const garage=new Garage({wallet,world,onChange:()=>garage.refresh()});
+document.getElementById('credit').onclick=()=>{const runId=crypto.randomUUID();for(let riderIndex=0;riderIndex<20;riderIndex++)wallet.credit({runId,sector:0,riderIndex,earned:500});garage.refresh();};
+document.getElementById('milestone').onclick=()=>{wallet.syncProgress({cleared:[0,1,2,3,4,5,6]});garage.refresh();};
+document.getElementById('show').onclick=()=>garage.open();
+document.getElementById('cleanup').onclick=()=>{localStorage.removeItem(key);location.reload();};
+let last=performance.now();function frame(now){world.update(Math.min(.05,(now-last)/1000),now/1000,flight,true);last=now;requestAnimationFrame(frame);}requestAnimationFrame(frame);
+</script></html>

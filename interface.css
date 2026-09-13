@@ -1,0 +1,304 @@
+/* Readable interface scale: DM Sans for instructions, Space Mono for instruments. */
+:root { --muted: #acbecd; }
+body { font-size: 16px; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; }
+button { touch-action: manipulation; }
+.eyebrow { font: 600 12px/1.5 var(--body); letter-spacing: 1.8px; }
+.text-button { font: 600 12px var(--body); letter-spacing: .7px; }
+.live-status, .edition { font-size: 11px; color: #b1c0cd; letter-spacing: 1px; }
+.primary-button { min-height: 52px; font: 700 13px var(--body); letter-spacing: 1px; padding: 17px 23px; }
+.secondary-button { font: 600 12px var(--body); letter-spacing: .6px; }
+kbd { font-size: 11px; }
+.icon-button { min-width: 36px; min-height: 36px; }
+.topbar { height: 84px; }
+
+/* Keep menu controls in normal flow so larger text can wrap without overlap. */
+#menu { overflow-y: auto; pointer-events: auto; padding: 112px 7.4% 24px; display: flex; flex-direction: column; min-height: 100%; gap: 28px; }
+.hero-copy { position: relative; inset: auto; width: 465px; max-width: 100%; flex: 1 0 auto; }
+h1 { font-size: clamp(68px, 6.8vw, 100px); margin: 16px 0 20px; }
+.hero-copy .intro { font: 400 15px/1.75 var(--body); color: #bccbd5; margin: 0 0 22px; }
+.launch-row { gap: 18px; }
+.enter-hint { font: 11px var(--body); color: #a7bac9; letter-spacing: .8px; }
+.menu-tools { display: flex; gap: 10px; margin-top: 12px; }
+.menu-tool { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 47px; padding: 12px 16px; border: 1px solid #a1b7c351; border-radius: 4px; background: #142433de; color: #e6eee9; font: 600 12px var(--body); letter-spacing: .6px; }
+.menu-tool:hover { border-color: var(--lime); background: #253b3ae6; }
+.menu-tool>span { font-size: 18px; color: var(--lime); }
+.record { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 18px; font: 11px var(--body); color: #b2c4cf; letter-spacing: .5px; }
+.record>span { display: flex; align-items: baseline; gap: 8px; }
+.record strong { color: #d8e6e5; font: 13px var(--mono); letter-spacing: 0; }
+.record #wallet-balance { color: var(--lime); }
+.resume-button { display: inline-block; margin-top: 12px; padding: 7px 0; font: 600 12px var(--body); color: #d1e6ce; letter-spacing: .5px; }
+.scene-caption { top: 57%; right: 12%; }
+.scene-caption b { font: 600 15px var(--body); }
+.scene-caption div>span { font: 11px var(--body); color: #a1b5c4; letter-spacing: 1px; }
+.sector-picker { position: relative; inset: auto; flex: 0 0 auto; }
+.section-label { gap: 20px; align-items: center; font: 600 12px var(--body); letter-spacing: 1px; margin-bottom: 12px; }
+.section-label>span { color: #b1c0ca; }
+.section-label button { min-height: 34px; white-space: nowrap; }
+.sector-card { height: 92px; padding: 20px; gap: 15px; }
+.sector-card b { font-size: 17px; }
+.sector-no { font: 12px var(--mono); }
+.sector-card small { font: 11px var(--body); color: #b0c1cf; letter-spacing: .7px; margin-top: 7px; }
+.menu-footer { position: relative; inset: auto; flex: 0 0 auto; font: 10px var(--body); letter-spacing: 1px; color: #a1b5c3; }
+
+/* Flight information prioritizes clear instructions and legible numbers. */
+#hud .mission-panel { max-width: 285px; left: 32px; top: 106px; }
+.mission-panel .eyebrow { font: 600 11px/1.5 var(--body); letter-spacing: 1px; }
+.mission-panel h2 { font-size: 36px; }
+.mission-panel p { font: 400 14px/1.6 var(--body); color: #c2d2db; }
+.mission-panel .level-condition { font: 12px/1.65 var(--body); color: #b5c8d4; max-width: 275px; }
+.route-line { flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.route-line small { font: 600 10px var(--body); color: #aec3d2; padding-left: 8px; letter-spacing: .5px; }
+.shift-stats { top: 109px; right: 32px; gap: 27px; }
+.shift-stats>div>span { font: 600 11px var(--body); color: #b6cad8; letter-spacing: 1px; }
+.shift-stats small { font-size: 12px; }
+.cockpit { bottom: 53px; }
+.cockpit-cell { width: 188px; padding: 15px 20px; }
+.fuel-cell { width: 188px; }
+.gear-cell { width: 221px; }
+.fare-cell { width: 164px; }
+.cockpit-cell span { font: 600 11px var(--body); color: #b7c9d5; letter-spacing: .65px; }
+.cockpit-cell strong small { font: 12px var(--body); color: #b5c9d6; }
+.gear-cell strong span { font-size: 15px; }
+.gear-cell kbd { font-size: 10px; min-height: 18px; }
+.tiny-label { font: 10px/1.4 var(--body); color: #aec3d1; letter-spacing: .45px; }
+.controls-strip { bottom: 15px; font: 11px var(--body); color: #a2b7c6; }
+.controls-strip b { font: 600 11px var(--body); color: #b8c9d4; }
+.controls-strip .flight-tip { font: 10px var(--body); }
+.pad-label { font: 12px var(--body); padding: 5px 8px; gap: 6px; background: #0b1823eb; border-color: #718eaa66; }
+.pad-label strong { font-size: 14px; }
+.pad-label small { font: 600 11px var(--body); letter-spacing: .5px; color: #c8d8e2; }
+.pad-label small:empty { display: none; }
+.target-marker { font: 600 11px var(--body); top: -24px; }
+.toast { font: 500 14px/1.5 var(--body); max-width: 510px; }
+.passenger-call small { font: 600 11px var(--body); letter-spacing: .7px; opacity: 1; }
+.passenger-call strong { font-size: 14px; }
+.overlay-card { max-width: 500px; }
+.overlay-card .eyebrow, .overlay-card>.text-button, #overlay-scores-button { font: 600 12px var(--body); }
+.overlay-card p { font-size: 15px; color: #bfd0dc; }
+.overlay-card .primary-button { font: 700 13px var(--body); }
+.overlay-stats small { font: 12px/1.6 var(--body); color: #b7cbd9; }
+
+/* Manuals, atlas and leaderboard share the same readable supporting text. */
+dialog { color: #eef4ef; }
+dialog p, .manual-grid p { font-size: 14px; line-height: 1.75; color: #b7cbd9; }
+.manual-grid h3 { font-size: 17px; }
+.manual-grid>div>span { font-size: 12px; }
+.manual-credit { font: 12px/1.7 var(--body); color: #9fb7c8; }
+.music-settings b { font: 600 12px var(--body); }
+.music-settings span { font: 13px/1.5 var(--body); color: #b1c6d5; }
+.music-settings .secondary-button { font-size: 12px; }
+.atlas-heading>p { font-size: 14px; }
+#atlas-progress { font: 600 12px var(--body); }
+.atlas-tabs button, .atlas-tabs small { font: 600 12px var(--body); }
+.atlas-tabs small { opacity: .9; }
+.atlas-number { font-size: 12px; }
+.atlas-card b { font-size: 15px; }
+.atlas-card>small { font: 12px/1.6 var(--body); color: #b3c9d8; }
+.atlas-card-info { align-items: flex-start; }
+.atlas-footer { font: 12px/1.7 var(--body); color: #afc6d7; }
+.scores-heading small { font: 600 12px var(--body); color: #b2c6d3; }
+.score-tabs button { font: 600 12px var(--body); color: #bbcedc; }
+#scores-description { font-size: 14px; }
+#scores-table { font-size: 14px; }
+#scores-table th { font: 600 12px var(--body); color: #aec3d2; letter-spacing: .5px; }
+#scores-table td { color: #c3d4df; }
+#scores-table td small { font: 600 10px var(--body); color: #b5dbba; }
+.scores-empty p { font-size: 14px; }
+.scores-footer { font: 12px/1.6 var(--body); color: #a5bfd0; letter-spacing: 0; }
+.score-entry-title { font: 600 12px/1.6 var(--body); }
+#score-form label, #score-form button { font: 600 12px var(--body); letter-spacing: 0; }
+.score-entry #score-entry-note { font: 12px/1.6 var(--body); letter-spacing: 0; color: #b3cbdc; }
+
+/* Garage: one large portrait, a six-car collection, and an explicit credit cost. */
+.garage-dialog { max-width: 1070px; padding: 32px 36px 24px; }
+.garage-close-anchor { position: sticky; top: 0; height: 0; z-index: 5; }
+.garage-close-anchor .dialog-close { top: -9px; right: -8px; width: 30px; height: 30px; line-height: 1; border-radius: 50%; background: #152432; color: #b7ccdc; }
+.garage-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 8px; }
+.garage-heading h2 { font-size: 60px; margin: 12px 0; }
+.garage-wallet { text-align: right; }
+.garage-wallet small { display: block; font: 600 11px var(--body); color: #bacbd8; letter-spacing: 1px; }
+.garage-wallet strong { display: block; font: 24px var(--mono); color: var(--lime); margin: 5px 0; }
+.garage-wallet>span { font-size: 12px; color: #a9c0d2; }
+.garage-intro { max-width: 100%; margin: 9px 0 22px; }
+.garage-layout { display: grid; grid-template-columns: 1fr 1.05fr; gap: 26px; }
+.garage-showcase { border: 1px solid #6b8a9e4a; border-radius: 9px; background: #0c1823; overflow: hidden; }
+.garage-preview-stage { position: relative; background: radial-gradient(ellipse at 50% 52%, #2c4a5b77, transparent 69%), repeating-linear-gradient(0deg, transparent 0 27px, #7897ae0b 28px 29px); }
+.garage-preview-stage:after { content: ''; position: absolute; width: 68%; height: 22%; bottom: 12%; left: 16%; border: 1px solid #7cacc342; border-radius: 50%; pointer-events: none; }
+#garage-preview { display: block; width: 100%; height: auto; position: relative; z-index: 1; }
+.preview-label { position: absolute; left: 18px; bottom: 6px; font: 10px var(--body); color: #b4ceda; letter-spacing: 1px; }
+.garage-selection { padding: 19px 22px 10px; }
+.garage-selection .eyebrow { font-size: 11px; color: var(--lime); }
+.garage-selection h3 { font: 600 28px var(--body); margin: 5px 0; }
+.garage-selection p { font-size: 13px; margin: 8px 0 14px; line-height: 1.55; }
+#garage-action { width: 100%; justify-content: center; margin-top: 5px; }
+#garage-action:disabled { cursor: default; background: #253846; color: #b2c5d3; border: 1px solid #8aa5ba42; transform: none; box-shadow: none; }
+#garage-shortfall { font-size: 12px; min-height: 36px; margin: 12px 0 0; }
+#garage-message { color: var(--lime); margin: 8px 0; }
+#garage-message:empty { display: none; }
+.garage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start; }
+.skin-card { position: relative; text-align: left; min-width: 0; padding: 0 13px 12px; border: 1px solid #7997ae40; border-radius: 8px; background: radial-gradient(ellipse at 50% 20%, #23405280, #10213066 80%); transition: background .2s, border-color .2s; }
+.skin-card:hover { border-color: #b5d4d2; }
+.skin-card.selected { border-color: var(--lime); background-color: #92cc6a12; }
+.skin-card img { display: block; width: 100%; height: auto; margin: -4px 0 -9px; pointer-events: none; }
+.skin-card b { display: block; font: 600 14px var(--body); }
+.skin-card>span { display: block; font: 11px var(--mono); color: #bcd2d9; margin-top: 6px; }
+.skin-card.selected>span { color: var(--lime); }
+.skin-card .skin-unlock { display: block; margin-top: 7px; font: 600 10px/1.4 var(--body); letter-spacing: .4px; color: #b5c9d2; }
+.skin-card.level-locked .skin-unlock { color: #f0c99a; }
+.skin-card.level-locked { border-style: dashed; }
+.skin-card.level-locked.selected { border-style: solid; }
+.garage-requirement { margin: 13px 0 16px; padding: 12px; background: #6389a512; border: 1px solid #83a7c240; border-radius: 5px; }
+.garage-requirement strong { display: block; font: 600 11px/1.5 var(--body); color: #d5e6ef; letter-spacing: .4px; }
+.garage-requirement small { display: block; font: 12px/1.5 var(--body); color: #b5cbd9; }
+#garage-level-progress { display: block; appearance: none; border: 0; width: 100%; height: 5px; margin: 9px 0; border-radius: 4px; overflow: hidden; background: #2a414f; color: var(--lime); }
+#garage-level-progress::-webkit-progress-bar { background: #2a414f; }
+#garage-level-progress::-webkit-progress-value { background: var(--lime); }
+#garage-level-progress::-moz-progress-bar { background: var(--lime); }
+.garage-footer { display: flex; justify-content: space-between; gap: 25px; border-top: 1px solid var(--line); padding-top: 17px; margin-top: 24px; font: 12px/1.5 var(--body); color: #b2c5d1; }
+.garage-footer>span:last-child { white-space: nowrap; color: #cde4c5; font-size: 11px; }
+
+@media (min-width: 901px) and (max-height: 780px) {
+  #menu { padding-top: 99px; padding-bottom: 17px; gap: 12px; }
+  h1 { font-size: 76px; margin: 10px 0 15px; }
+  .hero-copy .intro { margin-bottom: 15px; }
+  .record { margin-top: 13px; }
+  .resume-button { margin-top: 5px; }
+  .sector-card { height: 82px; padding: 16px 20px; }
+}
+@media (min-width: 701px) and (max-height: 780px) {
+  .garage-dialog { padding: 23px 28px 18px; }
+  .garage-heading { margin-top: 0; }
+  .garage-heading h2 { font-size: 48px; margin: 8px 0; }
+  .garage-intro { font-size: 13px; margin: 6px 0 14px; }
+  #garage-preview { height: 165px; width: 100%; object-fit: contain; }
+  .skin-card img { height: 90px; object-fit: contain; }
+  .garage-selection { padding: 17px 20px 10px; }
+  .garage-selection h3 { font-size: 26px; }
+  .garage-footer { margin-top: 16px; padding-top: 12px; }
+}
+@media (max-width: 1000px) {
+  #menu { padding-left: 6%; padding-right: 6%; }
+  .sector-card { padding: 16px 14px; gap: 10px; }
+  .sector-card b { font-size: 15px; }
+  .sector-card small { font-size: 10px; letter-spacing: .2px; }
+  .cockpit-cell { width: 173px; padding: 14px 16px; }
+  .gear-cell { width: 200px; }
+  .fare-cell { width: 132px; }
+  .garage-dialog { padding: 30px 25px 24px; }
+}
+@media (max-width: 700px) {
+  .topbar { height: 76px; left: 20px; right: 20px; }
+  .top-actions { gap: 8px; }
+  .top-actions .text-button { font-size: 11px; letter-spacing: 0; }
+  .wordmark { font-size: 12px; gap: 5px; }
+  #menu { padding: 97px 22px 24px; gap: 27px; }
+  .hero-copy { width: 100%; }
+  .hero-copy .eyebrow { font-size: 11px; letter-spacing: 1px; }
+  h1 { font-size: 65px; margin: 12px 0 20px; }
+  .hero-copy .intro { font-size: 14px !important; line-height: 1.7; }
+  .hero-copy .primary-button { font: 700 13px var(--body); min-height: 50px; padding: 16px 20px; }
+  .menu-tool { flex: 1; font-size: 11px; padding: 11px 12px; gap: 8px; }
+  .record { gap: 12px; font-size: 10px; }
+  .record strong { font-size: 12px; }
+  .record>span { gap: 6px; }
+  .resume-button { font-size: 12px; }
+  .scene-caption { display: none; }
+  .section-label { align-items: flex-start; font-size: 11px; gap: 10px; letter-spacing: .3px; }
+  .section-label>span { max-width: 57%; line-height: 1.6; }
+  .section-label button { font-size: 11px; }
+  .sector-cards { gap: 8px; }
+  .sector-card { height: 114px; padding: 12px 9px; gap: 9px; flex-direction: column; align-items: flex-start; }
+  .sector-no { font-size: 11px; }
+  .sector-card b { font-size: 13px; white-space: normal; }
+  .sector-card small { font-size: 10px; line-height: 1.4; letter-spacing: .2px; }
+  .menu-footer { font-size: 10px; line-height: 1.7; letter-spacing: .4px; gap: 20px; }
+  .menu-footer>span { max-width: 48%; }
+  .menu-footer>span:last-child { text-align: right; }
+  #hud .mission-panel { top: 91px; left: 16px; max-width: calc(100% - 119px); }
+  .mission-panel .eyebrow { font-size: 10px; line-height: 1.6; }
+  .mission-panel h2 { font-size: 29px; margin-top: 8px; }
+  .mission-panel p { font-size: 12px; }
+  .mission-panel .level-condition { font-size: 11px; line-height: 1.55; }
+  .route-line { gap: 6px; margin-top: 10px; }
+  .route-line small { font-size: 10px; margin: 3px 0 0; padding: 0; border: 0; flex-basis: 100%; }
+  .shift-stats { top: 94px; right: 16px; gap: 16px; flex-direction: column; }
+  .shift-stats>div>span { font-size: 10px; }
+  .shift-stats strong { font-size: 17px; }
+  .shift-stats .lives { font-size: 12px; }
+  .cockpit { width: calc(100% - 30px); display: grid; grid-template-columns: 1fr 1fr; bottom: 90px; }
+  .cockpit-cell { width: auto; padding: 10px 14px; min-height: 75px; }
+  .cockpit-cell:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .cockpit-cell:nth-child(3):before { display: none; }
+  .cockpit-cell span, .tiny-label { font-size: 10px; letter-spacing: .3px; }
+  .cockpit-cell strong, .fuel-cell strong { font-size: 20px; margin-top: 5px; }
+  .cockpit-cell strong small { font-size: 11px; }
+  .gear-cell strong span { font-size: 13px; }
+  .fuel-cell>div:first-child { display: flex; }
+  .fuel-track { margin-top: 15px; height: 5px; }
+  .tiny-label { margin-top: 4px; }
+  .touch-controls { display: flex; bottom: 22px; }
+  .controls-strip { display: none; }
+  .pad-label { padding: 3px 5px; gap: 4px; }
+  .pad-label strong { font-size: 12px; }
+  .pad-label small { font-size: 10px; letter-spacing: 0; }
+  .target-marker { font-size: 10px; }
+  .passenger-call strong { font-size: 12px; }
+  .passenger-call small { font-size: 10px; letter-spacing: .3px; }
+  .toast { font-size: 13px; top: 33%; }
+  dialog { padding: 30px 22px; }
+  .manual-grid { grid-template-columns: 1fr; gap: 20px; }
+  .manual-grid p, dialog p { font-size: 14px; }
+  .manual-credit { font-size: 12px; }
+  .music-settings { flex-wrap: wrap; }
+  .atlas-heading { align-items: flex-start; }
+  .atlas-heading h2 { font-size: 39px; }
+  .atlas-heading>p { font-size: 12px; }
+  .atlas-heading #atlas-progress { font-size: 11px; line-height: 1.5; }
+  .atlas-tabs { gap: 4px; }
+  .atlas-tabs button { padding: 10px 8px; font-size: 11px; flex: 1; }
+  .atlas-tabs small { display: block; margin: 4px 0 0; font-size: 10px; }
+  .atlas-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .atlas-card b { font-size: 14px; }
+  .atlas-card-info { padding: 11px 10px 7px; gap: 6px; }
+  .atlas-card>small { font-size: 12px; margin: 0 10px; }
+  .scores-dialog { padding: 29px 17px; }
+  .scores-heading h2 { font-size: 47px; }
+  .scores-heading strong { font-size: 14px; }
+  .scores-heading small { font-size: 10px; }
+  .score-tabs button { font-size: 11px; padding: 10px 7px; }
+  #scores-table th { padding: 10px 4px; font-size: 10px; }
+  #scores-table td { padding: 13px 4px; font-size: 12px; }
+  #scores-table td:nth-child(2) { font-size: 15px; letter-spacing: 1px; }
+  #scores-table td:nth-child(3) { font-size: 14px; }
+  #scores-table td small { font-size: 10px; }
+  .scores-footer { font-size: 11px; gap: 12px; }
+  #score-form { flex-wrap: wrap; }
+  .garage-dialog { padding: 28px 18px 20px; }
+  .garage-heading { align-items: flex-start; }
+  .garage-heading h2 { font-size: 43px; margin: 12px 0; }
+  .garage-wallet { padding-top: 13px; }
+  .garage-wallet strong { font-size: 18px; }
+  .garage-wallet>span { display: none; }
+  .garage-intro { font-size: 13px; }
+  .garage-layout { display: flex; flex-direction: column; gap: 20px; }
+  .garage-preview-stage { max-height: 180px; }
+  #garage-preview { height: 180px; object-fit: contain; }
+  .garage-selection { padding: 18px 18px 12px; }
+  .garage-selection h3 { font-size: 25px; }
+  .garage-grid { gap: 10px; }
+  .skin-card { padding: 0 10px 12px; }
+  .skin-card b { font-size: 13px; }
+  .garage-footer { flex-direction: column; gap: 10px; font-size: 12px; }
+}
+@media (max-height: 620px) and (min-width: 701px) {
+  #menu { padding-top: 94px; gap: 22px; }
+  h1 { font-size: 58px; }
+  .hero-copy { flex: 0 0 auto; }
+  .record { display: flex; }
+  .sector-card { height: 82px; }
+  .scene-caption { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *:before, *:after { animation: none !important; transition: none !important; }
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#090e18" />
+  <meta name="description" content="Your next fare is out of this world. A modern 3D tribute to the Commodore 64 classic, Space Taxi." />
+  <title>Space Taxi — Orbital Shift</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./interface.css" />
+  <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
+</head>
+<body>
+  <div id="scene" aria-label="Space Taxi 3D flight zone"></div>
+  <div class="screen-grain"></div>
+  <header class="topbar">
+    <a class="wordmark" href="#" id="home-button" aria-label="Space Taxi home"><span class="brand-icon">✣</span> SPACE TAXI<span class="edition">ORBITAL SHIFT</span></a>
+    <div class="top-actions"><span class="live-status"><i></i> ALL SYSTEMS ONLINE</span><button class="icon-button" id="sound-button" aria-label="Mute sound" title="Toggle sound (M)">♫</button><button id="help-button" class="text-button">FLIGHT MANUAL <span>↗</span></button><button id="pause-button" class="icon-button hidden" aria-label="Pause game" title="Pause (Escape)">Ⅱ</button></div>
+  </header>
+
+  <main id="menu">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="short-rule"></span> THE CLASSIC. REIMAGINED.</div>
+      <h1>Small taxi.<br>Big <span>universe.</span></h1>
+      <p class="intro">Somewhere out there, someone needs a ride.<br>Fire up the thrusters. Make their night.</p>
+      <div class="launch-row"><button id="start-button" class="primary-button">START YOUR SHIFT <span>↗</span></button><span class="enter-hint">PRESS <kbd>ENTER</kbd></span></div>
+      <div class="menu-tools"><button id="scores-button" class="menu-tool" aria-label="View high scores"><span aria-hidden="true">♜</span> HIGH SCORES <span>↗</span></button><button id="garage-button" class="menu-tool"><span aria-hidden="true">◇</span> TAXI GARAGE <span>↗</span></button></div>
+      <div class="record"><span>BEST <strong id="best-score">000000</strong> CR</span><span>FARE WALLET <strong id="wallet-balance">0 CR</strong></span></div>
+      <button id="resume-button" class="resume-button hidden">RESUME SAVED SHIFT <span>→</span></button>
+    </div>
+    <div class="scene-caption"><span class="caption-cross">+</span><div><b id="taxi-skin-name">TX–84 Original</b><span>YOUR TRUSTY ORBITAL TAXI</span></div><span class="caption-line"></span></div>
+    <div class="sector-picker">
+      <div class="section-label"><span id="departure-label">DEPARTURE 01 · SHORT -N- SWEET</span><button id="atlas-button">VIEW ALL LEVELS <span>↗</span></button></div>
+      <div class="sector-cards">
+        <button class="sector-card selected" data-sector="0"><span class="sector-no">01–08</span><div><b>Morning shift</b><small>FIND YOUR WINGS</small></div><span class="sector-symbol">◌</span><span class="card-arrow">↗</span></button>
+        <button class="sector-card" data-sector="8"><span class="sector-no">09–16</span><div><b>Day shift</b><small>EXPECT THE UNEXPECTED</small></div><span class="sector-symbol crystal-symbol">◇</span><span class="card-arrow">↗</span></button>
+        <button class="sector-card" data-sector="16"><span class="sector-no">17–24</span><div><b>Night shift</b><small>EARN YOUR STRIPES</small></div><span class="sector-symbol sun-symbol">☼</span><span class="card-arrow">↗</span></button>
+      </div>
+    </div>
+    <footer class="menu-footer"><span>A LOVE LETTER TO THE 1984 C64 CLASSIC</span><span>BUILT FOR THE NEXT ORBIT <span class="footer-star">✳</span></span></footer>
+  </main>
+
+  <div id="hud" class="hidden">
+    <section class="mission-panel"><div class="eyebrow" id="sector-label">LEVEL 01 / 24 · SHORT -N- SWEET</div><h2 id="mission-title">Hey, taxi!</h2><p id="mission-detail">Pick up your passenger at Pad 1.</p><div class="route-line"><span id="route-from">01</span><div class="route-track"><i></i><i></i><i></i><i></i><i></i><b>→</b></div><span id="route-to">↑</span><small id="route-status">AWAITING PICKUP</small></div><p id="level-condition" class="level-condition"></p></section>
+    <div class="shift-stats"><div><span>EARNINGS</span><strong id="score">000000</strong><small> CR</small></div><div><span>TAXIS</span><strong id="lives" class="lives">◆ ◆ ◆</strong></div></div>
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+    <div id="pad-labels"></div><div id="passenger-call" class="passenger-call hidden"><span class="hail-avatar" aria-hidden="true"><img id="hail-portrait" class="hidden" alt="" width="48" height="48"></span><div><small id="hail-name"></small><strong id="hail-text"></strong></div></div>
+    <div class="cockpit"><div class="cockpit-cell fuel-cell"><div><span>FUEL</span><strong id="fuel-value">100<small>%</small></strong></div><div class="fuel-track"><div id="fuel-fill"></div></div></div><div class="cockpit-cell"><span>VERTICAL SPEED</span><strong id="velocity">0.0 <small>M/S</small></strong><div class="tiny-label" id="landing-status">READY FOR TAKEOFF</div></div><button id="gear-button" class="cockpit-cell gear-cell"><span>LANDING GEAR <kbd>SPACE</kbd></span><strong><i id="gear-light"></i><span id="gear-label">DEPLOYED</span></strong><div class="tiny-label" id="gear-detail">SIDE THRUST LOCKED</div></button><div class="cockpit-cell fare-cell"><span id="fare-label">PASSENGERS</span><strong id="fare">0 <small>/ 3</small></strong><div class="tiny-label" id="fare-detail">THIS SECTOR</div></div></div>
+    <div class="controls-strip"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / ARROWS <b>THRUST</b></span><span><kbd>SPACE</kbd> <b>LANDING GEAR</b></span><span><kbd>ESC</kbd> <b>PAUSE</b></span><span class="flight-tip">LAND GENTLY. EARN GENEROUSLY.</span></div>
+    <div class="touch-controls"><div><button data-control="left" aria-label="Thrust left">←</button><button data-control="right" aria-label="Thrust right">→</button></div><div><button data-control="down" aria-label="Thrust down">↓</button><button data-control="up" aria-label="Thrust up">↑</button></div></div>
+  </div>
+
+  <dialog id="help-dialog"><button class="dialog-close" id="close-help" aria-label="Close flight manual">×</button><div class="eyebrow">TX–84 / QUICK START GUIDE</div><h2>Welcome aboard,<br><span>space cabbie.</span></h2><p>All 24 classic levels, rebuilt for a new orbit. Deliver each fare, then take the final passenger through the exit when they say “Up, please!”</p><div class="manual-grid"><div><span>01</span><h3>Feel the gravity.</h3><p>Hold <kbd>W</kbd> or <kbd>↑</kbd> to rise. Use <kbd>A</kbd> / <kbd>D</kbd> to steer. Some levels reverse gravity or controls: check the level hint.</p></div><div><span>02</span><h3>Stick the landing.</h3><p><kbd>SPACE</kbd> toggles landing gear. Deployed gear disables both side thrusters. Retract it to steer; line up and brake before deploying it to land. Descend below 3 m/s. Match a moving pad’s speed before touching down.</p></div><div><span>03</span><h3>Learn the route.</h3><p>Fly into portal rings to teleport. Touch diamond switches to open doors. Wait for gaps in electrical bands and for lasers to go dark.</p></div><div><span>04</span><h3>Go the distance.</h3><p>Refuel at <b>Pad F</b> or a marked depot. Every fourth classic level restores a taxi, up to three. Progress saves at the start of each level.</p></div></div><button class="primary-button" id="manual-ready">READY TO FLY <span>↗</span></button><div class="music-settings"><div><b>ORBIT AFTER HOURS</b><span>Original synth soundtrack · quieter during passenger calls</span></div><button id="music-button" class="secondary-button" aria-label="Background music">MUSIC ON ♪</button></div><div class="manual-credit">Original Space Taxi by John F. Kutcher / Muse Software, 1984.<br>Level themes and mechanics reinterpreted with original 3D artwork. Three Orbital Shift bonus routes are also available in the level browser.</div></dialog>
+  <dialog id="atlas-dialog" class="atlas-dialog"><button class="dialog-close" id="close-atlas" aria-label="Close level browser">×</button><div class="eyebrow">THE COMPLETE FLIGHT ATLAS</div><div class="atlas-heading"><h2>24 hours.<br><span>Infinite stories.</span></h2><p>Choose any departure. Your taxi is waiting.<br><span id="atlas-progress">0 / 24 CLASSIC LEVELS COMPLETE</span></p></div><nav class="atlas-tabs" aria-label="Level groups"><button data-atlas-tab="0" class="active">MORNING <small>01–08</small></button><button data-atlas-tab="1">DAY <small>09–16</small></button><button data-atlas-tab="2">NIGHT <small>17–24</small></button><button data-atlas-tab="3">BONUS <small>+ 4</small></button></nav><div id="atlas-grid" class="atlas-grid"></div><p class="atlas-footer">Select a level to preview it, then start your shift. Continue through the campaign or revisit any favorite.</p></dialog>
+
+  <div id="overlay" class="overlay hidden"><section class="overlay-card"><div class="eyebrow" id="overlay-eyebrow">FLIGHT ON HOLD</div><h2 id="overlay-title">Take a breather.</h2><p id="overlay-detail">Your passengers can wait a moment.</p><div id="overlay-stats" class="overlay-stats hidden"></div><section id="score-entry" class="score-entry hidden"><div id="score-entry-title" class="score-entry-title"></div><form id="score-form"><label for="pilot-name">CALLSIGN</label><input id="pilot-name" maxlength="3" minlength="1" autocomplete="off" spellcheck="false" pattern="[A-Za-z0-9]{1,3}" aria-label="Pilot callsign" value="ACE"><button type="submit">SAVE NAME ↗</button></form><p id="score-entry-note" role="status"></p></section><button class="primary-button" id="continue-button">BACK TO THE SHIFT <span>↗</span></button><button class="secondary-button" id="restart-button">RESTART SHIFT</button><button class="text-button" id="menu-button">RETURN TO DEPARTURES</button><button class="text-button" id="overlay-scores-button">VIEW HIGH SCORES ↗</button></section></div>
+  <dialog id="scores-dialog" class="scores-dialog" aria-labelledby="scores-title"><button class="dialog-close" id="close-scores" aria-label="Close high scores">×</button><div class="eyebrow">THE ORBITAL HONOR ROLL</div><div class="scores-heading"><h2 id="scores-title">Hall of <span>fare.</span></h2><div><small>RECORD TO BEAT</small><strong id="scores-best"></strong></div></div><nav class="score-tabs" aria-label="High score categories"><button data-score-board="campaign">CLASSIC CAMPAIGN</button><button data-score-board="free">LEVEL SELECT</button><button data-score-board="bonus">BONUS ROUTES</button></nav><p id="scores-description"></p><div class="scores-table-wrap"><table id="scores-table"><thead><tr><th scope="col">RANK</th><th scope="col">PILOT</th><th scope="col">CREDITS</th><th scope="col">LEVELS</th><th scope="col">FARES</th></tr></thead><tbody id="scores-body"></tbody></table></div><div id="scores-empty" class="scores-empty"><span aria-hidden="true">✧</span><h3>The board is yours to claim.</h3><p>Earn your first fare. Scores save as you fly.<br>Set your three-character callsign on a results screen.</p></div><footer class="scores-footer"><span id="scores-storage"></span><span>ONE ENTRY PER SHIFT</span></footer></dialog>
+  <dialog id="garage-dialog" class="garage-dialog" aria-labelledby="garage-title">
+    <div class="garage-close-anchor"><button class="dialog-close" id="close-garage" aria-label="Close taxi garage">×</button></div>
+    <div class="eyebrow">YOUR FARES. YOUR FLAIR.</div>
+    <div class="garage-heading"><h2 id="garage-title">Make it <span>yours.</span></h2><div class="garage-wallet"><small>FARE WALLET</small><strong id="garage-balance">0 CR</strong><span id="garage-earned">0 CR earned from rides</span></div></div>
+    <p class="garage-intro">Bank fares and climb the classic campaign. Rare paint jobs need both credits and a level milestone.</p>
+    <div class="garage-layout">
+      <div class="garage-showcase">
+        <div class="garage-preview-stage"><img id="garage-preview" width="480" height="285" alt="Selected taxi skin"><span class="preview-label">TX–84 / COSMETIC EDITION</span></div>
+        <div class="garage-selection">
+          <div id="garage-tag" class="eyebrow"></div><h3 id="garage-name" tabindex="-1"></h3><p id="garage-description"></p>
+          <div id="garage-requirement" class="garage-requirement hidden"><strong id="garage-milestone"></strong><progress id="garage-level-progress" value="0" max="23"></progress><small>Clear the classic levels in order. Milestones stay unlocked across shifts.</small></div>
+          <button id="garage-action" class="primary-button"></button><p id="garage-shortfall"></p><p id="garage-message" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+      <div id="garage-grid" class="garage-grid" aria-label="Taxi skins"></div>
+    </div>
+    <footer class="garage-footer"><span id="garage-storage"></span><span>ALL SKINS FLY THE SAME</span></footer>
+  </dialog>
+  <div id="load-error" class="load-error hidden"><h2>We couldn’t start the engines.</h2><p id="error-message">This game needs a browser with WebGL 2 support.</p><button onclick="location.reload()">Try again</button></div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

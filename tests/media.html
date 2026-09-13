@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Space Taxi media checks</title>
+<script type="importmap">{"imports":{"three":"../vendor/three/build/three.module.js"}}</script>
+<style>body{margin:0;background:#101a2c;color:#d4e5ed;font:14px system-ui}canvas{display:block}aside{position:fixed;bottom:18px;left:18px;right:18px;background:#07111be8;padding:16px;border:1px solid #526c80;border-radius:8px}button{padding:10px;margin-right:8px;cursor:pointer}output{display:block;margin-top:12px}</style>
+<aside><button id="people">Passenger animation</button><button id="blast">Explosion · 0.18s</button><button id="smoke">Smoke · 1.1s</button><button id="clear">Effect cleanup · 3.1s</button><button id="audio">Render audio check</button><output id="result">Ready</output><audio id="listen" controls hidden></audio></aside>
+<script type="module">
+import * as THREE from 'three';
+import {Explosion} from '../src/explosion.js';
+import {createPassenger,posePassenger} from '../src/passenger.js';
+import {riderFor} from '../src/riders.js';
+import {AudioEngine} from '../src/audio.js';
+import {scoreAtStep,STEP_SECONDS} from '../src/music.js';
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(1);renderer.setClearColor(0x101a2c);document.body.prepend(renderer.domElement);
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,innerWidth/innerHeight,.1,100);camera.position.set(0,1.5,12);camera.lookAt(0,.5,0);
+scene.add(new THREE.HemisphereLight(0xc5e1ff,0x15253a,2.6));const light=new THREE.DirectionalLight(0xffe8c8,3);light.position.set(-3,5,7);scene.add(light);
+const people=new THREE.Group();scene.add(people);const actors=Array.from({length:6},(_,i)=>createPassenger(people,(i-2.5)*1.65));
+const blast=new Explosion(scene);let animate=true;
+document.getElementById('people').onclick=()=>{blast.clear();people.visible=true;animate=true;};
+function sample(age){people.visible=false;blast.trigger(0,.3);blast.update(age);animate=false;document.getElementById('result').textContent=JSON.stringify({age,active:blast.group.visible,visibleShards:blast.shards.filter(s=>s.mesh.visible).length,visiblePuffs:blast.puffs.filter(p=>p.sprite.visible).length});}
+document.getElementById('blast').onclick=()=>sample(.18);document.getElementById('smoke').onclick=()=>sample(1.1);document.getElementById('clear').onclick=()=>sample(3.1);
+function frame(t){requestAnimationFrame(frame);if(animate)actors.forEach((a,i)=>posePassenger(a,{time:t/1000+i,profile:riderFor(0,i),walk:i===3?1:0}));renderer.render(scene,camera);}requestAnimationFrame(frame);
+document.getElementById('audio').onclick=async()=>{
+  // Render the real instrument/effect methods through Web Audio, then expose PCM statistics.
+  const engine=new AudioEngine(),ctx=new OfflineAudioContext(2,44100*12,44100);engine.context=ctx;
+  engine.master=ctx.createGain();engine.master.gain.value=.22;engine.master.connect(ctx.destination);
+  engine.musicBus=ctx.createGain();engine.musicBus.gain.value=.62;engine.musicBus.connect(engine.master);
+  engine.noiseBuffer=ctx.createBuffer(1,44100,44100);const noise=engine.noiseBuffer.getChannelData(0);for(let i=0;i<noise.length;i++)noise[i]=Math.random()*2-1;
+  for(let step=0;step<64;step++)for(const n of scoreAtStep(step))engine.playNote(n,step*STEP_SECONDS);
+  engine.effect('crash');engine.effect('hail');
+  const buffer=await ctx.startRendering(),data=buffer.getChannelData(0);let peak=0,sum=0,music=0;
+  for(let i=0;i<data.length;i++){if(!Number.isFinite(data[i]))throw new Error('Non-finite audio sample');peak=Math.max(peak,Math.abs(data[i]));sum+=data[i]*data[i];if(i>44100*2&&i<44100*8)music+=data[i]*data[i];}
+  const result={peak,rms:Math.sqrt(sum/data.length),musicRms:Math.sqrt(music/(44100*6)),pass:peak<1&&music>1};document.getElementById('result').textContent=JSON.stringify(result);
+  // A local listening control makes the original mix reviewable without recording the device.
+  const wav=new ArrayBuffer(44+data.length*2),v=new DataView(wav),str=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
+  str(0,'RIFF');v.setUint32(4,36+data.length*2,true);str(8,'WAVE');str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,44100,true);v.setUint32(28,88200,true);v.setUint16(32,2,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,data.length*2,true);for(let i=0;i<data.length;i++)v.setInt16(44+i*2,Math.max(-1,Math.min(1,data[i]))*32767,true);
+  const audio=document.getElementById('listen');if(audio.src)URL.revokeObjectURL(audio.src);audio.src=URL.createObjectURL(new Blob([wav],{type:'audio/wav'}));audio.hidden=false;
+};
+</script></html>
