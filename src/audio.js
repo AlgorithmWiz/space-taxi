@@ -1,4 +1,4 @@
-import { STEP_SECONDS, scoreAtStep, midiFrequency } from './music.js';
+import { midiFrequency } from './music.js';
 
 export class AudioEngine {
   constructor() {
@@ -19,7 +19,9 @@ export class AudioEngine {
       this.engine.connect(this.filter);this.filter.connect(this.engineGain);this.engineGain.connect(this.master);this.engine.start();
       this.noiseBuffer=this.context.createBuffer(1,this.context.sampleRate,this.context.sampleRate);
       const data=this.noiseBuffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
-      this.nextNote=this.context.currentTime+.05;
+      this.musicTrack=new Audio(new URL('../assets/audio/neon-arpeggio.mp3',import.meta.url).href);
+      this.musicTrack.loop=true;this.musicTrack.preload='auto';
+      this.musicSource=this.context.createMediaElementSource(this.musicTrack);this.musicSource.connect(this.musicBus);
       this.timer=setInterval(()=>this.tick(),25);
     }
     this.context.resume().catch(()=>{});this.tick();
@@ -40,11 +42,10 @@ export class AudioEngine {
     const now=this.context.currentTime,active=!this.hidden&&['menu','playing'].includes(this.mode)&&this.musicEnabled;
     const target=active?(this.mode==='playing'?.62:.33)*(now<this.duckUntil?.25:1):0;
     this.musicBus.gain.setTargetAtTime(target,now,.14);
-    if(!active||this.muted||this.context.state!=='running'){this.nextNote=now+.05;return;}
-    if(this.nextNote<now)this.nextNote=now+.025;
-    while(this.nextNote<now+.12){
-      for(const note of scoreAtStep(this.musicStep))this.playNote(note,this.nextNote);
-      this.musicStep++;this.nextNote+=STEP_SECONDS;
+    if(!active||this.muted){this.musicTrack.pause();return;}
+    if(this.musicTrack.paused&&!this.musicPlayPending){
+      this.musicPlayPending=true;
+      this.musicTrack.play().catch(()=>{}).finally(()=>{this.musicPlayPending=false;});
     }
   }
   oscillator(frequency,t,duration,volume,type='sine',bus=this.master,{attack=.008,endFrequency=frequency,filter=0}={}){
