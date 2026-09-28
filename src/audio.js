@@ -1,8 +1,10 @@
 import { midiFrequency } from './music.js';
+import { VOICE_CLIPS, voiceParts } from './voice-clips.js';
 
 export class AudioEngine {
   constructor() {
     this.muted=false;this.context=null;this.musicEnabled=true;this.mode='menu';this.hidden=false;this.musicStep=0;this.scheduledNotes=0;this.duckUntil=0;
+    this.voiceBuffers=new Map();this.voiceSources=[];this.voiceRequest=0;
     try{this.musicEnabled=localStorage.getItem('space-taxi-music')!=='off';}catch{}
   }
   init() {
@@ -13,6 +15,8 @@ export class AudioEngine {
       this.limiter=this.context.createDynamicsCompressor();this.limiter.threshold.value=-8;this.limiter.ratio.value=8;
       this.master.connect(this.limiter);this.limiter.connect(this.context.destination);
       this.musicBus=this.context.createGain();this.musicBus.gain.value=0;this.musicBus.connect(this.master);
+      this.voiceBus=this.context.createGain();this.voiceBus.gain.value=2.5;this.voiceBus.connect(this.master);
+      for(const name of Object.keys(VOICE_CLIPS))this.loadVoice(name).catch(()=>{});
       this.engine=this.context.createOscillator();this.engine.type='sawtooth';
       this.filter=this.context.createBiquadFilter();this.filter.type='lowpass';this.filter.frequency.value=190;
       this.engineGain=this.context.createGain();this.engineGain.gain.value=0;
@@ -26,11 +30,14 @@ export class AudioEngine {
     }
     this.context.resume().catch(()=>{});this.tick();
   }
-  setState(mode,hidden=false){this.mode=mode;this.hidden=hidden;}
+  setState(mode,hidden=false){
+    if((mode!==this.mode&&mode!=='playing')||(hidden&&!this.hidden))this.stopVoice();
+    this.mode=mode;this.hidden=hidden;
+  }
   toggle(){
     this.muted=!this.muted;
     if(this.master)this.master.gain.setTargetAtTime(this.muted?0:.22,this.context.currentTime,.03);
-    if(this.muted)window.speechSynthesis?.cancel();return this.muted;
+    if(this.muted)this.stopVoice();return this.muted;
   }
   toggleMusic(){
     this.musicEnabled=!this.musicEnabled;
@@ -100,9 +107,45 @@ export class AudioEngine {
     else if(type==='gear')this.tone(320,.08,0,'triangle');
     else if(['start','select','switch','teleport','rebound'].includes(type))this.tone(660,.08);
   }
-  say(text,profile={}){
-    if(this.muted||this.hidden||!window.speechSynthesis)return;
-    window.speechSynthesis.cancel();
+  loadVoice(name){
+    if(!this.voiceBuffers.has(name)){
+      const pending=fetch(new URL(VOICE_CLIPS[name].file,import.meta.url)).then(response=>{
+        if(!response.ok)throw new Error(`Voice unavailable: ${name}`);
+        return response.arrayBuffer();
+      }).then(data=>this.context.decodeAudioData(data));
+      this.voiceBuffers.set(name,pending);
+      pending.catch(()=>this.voiceBuffers.delete(name));
+    }
+    return this.voiceBuffers.get(name);
+  }
+  stopVoice(){
+    this.voiceRequest++;
+    for(const source of this.voiceSources){try{source.stop();}catch{}source.disconnect();}
+    this.voiceSources=[];this.duckUntil=0;
+    window.speechSynthesis?.cancel();
+  }
+  async say(text,profile={}){
+    if(this.muted||this.hidden)return;
+    this.stopVoice();
+    const request=this.voiceRequest,parts=voiceParts(text,profile.voice);
+    if(this.context&&parts){
+      try{
+        const buffer=await this.loadVoice(profile.voice);
+        if(request!==this.voiceRequest||this.muted||this.hidden)return;
+        let time=this.context.currentTime;
+        for(const [offset,duration] of parts){
+          const source=this.context.createBufferSource();source.buffer=buffer;source.connect(this.voiceBus);
+          this.voiceSources.push(source);
+          source.onended=()=>{source.disconnect();this.voiceSources=this.voiceSources.filter(item=>item!==source);};
+          source.start(time,offset,duration);time+=duration+.08;
+        }
+        this.duckUntil=time;return;
+      }catch{
+        if(request!==this.voiceRequest||this.muted||this.hidden)return;
+      }
+    }
+    // Keep dialogue audible when a recording is unavailable or still awaiting generation.
+    if(!window.speechSynthesis)return;
     const voice=new SpeechSynthesisUtterance(text);voice.rate=1.04;voice.pitch=profile.pitch||1.1;voice.volume=.55;
     if(this.context)this.duckUntil=this.context.currentTime+Math.min(7,Math.max(2,text.length*.07));
     window.speechSynthesis.speak(voice);

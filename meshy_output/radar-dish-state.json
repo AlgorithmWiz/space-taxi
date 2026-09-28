@@ -1,0 +1,9 @@
+{
+  "id": "radar-dish",
+  "resource": "image-to-3d",
+  "task_id": "01a0e96c-b7c8-75b4-a0cf-0e0e15233384",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211014_radar-dish_01a0e96c",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211014_radar-dish_01a0e96c/radar-dish.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211014_radar-dish_01a0e96c/preview.png"
+}

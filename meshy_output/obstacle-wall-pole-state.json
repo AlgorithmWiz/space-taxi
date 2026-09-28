@@ -1,0 +1,9 @@
+{
+  "id": "obstacle-wall-pole",
+  "resource": "image-to-3d",
+  "task_id": "01a0e970-cd02-77f4-8599-cc542ad6605b",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211441_obstacle-wall-pole_01a0e970",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211441_obstacle-wall-pole_01a0e970/obstacle-wall-pole.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211441_obstacle-wall-pole_01a0e970/preview.png"
+}

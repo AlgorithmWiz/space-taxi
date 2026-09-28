@@ -1,0 +1,109 @@
+{
+  "results": [
+    {
+      "key": "passenger-nova-botanist-rigged",
+      "invalid": 0,
+      "minY": -9.866880380220693e-8,
+      "maxHeight": 1.6999999834111406,
+      "maxWidth": 1.0641174387959844,
+      "baseHeight": 1.6999999834111406,
+      "animated": false,
+      "duration": 0.30000001192092896,
+      "render": {
+        "frame": 29,
+        "calls": 2,
+        "triangles": 10395,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-nova-botanist-walking",
+      "invalid": 0,
+      "minY": -0.04457675053842641,
+      "maxHeight": 1.7038877934240244,
+      "maxWidth": 0.7659094315574344,
+      "baseHeight": 1.698747966553318,
+      "animated": true,
+      "duration": 1.0666667222976685,
+      "render": {
+        "frame": 155,
+        "calls": 2,
+        "triangles": 10395,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-nova-botanist-running",
+      "invalid": 0,
+      "minY": -0.05787297746493934,
+      "maxHeight": 1.6762239437336512,
+      "maxWidth": 0.6529156360908367,
+      "baseHeight": 1.6048379740155516,
+      "animated": true,
+      "duration": 0.6666666865348816,
+      "render": {
+        "frame": 308,
+        "calls": 2,
+        "triangles": 10395,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-juno-courier-rigged",
+      "invalid": 0,
+      "minY": -7.779459390754416e-8,
+      "maxHeight": 1.6999998297131655,
+      "maxWidth": 1.0489054691476478,
+      "baseHeight": 1.6999998297131655,
+      "animated": false,
+      "duration": 0.30000001192092896,
+      "render": {
+        "frame": 452,
+        "calls": 2,
+        "triangles": 10344,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-juno-courier-walking",
+      "invalid": 0,
+      "minY": -0.04474423936600569,
+      "maxHeight": 1.705729839999877,
+      "maxWidth": 0.7827464549614043,
+      "baseHeight": 1.7016796647219756,
+      "animated": true,
+      "duration": 1.0666667222976685,
+      "render": {
+        "frame": 594,
+        "calls": 2,
+        "triangles": 10344,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-juno-courier-running",
+      "invalid": 0,
+      "minY": -0.05187852411574793,
+      "maxHeight": 1.6635531869996414,
+      "maxWidth": 0.6875383855892423,
+      "baseHeight": 1.6169694086395299,
+      "animated": true,
+      "duration": 0.6666666865348816,
+      "render": {
+        "frame": 738,
+        "calls": 2,
+        "triangles": 10344,
+        "points": 0,
+        "lines": 82
+      }
+    }
+  ],
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

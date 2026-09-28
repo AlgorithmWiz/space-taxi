@@ -1,0 +1,5 @@
+meshy_output/**/*.glb filter=lfs diff=lfs merge=lfs -text
+meshy_output/**/*.png filter=lfs diff=lfs merge=lfs -text
+meshy_output/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+output/**/*.png filter=lfs diff=lfs merge=lfs -text
+output/**/*.jpg filter=lfs diff=lfs merge=lfs -text

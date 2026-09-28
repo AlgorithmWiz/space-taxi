@@ -1,0 +1,9 @@
+{
+  "id": "obstacle-wall-metal",
+  "resource": "image-to-3d",
+  "task_id": "01a0e97e-209d-7314-9354-0194a2fbb326",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212915_obstacle-wall-metal_01a0e97e",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212915_obstacle-wall-metal_01a0e97e/obstacle-wall-metal.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212915_obstacle-wall-metal_01a0e97e/preview.png"
+}

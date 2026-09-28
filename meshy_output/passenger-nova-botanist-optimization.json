@@ -1,0 +1,28 @@
+{
+  "id": "passenger-nova-botanist",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966",
+  "source_task_id": "01a0e966-5527-764e-b700-ad9f36f582bf",
+  "remesh": {
+    "task_id": "01a0e987-98ba-7004-9c4e-de10b09c8b71",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-remesh-preview.png"
+    },
+    "triangles": 10395,
+    "bytes": 49313136,
+    "textured": true,
+    "verified_for_rigging": true
+  },
+  "rigging": {
+    "task_id": "01a0e98a-cdd4-7652-9863-a809dbd32b6e",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "rigged": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-rigged.glb",
+      "walking": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-walking.glb",
+      "running": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-running.glb"
+    }
+  }
+}

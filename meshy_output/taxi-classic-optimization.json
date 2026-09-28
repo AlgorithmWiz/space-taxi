@@ -1,0 +1,18 @@
+{
+  "id": "taxi-classic",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963",
+  "source_task_id": "01a0e963-3aa4-7314-bfad-54f111d422cc",
+  "remesh": {
+    "task_id": "01a0e987-8cef-70e9-8727-3125b736b215",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963/taxi-classic-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963/taxi-classic-remesh-preview.png"
+    },
+    "triangles": 13789,
+    "bytes": 45269200,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

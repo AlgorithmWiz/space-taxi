@@ -1,0 +1,9 @@
+{
+  "id": "landing-platform-metal",
+  "resource": "image-to-3d",
+  "task_id": "01a0e972-a581-71e4-99cd-8c54c51e14e0",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211642_landing-platform-metal_01a0e972",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211642_landing-platform-metal_01a0e972/landing-platform-metal.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211642_landing-platform-metal_01a0e972/preview.png"
+}

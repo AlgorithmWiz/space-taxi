@@ -1,0 +1,9 @@
+{
+  "id": "lollipop",
+  "resource": "image-to-3d",
+  "task_id": "01a0e96e-e5ac-71b2-a946-11e1bd16be04",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211236_lollipop_01a0e96e",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211236_lollipop_01a0e96e/lollipop.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211236_lollipop_01a0e96e/preview.png"
+}

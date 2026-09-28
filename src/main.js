@@ -127,7 +127,7 @@ function handleEvent(event) {
   audio.effect(event.type);
   switch (event.type) {
     case 'sector': hailKey='';hailAfter=0;world.setLevel(event.index); makeLabels(); updateMission(); syncDebugLevel(event.index); if(!debug) progress.checkpoint = checkpoint(flight); saveProgress(); break;
-    case 'pickup': toast(`${riderFor(flight.sector,flight.routeIndex).name} aboard. Pad ${event.destination}, please!`); audio.say(`Pad ${event.destination}, please.`,riderFor(flight.sector,flight.routeIndex)); updateMission(); break;
+    case 'pickup': toast(`${riderFor(flight.sector,flight.routeIndex).name} aboard. Pad ${event.destination}, please!`); audio.say(event.destination===EXIT?'Up, please!':`Pad ${event.destination}, please.`,riderFor(flight.sector,flight.routeIndex)); updateMission(); break;
     case 'delivery': {const rider=riderFor(flight.sector,event.riderIndex);toast(`${rider.name}: “${rider.thanks}” +${event.earned} credits`, false, 3); world.burst(flight.x, flight.y + .5, 'green', 32);world.disembark(flight,event.pad,event.riderIndex); audio.say(rider.thanks,rider);hailAfter=flight.time+4.5; saveBest(); updateMission(); break;}
     case 'fare-earned': wallet.credit(event); garage?.refresh(); break;
     case 'exit-open': toast(flight.passenger ? 'Up, please! Fly your passenger through the open exit.' : 'Route complete. Fly through the open exit.', false, 5); audio.say('Up, please!',riderFor(flight.sector,flight.routeIndex)); updateMission(); break;
@@ -135,7 +135,7 @@ function handleEvent(event) {
     case 'teleport': world.burst(event.x, event.y, 'blue', 24); toast('Portal transit complete.', false, 1.8); break;
     case 'switch': toast(event.reset ? 'Curtains retracted. Make your move!' : `Switch ${event.label} toggled.`, false, 2.5); break;
     case 'rebound': toast('Rebound! Correct your drift.', true, 1.8); break;
-    case 'crash': world.explode(event.x,event.y,event.vx,event.vy);window.speechSynthesis?.cancel();hailAfter=flight.time+4; toast(event.reason, true, 4); break;
+    case 'crash': world.explode(event.x,event.y,event.vx,event.vy);audio.stopVoice();hailAfter=flight.time+4; toast(event.reason, true, 4); break;
     case 'respawn': toast('Fresh taxi. Same determination.', false, 2.5); updateMission(); break;
     case 'passenger-reset': updateMission(); break;
     case 'sector-complete': recordCompletion(); showOverlay('sector-complete'); break;
@@ -145,7 +145,7 @@ function handleEvent(event) {
 }
 function start() {
   if(flight&&mode!=='menu')saveBest();
-  audio.init(); audio.effect('start');
+  audio.init(); audio.stopVoice(); audio.effect('start');
   if(debug) flight.debugJump(selected); else flight.reset(selected);
   mode = 'playing'; keys.clear(); touch.clear();
   $('menu').classList.add('hidden'); $('hud').classList.remove('hidden'); $('overlay').classList.add('hidden'); $('pause-button').classList.remove('hidden');
@@ -156,7 +156,7 @@ function start() {
 }
 function resume() { mode = 'playing'; $('overlay').classList.add('hidden'); keys.clear(); touch.clear(); document.activeElement?.blur(); audio.init(); }
 function toMenu() {
-  saveBest(); mode = 'menu'; keys.clear(); touch.clear(); audio.thrust(0); window.speechSynthesis?.cancel();
+  saveBest(); mode = 'menu'; keys.clear(); touch.clear(); audio.thrust(0); audio.stopVoice();
   $('overlay').classList.add('hidden'); $('hud').classList.add('hidden'); $('pause-button').classList.add('hidden'); $('menu').classList.remove('hidden');
   selectLevel(selected); saveProgress(); garage.refresh();
 }
@@ -195,7 +195,7 @@ function setDebugExpanded(expanded) {
 }
 function navigateDebug(index) {
   if(!debug || !Number.isInteger(index) || !LEVELS[index]) return;
-  window.speechSynthesis?.cancel();keys.clear();touch.clear();
+  audio.stopVoice();keys.clear();touch.clear();
   selected=index;
   if(mode==='menu') selectLevel(index); else start();
   document.activeElement?.blur();
@@ -273,7 +273,7 @@ window.addEventListener('keydown', event => {
 });
 window.addEventListener('keyup', event => keys.delete(event.code));
 window.addEventListener('blur', () => { keys.clear(); touch.clear(); if (mode === 'playing') showOverlay('paused'); });
-document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'playing') showOverlay('paused');audio.setState(mode,document.hidden);if(document.hidden)window.speechSynthesis?.cancel(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'playing') showOverlay('paused');audio.setState(mode,document.hidden);if(document.hidden)audio.stopVoice(); });
 document.querySelectorAll('[data-control]').forEach(button => {
   button.addEventListener('pointerdown', event => { event.preventDefault(); button.setPointerCapture(event.pointerId); touch.add(button.dataset.control); });
   for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) button.addEventListener(type, () => touch.delete(button.dataset.control));

@@ -1,0 +1,9 @@
+{
+  "id": "obstacle-wall-net",
+  "resource": "image-to-3d",
+  "task_id": "01a0e977-79c1-75f6-80f5-2703057c1246",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212159_obstacle-wall-net_01a0e977",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212159_obstacle-wall-net_01a0e977/obstacle-wall-net.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212159_obstacle-wall-net_01a0e977/preview.png"
+}

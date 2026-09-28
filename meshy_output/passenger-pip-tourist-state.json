@@ -1,0 +1,9 @@
+{
+  "id": "passenger-pip-tourist",
+  "resource": "image-to-3d",
+  "task_id": "01a0e969-2fcc-7575-8562-9cc00dfb982d",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210622_passenger-pip-tourist_01a0e969",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210622_passenger-pip-tourist_01a0e969/passenger-pip-tourist.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210622_passenger-pip-tourist_01a0e969/preview.png"
+}

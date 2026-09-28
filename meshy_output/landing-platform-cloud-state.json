@@ -1,0 +1,9 @@
+{
+  "id": "landing-platform-cloud",
+  "resource": "image-to-3d",
+  "task_id": "01a0e96f-0206-7143-9c80-e53938fc2609",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211244_landing-platform-cloud_01a0e96f",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211244_landing-platform-cloud_01a0e96f/landing-platform-cloud.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_211244_landing-platform-cloud_01a0e96f/preview.png"
+}

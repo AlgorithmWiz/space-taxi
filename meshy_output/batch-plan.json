@@ -1,0 +1,421 @@
+{
+  "estimated_credits": 1080,
+  "selected": [
+    {
+      "id": "taxi-classic",
+      "category": "Vehicles",
+      "source": "src/taxi.js; src/skins.js",
+      "front": "x"
+    },
+    {
+      "id": "passenger-nova-botanist",
+      "category": "Passengers",
+      "source": "src/passenger.js; src/riders.js",
+      "front": "z"
+    },
+    {
+      "id": "passenger-juno-courier",
+      "category": "Passengers",
+      "source": "src/passenger.js; src/riders.js",
+      "front": "z"
+    },
+    {
+      "id": "passenger-atlas-engineer",
+      "category": "Passengers",
+      "source": "src/passenger.js; src/riders.js",
+      "front": "z"
+    },
+    {
+      "id": "passenger-pip-tourist",
+      "category": "Passengers",
+      "source": "src/passenger.js; src/riders.js",
+      "front": "z"
+    },
+    {
+      "id": "passenger-sol-cook",
+      "category": "Passengers",
+      "source": "src/passenger.js; src/riders.js",
+      "front": "z"
+    },
+    {
+      "id": "passenger-rae-medic",
+      "category": "Passengers",
+      "source": "src/passenger.js; src/riders.js",
+      "front": "z"
+    },
+    {
+      "id": "fuel-canister",
+      "category": "Props",
+      "source": "src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "radar-dish",
+      "category": "Props",
+      "source": "src/radar.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-enamel",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-candy-cane",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "lollipop",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-cloud",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-lounger",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-parasol",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-pole",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-wood",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-tower-concrete",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-metal",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-leaf-leaf",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-stem",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "pine-tree",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "climbing-vine",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-felt",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-table",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-net",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "hazard-pong",
+      "category": "Hazards",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "table-tennis-paddle",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "table-tennis-table",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-rock",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "teleporter-ring",
+      "category": "Mechanisms",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "terrain-teleport",
+      "category": "Terrain assemblies",
+      "source": "src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-stone",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-metal",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "switch-crystal",
+      "category": "Mechanisms",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-bastion",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    }
+  ],
+  "deferred": [
+    {
+      "id": "taxi-lagoon",
+      "category": "Vehicles",
+      "source": "src/taxi.js; src/skins.js",
+      "front": "x"
+    },
+    {
+      "id": "taxi-polar",
+      "category": "Vehicles",
+      "source": "src/taxi.js; src/skins.js",
+      "front": "x"
+    },
+    {
+      "id": "taxi-night",
+      "category": "Vehicles",
+      "source": "src/taxi.js; src/skins.js",
+      "front": "x"
+    },
+    {
+      "id": "taxi-solar",
+      "category": "Vehicles",
+      "source": "src/taxi.js; src/skins.js",
+      "front": "x"
+    },
+    {
+      "id": "taxi-auric",
+      "category": "Vehicles",
+      "source": "src/taxi.js; src/skins.js",
+      "front": "x"
+    },
+    {
+      "id": "obstacle-wall-cannon",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "hazard-cannon",
+      "category": "Hazards",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "crossfire-cannon",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "hazard-star",
+      "category": "Hazards",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "terrain-meteors",
+      "category": "Terrain assemblies",
+      "source": "src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-magnet",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "horseshoe-magnet",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-tower-metal",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "turbo-tower",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "spiked-mine",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-ceramic",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "electric-insulator",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-tree",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "hazard-snow",
+      "category": "Hazards",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "pine-tree-snow",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "terrain-snow",
+      "category": "Terrain assemblies",
+      "source": "src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-platform-concrete",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-wall-brick",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "obstacle-rock-metal",
+      "category": "Obstacles",
+      "source": "src/scenery.js; src/candy-props.js; src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "terrain-maze",
+      "category": "Terrain assemblies",
+      "source": "src/caves.js",
+      "front": "z"
+    },
+    {
+      "id": "hazard-rebound",
+      "category": "Hazards",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "conveyor-cog",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "museum-van",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-island-metal",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "landing-island-rock",
+      "category": "Landing surfaces",
+      "source": "src/world.js; src/landing-props.js",
+      "front": "z"
+    },
+    {
+      "id": "hazard-asteroid",
+      "category": "Hazards",
+      "source": "src/scenery.js",
+      "front": "z"
+    },
+    {
+      "id": "crystal-shard",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    },
+    {
+      "id": "refinery-tank",
+      "category": "Scenery props",
+      "source": "src/level-backdrops.js",
+      "front": "z"
+    }
+  ]
+}

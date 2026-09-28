@@ -1,0 +1,9 @@
+{
+  "id": "obstacle-wall-table",
+  "resource": "image-to-3d",
+  "task_id": "01a0e977-459e-7632-8e3b-ca347445c7af",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212145_obstacle-wall-table_01a0e977",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212145_obstacle-wall-table_01a0e977/obstacle-wall-table.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212145_obstacle-wall-table_01a0e977/preview.png"
+}

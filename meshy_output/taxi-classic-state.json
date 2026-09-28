@@ -1,0 +1,9 @@
+{
+  "id": "taxi-classic",
+  "resource": "image-to-3d",
+  "task_id": "01a0e963-3aa4-7314-bfad-54f111d422cc",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963/taxi-classic.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963/preview.png"
+}

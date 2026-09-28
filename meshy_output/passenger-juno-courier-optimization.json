@@ -1,0 +1,28 @@
+{
+  "id": "passenger-juno-courier",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210330_passenger-juno-courier_01a0e966",
+  "source_task_id": "01a0e966-8c26-7703-b798-1a6442230572",
+  "remesh": {
+    "task_id": "01a0e987-a44e-776e-a84b-0aa48f2754ca",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-remesh-preview.png"
+    },
+    "triangles": 10344,
+    "bytes": 48448684,
+    "textured": true,
+    "verified_for_rigging": true
+  },
+  "rigging": {
+    "task_id": "01a0e98a-f78e-7422-9abe-dc950ac7edcc",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "rigged": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-rigged.glb",
+      "walking": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-walking.glb",
+      "running": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-running.glb"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "passenger-nova-botanist",
+  "resource": "image-to-3d",
+  "task_id": "01a0e966-5527-764e-b700-ad9f36f582bf",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/preview.png"
+}

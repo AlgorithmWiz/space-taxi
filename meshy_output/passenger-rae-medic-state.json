@@ -1,0 +1,9 @@
+{
+  "id": "passenger-rae-medic",
+  "resource": "image-to-3d",
+  "task_id": "01a0e969-eb4f-737e-892b-fbaaff2fffa1",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210710_passenger-rae-medic_01a0e969",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210710_passenger-rae-medic_01a0e969/passenger-rae-medic.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210710_passenger-rae-medic_01a0e969/preview.png"
+}

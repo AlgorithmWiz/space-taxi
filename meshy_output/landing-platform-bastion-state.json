@@ -1,0 +1,9 @@
+{
+  "id": "landing-platform-bastion",
+  "resource": "image-to-3d",
+  "task_id": "01a0e97f-21bd-75db-998e-81fd3c66c3e7",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_213021_landing-platform-bastion_01a0e97f",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_213021_landing-platform-bastion_01a0e97f/landing-platform-bastion.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_213021_landing-platform-bastion_01a0e97f/preview.png"
+}

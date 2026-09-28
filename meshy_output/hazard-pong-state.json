@@ -1,0 +1,9 @@
+{
+  "id": "hazard-pong",
+  "resource": "image-to-3d",
+  "task_id": "01a0e978-c672-7326-86de-56da6c6ca3d3",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212324_hazard-pong_01a0e978",
+  "complete": true,
+  "model": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212324_hazard-pong_01a0e978/hazard-pong.glb",
+  "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_212324_hazard-pong_01a0e978/preview.png"
+}
