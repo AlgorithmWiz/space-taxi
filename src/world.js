@@ -15,6 +15,7 @@ import { SKINS, applyTaxiSkin } from './skins.js';
 import { createTaxi } from './taxi.js';
 import { artFor } from './art-direction.js';
 import { surfaceMaterial } from './surface-materials.js';
+import { updateModelTaxi, updateModelPassenger } from './model-assets.js';
 
 const random = (seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; })(1984);
 const metal = (color, roughness = .55, metalness = .35) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
@@ -38,7 +39,7 @@ function labelTexture(text, color = '#c9ff9a', size = 128) {
 }
 function disposeGroup(group) {
   const geometries = new Set(), materials = new Set(), textures = new Set();
-  group.traverse(o => { if (o.geometry) geometries.add(o.geometry); if (o.material) for (const mat of Array.isArray(o.material) ? o.material : [o.material]) { materials.add(mat); if (mat.map) textures.add(mat.map); } });
+  group.traverse(o => { if(o.userData.modelMixer){o.userData.modelMixer.stopAllAction();o.userData.modelMixer.uncacheRoot(o.userData.modelObject);} if(o.userData.sharedModelAsset)return; if (o.geometry) geometries.add(o.geometry); if (o.material) for (const mat of Array.isArray(o.material) ? o.material : [o.material]) { materials.add(mat); if (mat.map) textures.add(mat.map); } });
   geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.clear();
 }
 
@@ -282,6 +283,7 @@ export class World {
     this.stars.rotation.z = Math.sin(ambientTime * .015) * .014;
     this.stars.material.opacity = .84 + Math.sin(ambientTime * .35) * .06;
 
+    updateModelTaxi(this);
     this.taxi.visible = isMenu || (!flight.crashTime && flight.status !== 'over');
     if (isMenu) {
       this.taxi.position.set(1.5 + Math.sin(time * .27) * 1.1, 7.5 + Math.sin(time * .8) * .38, 3);
@@ -334,12 +336,14 @@ export class World {
       const approach=person.visible&&flight.landed===pad.id?Math.min(1,flight.serviceTime/.9):0;
       const home=person.userData.homeX;
       posePassenger(person,{time:levelTime,profile:riderFor(this.index,flight.routeIndex),x:THREE.MathUtils.lerp(home,flight.x-pose.x,approach),walk:approach>0?1:0,boarding:Math.max(0,(approach-.7)/.3),look:(flight.x-pose.x-home)*.04});
+      if(person.visible)updateModelPassenger(person,riderFor(this.index,flight.routeIndex),levelTime,approach>0?1:0,person.position.x);
     }
     for(let i=this.departures.length-1;i>=0;i--){
       const d=this.departures[i],age=flight.time-d.start,pose=padPose(d.pad,levelTime);
       if(age>3){disposeGroup(d.person);this.levelGroup.remove(d.person);this.departures.splice(i,1);continue;}
       const x=THREE.MathUtils.lerp(d.from,-d.pad.w*.33,Math.min(1,age/2));
       posePassenger(d.person,{time:levelTime,profile:d.profile,x:pose.x+x,walk:age<2?1:0,departing:true});
+      updateModelPassenger(d.person,d.profile,levelTime,age<2?1:0,d.person.position.x);
       d.person.position.y=pose.y;d.person.scale.setScalar(PASSENGER_SCALE*Math.min(1,(3-age)*2));
     }
     this.hazardObjects.forEach((h, i) => {
