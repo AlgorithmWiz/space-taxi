@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {replaceModelProp} from './model-assets.js';
+import {interiorBackdrop,landscapeMaterial} from './backdrop-materials.js';
 import {artFor} from './art-direction.js';
 import {surfaceMaterial} from './surface-materials.js';
 import {padPose,obstaclePose,windAngle} from './environment.js';
@@ -25,7 +26,7 @@ function placard(g,text,x,y,z,w,color){
 function terrain(g,color,y,z,height,seed=1){
   const shape=new THREE.Shape();shape.moveTo(-65,-55);shape.lineTo(-65,y);
   for(let i=0;i<=30;i++){const x=-65+i*4.4;shape.lineTo(x,y+Math.sin(i*1.67+seed)*height*.4+Math.sin(i*.56+seed)*height*.6);}
-  shape.lineTo(67,-55);shape.closePath();return mesh(g,new THREE.ShapeGeometry(shape),unlit(color),0,0,z);
+  shape.lineTo(67,-55);shape.closePath();return mesh(g,new THREE.ShapeGeometry(shape),landscapeMaterial(color),0,0,z);
 }
 function wallTexture(kind,color){
   const c=document.createElement('canvas');c.width=512;c.height=512;const ctx=c.getContext('2d');ctx.fillStyle=color;ctx.fillRect(0,0,512,512);
@@ -36,9 +37,16 @@ function wallTexture(kind,color){
   for(let y=0;y<512;y+=row){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(512,y);ctx.stroke();for(let x=(y/row%2)*col/2;x<512;x+=col){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+row);ctx.stroke();if(kind!=='stone'){ctx.fillStyle='#a4a8a02f';ctx.fillRect(x+9,y+9,3,3);ctx.fillRect(x+col-12,y+row-12,3,3);}}}
   const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;map.wrapS=map.wrapT=THREE.RepeatWrapping;map.repeat.set(4,3);return map;
 }
-function indoor(g,type,color){
-  const map=wallTexture(type,color);
-  mesh(g,new THREE.PlaneGeometry(110,75),new THREE.MeshStandardMaterial({map,color:'#d8d9d6',roughness:1}),0,-5,-24);
+function indoor(g,level){
+  mesh(g,new THREE.PlaneGeometry(110,75),interiorBackdrop(level),0,-5,-24);
+  const art=artFor(level),frame=surface(art.surface,.35),edge=unlit(art.accent,.25);
+  // Structural details live outside the navigable area and stay visibly recessed.
+  for(const x of [-33,33]){
+    box(g,frame,x,0,-19,1.3,42,1.5);
+    for(const y of [-10,0,10]){box(g,frame,x,y,-18,4,.35,1);box(g,edge,x,y+.25,-17.8,2,.08,.03);}
+  }
+  box(g,frame,0,23,-20,69,1.6,2);
+  for(const x of [-25,-12,0,12,25])box(g,edge,x,21.9,-18,5,.12,.1);
 }
 function tree(g,x,y,z,h,color,snow=false){
   const seed=x,root=new THREE.Group();root.name='wind-tree';root.position.set(x,y,z);g.add(root);g=root;x=0;y=0;z=0;
@@ -75,7 +83,7 @@ export function buildLevelBackdrop(parent,level,{obstacles=[]}={}){
   const iron=surface('#333b40',.45),steel=surface('#6e777c',.5),dark=surface('#20272c'),warm=surface('#8d7651');
   const lamp=unlit(p.accent,.7);
   const interior=['training','pong','puzzle','magnet','electric','barrier','rebound','shifting','laser','moving','museum'];
-  if(interior.includes(theme))indoor(g,['maze','puzzle','museum'].includes(theme)?'stone':'metal',p.horizon);
+  if(interior.includes(theme))indoor(g,level);
   if(CAVE_THEMES.has(theme)){const cave=buildCaveSystem(g,level);ambient.push(t=>cave.update(t));}
 
   if(theme==='candy'){
@@ -247,9 +255,11 @@ export function buildLevelBackdrop(parent,level,{obstacles=[]}={}){
     }
   }
   if(theme==='barrier'){
-    for(const x of [-24,24])for(let i=0;i<9;i++)box(g,surface(i%2?'#522c2f':'#3b2328'),x+i*.24-1,0,-7,.28,31,1.5);
-    box(g,warm,0,15,-8,51,.8,2);box(g,surface('#42342e'),0,-16,-9,60,3,10);
-    for(const x of [-21,21]){const light=mesh(g,new THREE.ConeGeometry(.65,1.6,16),iron,x,14,-5);light.rotation.z=x<0?-.4:.4;}
+    for(const x of [-4.5,4.5]){
+      box(g,iron,x,5,-3,.4,2.2,.8);
+      for(let i=0;i<3;i++)box(g,lamp,x,4.4+i*.6,-2.55,.18,.15,.04);
+    }
+    placard(g,'VELOCITY TEST / 20',0,21,-16,15,p.accent);
   }
   if(theme==='rebound'){
     for(const o of level.obstacles){const rail=box(g,surface('#56605d'),o.x,o.y,-4,o.w+1.1,o.h,.8);rail.rotation.z=o.angle;}

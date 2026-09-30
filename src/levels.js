@@ -57,7 +57,7 @@ const originals = [
     color:'#cdb0ff',gravity:-1.2,downPower:5.6,spawn:{x:-7,y:3},obstacles:[w(4,0,.65,12,{angle:.65}),w(0,6.5,.65,3),...[-16,-1,14].map(x=>w(x,13,6.5,1,{material:'magnet'}))],
   }),
   classic('Black Hole','blackhole','Orbit the singularity. Thrust away before it pulls you close.',[p(1,-9,-10,9),p(2,10,-10,9),p(3,19,8,8),p(4,19,-1,8),p(5,-19,-1,8),f(-19,8,8)],{
-    color:'#baacff',fields:[{kind:'gravity',x:0,y:2,strength:190,max:6.5,radius:1.25}],
+    color:'#baacff',gravity:0,fields:[{kind:'gravity',x:0,y:2,strength:190,max:6.5,radius:1.25}],
   }),
   classic('Turbo-Charged Taxi','turbo','Double the thrust. Use short taps and watch the fuel gauge.',[p(1,3,-2,7,{kind:'tower',depth:10}),p(2,10,-8,7),p(3,-9,-8,7),p(4,-4,-2,7,{kind:'tower',depth:10}),p(5,20,-3),p(6,20,4),p(7,20,11),p(8,-20,11),p(9,-20,4),f(-20,-3,6)],{
     color:'#ffcc6f',thrustScale:1.8,fuelRate:1.05,speedLimit:13,spawn:{x:-12,y:8},
@@ -75,16 +75,19 @@ const originals = [
   classic('Interference','radio','The radio band disrupts steering. Stay clear of the towers.',[p(1,-8,-5),p(2,1,-11,7),p(3,-17,-3),p(4,5,-2),p(5,18,-4),p(6,19,-11,5),p(7,13,5,7),f(-13,-11)],{
     color:'#ffd099',fields:[{kind:'radio',x:0,y:1,h:8}],obstacles:[w(-23,-1.7,2,8,{material:'brick'}),w(-4,-.5,2,7,{material:'brick'}),w(11,0,2.5,10,{material:'brick'}),w(23,-2,2,8,{material:'brick'}),w(-2,-8,17,.65,{kind:'rock'}),w(18,-7.6,10,.65,{kind:'rock'})],
   }),
-  classic('Taxi Maze','maze','Follow the blue corridor. Two portals connect the dead ends.',[p(1,-15,9,8)],{
-    color:'#84dffa',spawn:{x:1,y:13},fuelRate:.45,obstacles:[w(-10,13,.7,5),w(6,9.3,22,.7),w(17,6,.7,6.6),w(3,3,27,.7),w(-10.5,6.2,.7,6.4),w(-17,-.6,.7,9),w(-7,-5,20,.7),w(3,-7.8,.7,5.5),w(13,-10.5,20,.7),w(22.5,-2.3,.7,16.4),w(12,-1,12,.7)],
-    portals:[{x:11,y:-7.5,to:1,color:'#b599ff'},{x:-19,y:13,to:0,color:'#b599ff'}],
+  classic('Taxi Maze','maze','Wind down to the passenger. The maze changes for the return journey.',[p(1,-16,-11,8)],{
+    color:'#84dffa',spawn:{x:0,y:14},fuelRate:.45,
+    obstacles:[w(-4.5,10,39,.65),w(4.5,4,39,.65),w(-4.5,-2,39,.65),w(4.5,-8,39,.65)],
+    returnWalls:[w(4.5,10,39,.65),w(-4.5,4,39,.65),w(4.5,-2,39,.65),w(-4.5,-8,39,.65)],
   }),
   classic('The Switch','reverse','Controls reversed: S rises, W descends, A goes right, D goes left.',towers(),{color:'#ffb878',controls:'reverse',spawn:{x:0,y:10}}),
-  classic('Fast Break','barrier','Touch the center diamond to retract the curtains. Move before they close.',[p(1,-15,11,7),p(2,15,-10,7),p(3,-6,11,7),p(4,-12,-2,7),p(5,7,11,7),p(6,12,-2,7),p(7,-15,-10,7),f(18,11,6)],{
-    color:'#ffa9d5',spawn:{x:0,y:6},beams:[{x:-17.8,w:.55,curtain:true,resettable:true,kind:'curtain'},{x:17.8,w:.55,curtain:true,resettable:true,kind:'curtain'}],switches:[{x:0,y:-1,reset:true,label:'RESET'}],
+  classic('Fast Break','barrier','Build upward speed through the center gate. Slow approaches bounce back.',[p(1,-15,11,7),p(2,15,-10,7),p(3,-6,11,7),p(4,-12,-2,7),p(5,7,11,7),p(6,12,-2,7),p(7,-15,-10,7)],{
+    color:'#ffa9d5',spawn:{x:0,y:0},
+    obstacles:[w(-12.25,5,16.5,.65),w(12.25,5,16.5,.65)],
+    speedGate:{x:0,y:5,w:8,minSpeed:5,resetBelow:3.5},
   }),
   classic('Rebound','rebound','The gold orbs bounce you away. Slow down near the diagonal walls.',[p(1,-9,9,7),p(2,-19,-6,7),p(3,-4,-10,7),p(4,15,-10,8),p(5,17,9,7)],{
-    color:'#ffd276',spawn:{x:0,y:11},obstacles:[w(-16,5,.7,15,{angle:.67}),w(-6,6,.7,11,{angle:.68}),w(12,4,.7,18,{angle:.7}),w(2,-5,.7,15,{angle:-.72})],
+    color:'#ffd276',wind:1.7,spawn:{x:0,y:11},obstacles:[w(-16,5,.7,15,{angle:.67}),w(-6,6,.7,11,{angle:.68}),w(12,4,.7,18,{angle:.7}),w(2,-5,.7,15,{angle:-.72})],
     hazards:[{kind:'rebound',path:'bounce',x:0,y:2,range:20,rangeY:8,speed:.4,radius:.47},{kind:'rebound',path:'bounce',x:0,y:2,range:19,rangeY:7,speed:.52,phase:2,radius:.47}],
   }),
   classic('Shift-o-Rama','shifting','Colored bulkheads slide in opposite directions. Thread their gaps.',[p(1,-20,11),p(2,-19,-11),p(3,-8,11),p(4,0,-11,7),p(5,8,11),p(6,19,-11),p(7,20,11)],{
@@ -112,9 +115,12 @@ for(const [index,level]of LEVELS.entries()){
   const cache=[3,9,12,16,23].includes(index)?'F':index===27?1:null;
   if(cache===null)level.pads=level.pads.filter(p=>p.id!=='F');
   level.fuelCanisters=cache===null?[]:[{id:'reserve',padId:cache,amount:index===12?45:35}];
+  if(level.theme==='moving'){for(const pad of level.pads)if(pad.motion)pad.motion.stepped=true;for(const beam of level.beams)beam.stepped=true;}
   if(level.theme==='beach')level.terrain=[umbrellaHull(level.pads[2])];
   if(['teleport','maze'].includes(level.theme)){
-    level.terrain=level.obstacles.map(caveWallOutline);level.obstacles=[];
+    level.terrain=level.obstacles.map(caveWallOutline);
+    if(level.returnWalls){level.returnTerrain=level.returnWalls.map(caveWallOutline);delete level.returnWalls;}
+    level.obstacles=[];
   }
 }
 

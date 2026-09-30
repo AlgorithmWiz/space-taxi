@@ -96,13 +96,20 @@ export function buildMechanisms(parent,level){
     sign(g,`${i+1} → ${p.to+1}`,0,-1.8,.3,p.color,2.4);
     return {g,ring,rim,face};
   });
+  let speedGate=null;
+  if(level.speedGate){
+    const spec=level.speedGate;
+    speedGate=box(parent,new THREE.MeshBasicMaterial({color:'#f0c18d',transparent:true,opacity:.18,depthWrite:false}),spec.x,spec.y,.05,spec.w,.08,.2);
+    for(const side of [-1,1]){ball(parent,material('#e6bd83',.7),spec.x+side*spec.w/2,spec.y,.1,.13);sign(parent,'↓',side*22.3,spec.y+.9,-1,'#a89e91',1);}
+  }
   const switches=(level.switches||[]).map(s=>{
     const g=new THREE.Group();g.position.set(s.x,s.y,0);parent.add(g);
     const gem=add(g,new THREE.OctahedronGeometry(.43),material('#e3ffe2',1.7));
     const crystal=new THREE.Group();g.add(crystal);crystal.add(gem);replaceModelProp(crystal,'crystalSwitch',{bounds:new THREE.Box3(new THREE.Vector3(-.6,-.6,-.15),new THREE.Vector3(.6,.6,.15))});const indicator=torus(g,material('#c6f778',1),0,0,.25,.85,.025);
     sign(g,s.label,0,-1.2,.5,'#dcf5c8',2.2);return {g,gem,crystal,indicator,spec:s};
   });
-  return {update(time,switchFlags,resetTime){
+  return {update(time,switchFlags,resetTime,speedGateOpen=false){
+    if(speedGate)speedGate.visible=!speedGateOpen;
     for(const b of beams){
       const segments=beamSegments(b.spec,time,switchFlags,resetTime);
       b.meshes.forEach((m,i)=>{const s=segments[i];m.visible=!!s&&s.ax===undefined;if(m.visible){m.position.set(s.x,s.y,.05);m.scale.set(Math.max(.01,s.w),Math.max(.01,s.h),['shutter','curtain'].includes(b.spec.kind)?1.2:.22);}});

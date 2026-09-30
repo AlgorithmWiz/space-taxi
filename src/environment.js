@@ -2,11 +2,18 @@
 export const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 export const mod = (n, d) => ((n % d) + d) % d;
 export const EXIT = 'EXIT';
+// Short stationary windows between eased chain steps allow deliberate touchdowns.
+function motionPhase(phase,stepped){
+  if(!stepped)return {angle:phase,rate:1};
+  const cell=.16,step=Math.floor(phase/cell),fraction=phase/cell-step;
+  const t=clamp((fraction-.6)/.4,0,1);
+  return {angle:(step+t*t*(3-2*t))*cell,rate:fraction<=.6?0:6*t*(1-t)/.4};
+}
 export function padPose(pad, time = 0) {
-  const m = pad.motion || {}, phase = time * (m.speed || .35) + (m.phase || 0);
+  const m = pad.motion || {}, phase = motionPhase(time * (m.speed || .35) + (m.phase || 0),m.stepped);
   const growth = pad.growAt === undefined ? 1 : clamp((time - pad.growAt) / 2, 0, 1);
   const leaf=pad.kind==='leaf',side=Math.sign(pad.x),growing=leaf&&growth>0&&growth<1;
-  return { x: (leaf?side*(.55+pad.w*growth/2):pad.x) + Math.sin(phase) * (m.x || 0), y: pad.y + Math.sin(phase) * (m.y || 0), vx: growing?side*pad.w/4:Math.cos(phase) * (m.x || 0) * (m.speed || .35), vy: Math.cos(phase) * (m.y || 0) * (m.speed || .35), w: pad.w * growth, active: growth === 1, growth };
+  return { x: (leaf?side*(.55+pad.w*growth/2):pad.x) + Math.sin(phase.angle) * (m.x || 0), y: pad.y + Math.sin(phase.angle) * (m.y || 0), vx: growing?side*pad.w/4:phase.rate * Math.cos(phase.angle) * (m.x || 0) * (m.speed || .35), vy: phase.rate * Math.cos(phase.angle) * (m.y || 0) * (m.speed || .35), w: pad.w * growth, active: growth === 1, growth };
 }
 export const windAngle=time=>-.055*Math.sin(time*.65)-.016*Math.sin(time*1.8);
 export function obstaclePose(o,time=0){
@@ -94,7 +101,7 @@ export function beamSegments(b, time, switches = new Set(), resetTime = 0) {
   if (b.ax !== undefined) return [{ ax: b.ax, ay: b.ay, bx: b.bx, by: b.by, radius: b.width || .12 }];
   if (b.curtain) { const len = clamp((clock - 2.8) * 1.4, 0, 23); return len > .05 ? [{ x: b.x, y: 12 - len / 2, w: b.w || 1, h: len }] : []; }
   if (!b.gap) return [{ x: b.x || 0, y: b.y || 0, w: b.w || .2, h: b.h || .2 }];
-  const center = (b.center || 0) + Math.sin(clock * b.speed + (b.phase || 0)) * (b.range || 0), min = b.min ?? -23.5, max = b.max ?? 23.5;
+  const center = (b.center || 0) + Math.sin(motionPhase(clock * b.speed + (b.phase || 0),b.stepped).angle) * (b.range || 0), min = b.min ?? -23.5, max = b.max ?? 23.5;
   const left = Math.max(min, center - b.gap / 2), right = Math.min(max, center + b.gap / 2);
   return [...(left > min ? [{ x: (min + left) / 2, y: b.y, w: left - min, h: b.h || .16 }] : []), ...(right < max ? [{ x: (right + max) / 2, y: b.y, w: max - right, h: b.h || .16 }] : [])];
 }

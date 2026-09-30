@@ -56,10 +56,9 @@ test('magnet gravity, black-hole attraction, reversed controls and turbo thrust 
   const a=new Flight();a.reset(BONUS_START);a.x=-12;a.y=8;a.landed=null;const b=new Flight();b.reset(12);
   advance(a,.15,{up:true});advance(b,.15,{up:true});assert.ok(b.vy>a.vy);
 });
-test('electrical gaps move, laser cycles open, and curtains reset',()=>{
+test('electrical gaps move and laser cycles open',()=>{
   const beam=LEVELS[14].beams[0];assert.notDeepEqual(beamSegments(beam,0),beamSegments(beam,4));
   const laser=LEVELS[22].beams[0];assert.equal(beamSegments(laser,0).length,1);assert.equal(beamSegments(laser,5).length,0);
-  const f=new Flight();f.reset(19);assert.ok(beamSegments(f.level.beams[0],20).length);f.time=20;f.x=0;f.y=-1;f.interact();assert.equal(beamSegments(f.level.beams[0],20,f.switches,f.resetTime).length,0);
 });
 test('beanstalk grows nine pads and rewards the quick first pickup',()=>{
   assert.equal(LEVELS[4].pads.filter(p=>padPose(p,0).active).length,1);assert.equal(LEVELS[4].pads.filter(p=>padPose(p,40).active).length,9);

@@ -13,7 +13,7 @@ import { FareWallet, WALLET_KEY } from './wallet.js';
 import { Garage } from './garage.js';
 import { approachingPickup, rideCallObstructs } from './ride-call.js';
 import { debugEnabled, adjacentDebugLevel } from './debug.js';
-import { modelStatus, importedProps, modelCacheInfo } from './model-assets.js';
+import { modelStatus, importedProps, modelCacheInfo, prepareCoreModels, settleModelLoads, prefetchModelFiles } from './model-assets.js';
 
 const $ = id => document.getElementById(id);
 const debug = debugEnabled(location.search);
@@ -27,6 +27,28 @@ const keys = new Set(), touch = new Set();
 let world, flight, mode = 'menu', selected = 0, toastTime = 0, manualPaused = false, best = 0;
 let progress = parseProgress(null), atlasTab = 0;
 let hailKey='',nextHail=0,hailAfter=0;
+let sceneLoading=true,sceneTicket=0;
+async function prepareScene(){
+  const ticket=++sceneTicket;sceneLoading=true;keys.clear();touch.clear();
+  $('scene-loading').classList.remove('hidden');
+  $('scene-loading-detail').textContent=LEVELS[world.index].name;
+  document.getElementById('scene').setAttribute('aria-busy','true');
+  try{
+    await prepareCoreModels(LEVELS[world.index].routes.map((_,i)=>riderFor(world.index,i).name));await settleModelLoads(world.levelGroup);
+    if(ticket!==sceneTicket)return;
+    world.update(0,performance.now()/1000,flight,mode==='menu',true);
+    await world.renderer.compileAsync(world.scene,world.camera);
+    if(ticket!==sceneTicket)return;
+    // Render a complete frame with uploaded textures while the cover is opaque.
+    world.update(0,performance.now()/1000,flight,mode==='menu',true);
+    await new Promise(requestAnimationFrame);
+    if(ticket!==sceneTicket)return;
+    sceneLoading=false;$('scene-loading').classList.add('hidden');
+    document.getElementById('scene').setAttribute('aria-busy','false');
+    prefetchModelFiles();
+  }catch(error){if(ticket===sceneTicket){sceneLoading=false;$('scene-loading').classList.add('hidden');fail(error);}}
+}
+
 try { progress = parseProgress(localStorage.getItem(PROGRESS_KEY)); } catch {}
 try { best = Number(localStorage.getItem('space-taxi-best')) || 0; } catch {}
 const formatScore = value => String(Math.floor(value)).padStart(6, '0');
@@ -48,7 +70,7 @@ function recordCompletion() {
   saveProgress();
 }
 function selectLevel(index) {
-  selected = index; world.setLevel(index);
+  selected = index; world.setLevel(index); prepareScene();
   syncDebugLevel(index);
   $('departure-label').textContent = `${index < 24 ? `DEPARTURE ${padNumber(index + 1)}` : 'BONUS DEPARTURE'} · ${LEVELS[index].name.toUpperCase()}`;
   document.querySelectorAll('[data-sector]').forEach(card => {
@@ -127,7 +149,7 @@ function handleEvent(event) {
   if (!world || !flight) return;
   audio.effect(event.type);
   switch (event.type) {
-    case 'sector': hailKey='';hailAfter=0;world.setLevel(event.index); makeLabels(); updateMission(); syncDebugLevel(event.index); if(!debug) progress.checkpoint = checkpoint(flight); saveProgress(); break;
+    case 'sector': hailKey='';hailAfter=0;world.setLevel(event.index);prepareScene(); makeLabels(); updateMission(); syncDebugLevel(event.index); if(!debug) progress.checkpoint = checkpoint(flight); saveProgress(); break;
     case 'pickup': toast(`${riderFor(flight.sector,flight.routeIndex).name} aboard. Pad ${event.destination}, please!`); audio.say(event.destination===EXIT?'Up, please!':`Pad ${event.destination}, please.`,riderFor(flight.sector,flight.routeIndex)); updateMission(); break;
     case 'delivery': {const rider=riderFor(flight.sector,event.riderIndex);toast(`${rider.name}: “${rider.thanks}” +${event.earned} credits`, false, 3); world.burst(flight.x, flight.y + .5, 'green', 32);world.disembark(flight,event.pad,event.riderIndex); audio.say(rider.thanks,rider);hailAfter=flight.time+4.5; saveBest(); updateMission(); break;}
     case 'fare-earned': wallet.credit(event); garage?.refresh(); break;
@@ -135,6 +157,8 @@ function handleEvent(event) {
     case 'fuel-collected': {toast(`Fuel canister collected: +${Math.round(event.amount)}%. Cache is now empty.`,false,3);const item=flight.level.fuelCanisters.find(item=>item.id===event.id);const label=document.querySelector(`[data-pad="${item.padId}"] small`);if(label)label.textContent='CACHE EMPTY';break;}
     case 'teleport': world.burst(event.x, event.y, 'blue', 24); toast('Portal transit complete.', false, 1.8); break;
     case 'switch': toast(event.reset ? 'Curtains retracted. Make your move!' : `Switch ${event.label} toggled.`, false, 2.5); break;
+    case 'puzzle-change': toast('Delivery complete. The chamber doors have shifted.',false,3); break;
+    case 'speed-gate': toast(event.open?'Gate cleared. Choose your upper landing.':event.returnOnly?'Side passages are for the return. Enter through the center gate.':'More upward speed to break through!',!event.open,2); break;
     case 'rebound': toast('Rebound! Correct your drift.', true, 1.8); break;
     case 'crash': world.explode(event.x,event.y,event.vx,event.vy);audio.stopVoice();hailAfter=flight.time+4; toast(event.reason, true, 4); break;
     case 'respawn': toast('Fresh taxi. Same determination.', false, 2.5); updateMission(); break;
@@ -331,6 +355,7 @@ function updateHud() {
   }
 }
 function fail(error) {
+  sceneLoading=false;$('scene-loading').classList.add('hidden');
   console.error(error); $('load-error').classList.remove('hidden');
   $('error-message').textContent = `Please use a browser with WebGL 2 enabled. ${error.message || error}`;
 }
@@ -343,7 +368,7 @@ try {
   function frame(now) {
     requestAnimationFrame(frame);
     const dt = Math.min((now - last) / 1000, .05); last = now;
-    if (mode === 'playing') {
+    if (mode === 'playing' && !sceneLoading) {
       const input = {};
       for (const code of keys) if (mapping[code]) input[mapping[code]] = true;
       for (const control of touch) input[control] = true;
@@ -359,14 +384,15 @@ try {
       if (toastTime > 0) { toastTime -= dt; if (toastTime <= 0) $('toast').classList.add('hidden'); }
     } else { accumulator = 0; audio.thrust(0); }
     audio.setState(mode,document.hidden);
-    world.update(dt, now / 1000, flight, mode === 'menu', mode !== 'menu' && mode !== 'playing');
+    world.update(dt, now / 1000, flight, mode === 'menu', sceneLoading || (mode !== 'menu' && mode !== 'playing'));
     hudClock += dt;
     if (mode !== 'menu' && hudClock >= .05) { updateHud(); hudClock = 0; }
   }
+  prepareScene();
   requestAnimationFrame(frame);
   // Read-only telemetry makes browser smoke checks and issue reports reproducible.
   window.spaceTaxi = Object.freeze({
-    snapshot: () => ({ modelCache: modelCacheInfo(), landingGearExtension: world.importedTaxi?.userData.gearExtension, importedProps: importedProps(world.levelGroup), models: { ...modelStatus }, importedTaxi: !!world.importedTaxi?.visible, importedPassengers: world.padObjects.filter(p=>p.person.visible&&p.person.userData.modelObject).map(p=>p.person.userData.modelName), mode, debug, sector: flight.sector, x: flight.x, y: flight.y, vx: flight.vx, vy: flight.vy, gear: flight.gear, landed: flight.landed, fuel: flight.fuel, lives: flight.lives, score: flight.score, passenger: flight.passenger, target: flight.targetId, delivered: flight.delivered, exitOpen: flight.exitOpen, status: flight.status, renderer: world.renderer.info.render }),
+    snapshot: () => ({ sceneLoading, time:flight.time, speedGateOpen:flight.speedGateOpen, mazePhase:flight.level.returnTerrain?(flight.passenger?'return':'outbound'):null, modelCache: modelCacheInfo(), landingGearExtension: world.importedTaxi?.userData.gearExtension, importedProps: importedProps(world.levelGroup), models: { ...modelStatus }, importedTaxi: !!world.importedTaxi?.visible, importedPassengers: world.padObjects.filter(p=>p.person.visible&&p.person.userData.modelObject).map(p=>p.person.userData.modelName), mode, debug, sector: flight.sector, x: flight.x, y: flight.y, vx: flight.vx, vy: flight.vy, gear: flight.gear, landed: flight.landed, fuel: flight.fuel, lives: flight.lives, score: flight.score, passenger: flight.passenger, target: flight.targetId, delivered: flight.delivered, exitOpen: flight.exitOpen, status: flight.status, renderer: world.renderer.info.render }),
   });
   world.renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); if (mode === 'playing') showOverlay('paused'); fail(new Error('The graphics context was lost. Reload to restart.')); });
 } catch (error) { fail(error); }

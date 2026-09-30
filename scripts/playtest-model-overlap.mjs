@@ -8,7 +8,7 @@ try{
  for(const mode of ['imported','classic','failed']){
   const page=await browser.newPage({viewport:{width:960,height:640}}),errors=[];
   page.on('pageerror',e=>errors.push(String(e)));
-  if(mode==='failed')await page.route('**/assets/models/*.glb',route=>route.abort());
+  if(mode==='failed')await page.route('**/assets/models/*.glb*',route=>route.abort());
   await page.goto(`http://localhost:5188/tests/models.html${mode==='classic'?'?models=classic':''}`);
   await page.waitForFunction(()=>window.fixture);await page.evaluate(()=>fixture.render=false);
   for(const level of [0,1,5,6]){
@@ -19,7 +19,7 @@ try{
     props:fixture.props(),
     legacyPads:fixture.world.padObjects.map(p=>p.group.getObjectByName('legacy-pad-decorations').visible),
     obstacles:fixture.world.obstacleObjects.map(({group,obstacle})=>({material:obstacle.material,visible:group.visible})),
-    wallCount:fixture.world.levelGroup.children.filter(o=>o.name==='solid-jagged-cave'&&o.visible).length,
+    wallCount:fixture.world.terrainOutbound.children.filter(o=>o.name==='solid-jagged-cave'&&o.visible).length,
    }));
    assert(state.legacyPads.every(visible=>visible===(mode!=='imported')));
    if(level===1)assert.equal(state.obstacles.find(o=>o.material==='wood').visible,mode!=='imported');

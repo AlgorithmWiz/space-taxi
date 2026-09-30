@@ -38,9 +38,43 @@ function scheduleCleanup(){clearTimeout(cleanupTimer);cleanupTimer=setTimeout(tr
 function retain(name,root){users.set(name,(users.get(name)||0)+1);root.userData.modelLease=name;}
 export function releaseModelInstance(root){const name=root.userData.modelLease;if(!name)return;users.set(name,Math.max(0,(users.get(name)||1)-1));delete root.userData.modelLease;scheduleCleanup();}
 export function modelCacheInfo(){return {ready:cache.size,unused:[...cache.keys()].filter(n=>!users.get(n)).length,loading:active,queued:queue.length};}
+// Advance this revision when browser GLBs change; stale HTTP entries must not win.
+const assetURL=name=>new URL(`../assets/models/${files[name]}.glb?v=40d4582`,import.meta.url).href;
+async function loadAsset(name){
+  const response=await fetch(assetURL(name),{signal:AbortSignal.timeout(15000),cache:'force-cache'});
+  if(!response.ok)throw new Error(`Asset download failed (${response.status})`);
+  return loader.parseAsync(await response.arrayBuffer(),new URL('../assets/models/',import.meta.url).href);
+}
+// Keep recurring characters ready between fares; no late passenger download.
+let corePinned=false;
+export function prepareCoreModels(passengers=['Nova']){
+  if(!enabled)return Promise.resolve();
+  if(!corePinned){
+    for(const name of ['taxi','Nova','Juno','Atlas','Pip','Sol','Rae'])users.set(name,(users.get(name)||0)+1);
+    corePinned=true;
+  }
+  return Promise.all(['taxi',...new Set(passengers)].map(request));
+}
+export async function settleModelLoads(root){
+  // Wait only for this scene, never for speculative downloads from another level.
+  const names=new Set();root.traverse(o=>{if(o.userData.modelLease)names.add(o.userData.modelLease);});
+  await Promise.all([...names].map(request));await Promise.resolve();
+}
+let prefetchStarted=false;
+export function prefetchModelFiles(){
+  if(!enabled||prefetchStarted||navigator.connection?.saveData)return;
+  prefetchStarted=true;
+  // Warm the browser HTTP cache without retaining decoded scenes or GPU textures.
+  (async()=>{
+    for(const name of ['Nova','Juno','Atlas','Pip','Sol','Rae'])await request(name);
+    for(const name of Object.keys(files)){
+    if(cache.has(name))continue;
+    try{const r=await fetch(assetURL(name),{cache:'force-cache',priority:'low',signal:AbortSignal.timeout(15000)});if(r.ok)await r.arrayBuffer();}catch{}
+  }})();
+}
 function pump(){
-  while(active<2&&queue.length){const {name,resolve}=queue.shift();active++;
-    loader.loadAsync(new URL(`../assets/models/${files[name]}.glb`,import.meta.url).href).then(asset=>{
+  while(active<4&&queue.length){const {name,resolve}=queue.shift();active++;
+    loadAsset(name).then(asset=>{
       asset.scene.traverse(o=>{o.userData.sharedModelAsset=true;for(const material of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){if(material.isMeshStandardMaterial)material.metalness=Math.min(material.metalness,.45);}});cache.set(name,asset);modelStatus[name]='ready';resolve(asset);
     }).catch(error=>{modelStatus[name]='fallback';console.warn(`Using original ${name} model:`,error.message);resolve(null);}).finally(()=>{active--;pump();scheduleCleanup();});
   }

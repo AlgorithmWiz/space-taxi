@@ -23,9 +23,9 @@ The visual target is a mature arcade remake: subdued illumination, worn material
 | 15 Electroids | 6:02–6:18 | Four moving electrical bands; ceramic insulators and recessed band housings. |
 | 16 Blizzard | 6:24–6:39 | Three pines, direct snow landings and falling flakes; continuous snowfield, alpine ridges and trees leaning with the gusts. |
 | 17 Interference | 6:45–7:04 | Brick relay towers and antenna dishes; mountain radio station with independently scanning and tilting parabolic dishes and faint signal pulses. |
-| 18 Taxi Maze | 7:11–7:33 | Tight maze channels; textured basalt cave passages, recessed chambers and restrained lamps. |
+| 18 Taxi Maze | 7:11–7:33 | Alternating basalt corridors change their openings after pickup; recessed framing stays outside the flight route. |
 | 19 The Switch | 7:40–8:05 | Return to the skyscraper layout with changed controls; a separate stormy skyline palette. |
-| 20 Fast Break | 8:11–8:16 | Timed vertical curtains; dark fabric folds, overhead lintel and timing hardware. |
+| 20 Fast Break | 8:11–8:16 | Central speed barrier; recessed velocity-test machinery and a clear run-up area. |
 | 21 Rebound | 8:22–8:36 | Sloping baffles and bouncing balls; angled test rails and bumper machinery. |
 | 22 Shift-o-Rama | 8:43–8:57 | Horizontally shifting barriers; separate guide columns, recessed tracks and drive wheels. |
 | 23 Lasers | 9:03–9:21 | Chambers and timed vertical beams; laser enclosure with visible emitter housings. |
@@ -35,9 +35,9 @@ The visual target is a mature arcade remake: subdued illumination, worn material
 | 27 Crystal drift | Original bonus | Enclosed amethyst cavern with a deep rock rim, side chambers, faceted mineral growth and distant drips. |
 | 28 Solar refinery | Original bonus | Furnace tones, industrial stacks and a distant sun. |
 
-The layout and gameplay simulation remain the remake’s existing adaptations. Most C64 stages have sparse black negative space; added settings sit behind the flight zone. Interactive obstacles continue to use the shared layout data, rather than deriving collision shapes from background art. Theme colors for hazards, portals and switches remain readable even where decorative colors are subdued.
+See the [current challenge review](original-challenge-review.md) for the corrected maze, speed barrier, gravity and puzzle mechanics. Layouts and timing remain adaptations. Most C64 stages have sparse black negative space; added settings sit behind the flight zone. Interactive obstacles continue to use the shared layout data, rather than deriving collision shapes from background art. Theme colors for hazards, portals and switches remain readable even where decorative colors are subdued.
 
-Verification: the 75 simulation/data tests include normal/debug gear starts and respawns, side-thruster locking, debug isolation, clear landing space, polygon-aware route connectivity, shell absorption, all nine leaf departures and one-time fuel collection. This does not substitute for a complete manual playthrough of every stage.
+Verification: the automated simulation/data tests include normal/debug gear starts and respawns, side-thruster locking, debug isolation, clear landing space, polygon-aware route connectivity, shell absorption, all nine leaf departures and one-time fuel collection. This does not substitute for a complete manual playthrough of every stage.
 
 Fuel canisters are a requested remake rule, not a claim of exact C64 fuel-service behavior. Supply is limited to Taxi Trainer, Shooting Stars, Turbo-Charged Taxi, Interference, On The Move and Solar Refinery. Each cache contains one fixed refill per attempt; it is not replenished when a taxi is lost.
 

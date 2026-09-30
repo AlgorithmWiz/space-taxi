@@ -8,7 +8,7 @@ import {padPose,intersectsRect,intersectsPolygon,obstaclePose} from '../src/envi
 // separately. Portal edges are part of the navigation graph.
 test('all 28 layouts connect the spawn, every pad, switches, and the exit',()=>{
   const failures=[],step=.5,minX=-23,minY=-12,nx=93,ny=58;
-  for(const level of LEVELS){
+  for(const level of LEVELS.flatMap(level=>level.returnTerrain?[level,{...level,name:level.name+' return',terrain:level.returnTerrain}]:[level])){
     const pads=level.pads.map(p=>({...p,...padPose(p,60)}));
     const solids=[...level.obstacles.map(o=>obstaclePose(o,60)),...pads.map(p=>({x:p.x,y:p.y-(p.depth||.64)/2,w:p.w,h:p.depth||.64}))];
     const safe=(x,y)=>!solids.some(o=>intersectsRect(x,y,o))&&!(level.terrain||[]).some(o=>intersectsPolygon(x,y,o));

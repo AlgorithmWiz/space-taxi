@@ -88,7 +88,14 @@ export class World {
         float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
         float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
         float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+vec2(7.1);a*=.5;}return v;}
-        void main(){vec2 uv=vUv;float n=fbm(uv*vec2(9.,19.)+vec2(time*.001,0.));vec3 c=mix(horizon,zenith,smoothstep(.25,.72,uv.y));c=mix(c,c*.55+vec3(.025),clouds*smoothstep(.32,.8,n)*.6);gl_FragColor=vec4(c,1.);}`,
+        void main(){vec2 uv=vUv;float n=fbm(uv*vec2(12.,30.)+vec2(time*.0005,0.));
+          vec3 c=mix(horizon,zenith,smoothstep(.28,.72,uv.y));
+          float cloud=smoothstep(.45,.75,n)*clouds;
+          c=mix(c,c*.56+vec3(.045,.05,.055),cloud*.65);
+          vec2 sun=(uv-vec2(.62,.54))*vec2(3.,5.);
+          c+=horizon*exp(-dot(sun,sun)*6.)*clouds*.24;
+          float haze=exp(-pow((uv.y-.43)*13.,2.));c+=horizon*haze*.09;
+          gl_FragColor=vec4(c,1.);}`,
     });
     this.skyMaterial = skyMaterial;
     mesh(new THREE.PlaneGeometry(260, 170), skyMaterial, this.scene, 0, 5, -80);
@@ -233,9 +240,13 @@ export class World {
     this.scene.fog.color.set(this.art.zenith);
     this.stars.visible=this.art.stars;
     this.rimLight.color.set(this.art.accent);
+    this.ambientLight.color.set(0xd0d7dd).lerp(new THREE.Color(this.art.accent),.16);
     this.deckMaterial=surfaceMaterial(this.art.material,this.art.surface);
     level.pads.forEach(pad => this.makeIsland(pad, level.color));
-    buildSolidTerrain(this.levelGroup,level);
+    this.terrainOutbound=new THREE.Group();this.levelGroup.add(this.terrainOutbound);
+    buildSolidTerrain(this.terrainOutbound,level);
+    this.terrainReturn=null;
+    if(level.returnTerrain){this.terrainReturn=new THREE.Group();this.levelGroup.add(this.terrainReturn);buildSolidTerrain(this.terrainReturn,{...level,terrain:level.returnTerrain});this.terrainReturn.visible=false;}
     for(const item of level.fuelCanisters||[])this.fuelObjects.push({item,group:buildFuelCanister(this.levelGroup,item)});
     for (const obstacle of level.obstacles) {
       if(obstacle.material==='tree')continue; // The wind-bent tree model supplies the trunk too.
@@ -307,6 +318,7 @@ export class World {
     this.stars.rotation.z = Math.sin(ambientTime * .015) * .014;
     this.stars.material.opacity = .84 + Math.sin(ambientTime * .35) * .06;
 
+    if(this.terrainReturn){this.terrainReturn.visible=!!flight.passenger;this.terrainOutbound.visible=!flight.passenger;}
     updateModelTaxi(this);
     this.taxi.visible = isMenu || (!flight.crashTime && flight.status !== 'over');
     if (isMenu) {
@@ -375,7 +387,7 @@ export class World {
       h.position.set(pos.x, pos.y, 0); h.visible = pos.active !== false;
       if (!isPaused) { h.rotation.x += dt * .3; h.rotation.z += dt * .4; }
     });
-    this.mechanisms.update(levelTime, isMenu ? new Set() : flight.switches, isMenu ? levelTime - 6 : flight.resetTime);
+    this.mechanisms.update(levelTime, isMenu ? new Set() : flight.switches, isMenu ? levelTime - 6 : flight.resetTime, !isMenu && flight.speedGateOpen);
     this.dressing.update(levelTime, ambientTime);
     this.exit.visible = !isMenu && flight.exitOpen;
     this.renderer.info.reset(); this.composer.render(dt);

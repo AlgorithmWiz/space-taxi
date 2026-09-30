@@ -15,6 +15,7 @@ export function thumbnail(level){
     if(s.ax!==undefined)g.append(shape('line',{x1:s.ax,y1:s.ay,x2:s.bx,y2:s.by,stroke:beam.color||level.color,'stroke-width':.16,opacity:.55}));
     else g.append(shape('rect',{x:s.x-s.w/2,y:s.y-s.h/2,width:s.w,height:s.h,fill:beam.color||'#ff7794',opacity:.6}));
   }
+  if(level.speedGate)g.append(shape('line',{x1:-4,y1:5,x2:4,y2:5,stroke:'#e6bd83','stroke-width':.2,opacity:.5}));
   for(const p of level.portals||[])g.append(shape('circle',{cx:p.x,cy:p.y,r:1.2,fill:'none',stroke:p.color,'stroke-width':.3}));
   for(const f of level.fields||[])if(f.kind==='gravity')g.append(shape('circle',{cx:f.x,cy:f.y,r:2.2,fill:'#050610',stroke:level.color,'stroke-width':.25}));
   g.append(shape('path',{d:'M-3 16h6',stroke:level.color,'stroke-width':.35}));return svg;

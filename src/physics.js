@@ -20,7 +20,7 @@ export class Flight {
     this.status='playing'; this.sector=index; this.level=LEVELS[index]; this.routes=this.level.routes.map(r=>[...r]);
     this.routeIndex=0; this.passenger=false; this.fareTime=0; this.exitOpen=false;
     this.time=0; this.serviceTime=0; this.crashTime=0; this.fuel=100;
-    this.switches=new Set(); this.switchContacts=new Set(); this.fuelUsed=new Set(); this.resetTime=0; this.portalCooldown=0; this.bounceCooldown=0;
+    this.switches=new Set(); this.switchContacts=new Set(); this.fuelUsed=new Set(); this.resetTime=0; this.speedGateOpen=false; this.portalCooldown=0; this.bounceCooldown=0;
     this.respawn(); this.emit('sector',{index});
   }
   respawn() {
@@ -28,13 +28,15 @@ export class Flight {
     this.x=spawn?.x ?? pose.x; this.y=spawn?.y ?? pose.y+SHIP.feet;
     this.vx=0; this.vy=0; this.landed=spawn?null:pad.id; this.gear=this.landed!==null;
     this.dockOffset=0; this.thrust=0; this.horizontal=0; this.fuel=Math.max(this.fuel,65);
-    this.invulnerable=1.5; this.portalCooldown=.8;
+    this.invulnerable=1.5; this.portalCooldown=.8; this.speedGateOpen=false;
   }
+  get terrain() { return this.passenger&&this.level.returnTerrain?this.level.returnTerrain:this.level.terrain||[]; }
   get route() { return this.routes[this.routeIndex]; }
   get targetId() { const id=this.route?.[this.passenger?1:0]; return id===EXIT?null:id; }
   get fare() { return Math.max(100,500-Math.floor(this.fareTime*3)); }
   get isFinalLevel() { return this.sector===MYSTERY_INDEX || this.sector===LEVELS.length-1; }
   get condition() {
+    if(this.level.speedGate)return this.speedGateOpen?'GATE OPEN · SIDE RETURN RESETS IT':'CENTER GATE · BUILD UPWARD SPEED';
     if (this.level.controls==='reverse') return 'REVERSED CONTROLS · S = UP';
     if (this.level.gravity<0) return 'REVERSED GRAVITY · S = DESCEND';
     if (this.level.thrustScale) return 'TURBO THRUST · SHORT TAPS';
@@ -124,6 +126,10 @@ export class Flight {
       else this.emit('pickup',{destination:this.targetId});
     } else {
       const earned=this.fare, riderIndex=this.routeIndex; this.score+=earned; this.delivered++; this.routeIndex++; this.passenger=false;
+      if(this.level.theme==='puzzle'){
+        const gates=this.level.beams.filter(b=>b.gate),gate=gates[this.routeIndex%gates.length]?.gate;
+        if(gate){this.switches.has(gate)?this.switches.delete(gate):this.switches.add(gate);this.emit('puzzle-change');}
+      }
       if(!this.route) this.exitOpen=true;
       this.emit('fare-earned',{earned,riderIndex,runId:this.runId,sector:this.sector});
       this.emit('delivery',{earned,pad:pad.id,riderIndex});
@@ -165,6 +171,18 @@ export class Flight {
     this.vx=clamp(this.vx,-limit,limit); this.vy=clamp(this.vy,-limit-2,limit);
     this.x+=this.vx*dt; this.y+=this.vy*dt;
     this.fuel=Math.max(0,this.fuel-dt*((up?1.55:0)+Math.abs(horizontal)*.6+(down?.45:0)+.075)*(this.level.fuelRate||1));
+    const gate=this.level.speedGate;
+    if(gate){
+      if(this.y<gate.resetBelow&&Math.abs(this.x-gate.x)>gate.w/2+SHIP.halfWidth)this.speedGateOpen=false;
+      const inGate=Math.abs(this.x-gate.x)<gate.w/2+SHIP.halfWidth;
+      const crossesUp=previousY+SHIP.roof<=gate.y&&this.y+SHIP.roof>=gate.y&&this.vy>0;
+      if(crossesUp&&Math.abs(this.x-gate.x)>20.5){
+        this.y=gate.y-SHIP.roof-.02;this.vy=-Math.max(1.5,this.vy*.65);this.emit('speed-gate',{open:false,returnOnly:true});
+      }else if(!this.speedGateOpen&&inGate&&crossesUp){
+        if(this.vy>=gate.minSpeed){this.speedGateOpen=true;this.y=gate.y+SHIP.feet+.12;this.vx=0;this.vy=0;this.emit('speed-gate',{open:true});}
+        else{this.y=gate.y-SHIP.roof-.02;this.vy=-Math.max(1.5,this.vy*.65);this.emit('speed-gate',{open:false});}
+      }
+    }
     const foot=this.gear?SHIP.feet:SHIP.halfHeight;
     for(const pad of this.level.pads) {
       const pose=padPose(pad,this.time), before=padPose(pad,previousTime);
@@ -186,7 +204,7 @@ export class Flight {
       }
     }
     for(const obstacle of this.level.obstacles) if(intersectsRect(this.x,this.y,obstaclePose(obstacle,this.time))) { this.crash('Give the scenery a little more room.'); return; }
-    for(const terrain of this.level.terrain||[]) if(intersectsPolygon(this.x,this.y,terrain)) { this.crash('Watch the jagged terrain and narrow passages.'); return; }
+    for(const terrain of this.terrain) if(intersectsPolygon(this.x,this.y,terrain)) { this.crash('Watch the jagged terrain and narrow passages.'); return; }
     if(this.checkDanger()) return;
     if(this.y>15.2&&this.exitOpen&&Math.abs(this.x)<4.2) { this.finishLevel(); return; }
     if(this.x<-24||this.x>24||this.y<-13.5||this.y>18) this.crash('Stay inside the flight zone.');
