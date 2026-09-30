@@ -180,19 +180,22 @@ export class World {
       }
     }
     const modelStyle = ['cloud','lounger','parasol','bastion'].includes(pad.style) ? pad.style : organic ? 'leaf' : pad.kind==='terrain' ? null : ({enamel:'enamel',felt:'felt',metal:'metal',ceramic:'metal',rock:'rock',stone:'stone',concrete:'concrete'})[art.material];
+    let modelReady = Promise.resolve(null);
     if (modelStyle) {
       const visual = new THREE.Group();
       // Isolate the replaceable surface from the number, passenger and target marker.
       for (const child of [...group.children]) if(!supports.includes(child)) visual.add(child);
       group.add(visual);
-      replaceModelProp(visual, modelStyle, {rotationY: modelStyle === 'lounger' ? Math.PI : 0, landingSurface:0});
+      modelReady = replaceModelProp(visual, modelStyle, {rotationY: modelStyle === 'lounger' ? Math.PI : 0, landingSurface:0});
     }
+    const legacyDecorations = new THREE.Group();
+    legacyDecorations.name = 'legacy-pad-decorations'; group.add(legacyDecorations);
     // Small painted touchdown brackets leave both the approach and pad silhouette clear.
     for(const side of [-1,1]){
-      box(group,markings,.06,.015,1.3,side*Math.min(2.2,pad.w*.3),.008,.05);
-      for(const z of [-.6,.7])box(group,markings,.45,.015,.06,side*(Math.min(2.2,pad.w*.3)-.18),.008,z);
+      box(legacyDecorations,markings,.06,.015,1.3,side*Math.min(2.2,pad.w*.3),.008,.05);
+      for(const z of [-.6,.7])box(legacyDecorations,markings,.45,.015,.06,side*(Math.min(2.2,pad.w*.3)-.18),.008,z);
     }
-    const number=mesh(new THREE.PlaneGeometry(1.55,.78),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#dad3bb'),transparent:true,depthWrite:false}),group,0,.01,.1);number.rotation.x=-Math.PI/2;
+    const number=mesh(new THREE.PlaneGeometry(1.55,.78),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#dad3bb'),transparent:true,depthWrite:false}),legacyDecorations,0,.01,.1);number.rotation.x=-Math.PI/2;
     if(modelStyle&&!['leaf','cloud','lounger','parasol'].includes(modelStyle))box(group,metal('#263238'),1.15,.56,.055,0,-.28,1.81);
     mesh(new THREE.PlaneGeometry(1.05,.52),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#d9d3c4'),transparent:true}),group,0,-.28,1.85);
     const pulse=box(group,new THREE.MeshBasicMaterial({color:theme,transparent:true,opacity:.22,depthWrite:false}),.16,.04,.02,0,-.17,1.82);
@@ -200,11 +203,12 @@ export class World {
     const beacon=new THREE.Group();group.add(beacon);
     const targetRing=mesh(new THREE.TorusGeometry(1.25,.025,5,48),glow(theme,.7),beacon,0,.06);targetRing.rotation.x=-Math.PI/2;
     if(!natural&&!special){
-      box(group,edge,.55,.28,.55,pad.w/2-.65,.14,-1.4);
-      for(let i=0;i<3;i++)box(group,markings,.04,.015,.4,pad.w/2-.8+i*.15,.29,-1.4);
+      box(legacyDecorations,edge,.55,.28,.55,pad.w/2-.65,.14,-1.4);
+      for(let i=0;i<3;i++)box(legacyDecorations,markings,.04,.015,.4,pad.w/2-.8+i*.15,.29,-1.4);
     }
+    modelReady.then(model => { if(model) legacyDecorations.visible=false; });
     const person=this.makePerson(group,pad.w*.28);
-    this.padObjects.push({group,beacon,ring:targetRing,person,pad,pulse,halo});
+    this.padObjects.push({group,beacon,ring:targetRing,person,pad,pulse,halo,modelReady});
   }
   makePerson(parent, x) {
     return createPassenger(parent,x);
@@ -250,7 +254,13 @@ export class World {
       this.hazardObjects.push(h);
     }
     this.mechanisms = buildMechanisms(this.levelGroup, level);
-    this.dressing = buildDressing(this.levelGroup, level);
+    this.dressing = buildDressing(this.levelGroup, level, {obstacles:this.obstacleObjects});
+    // The imported lounger includes its backrest; retain the obstacle only for physics.
+    if(level.theme==='beach'){
+      const lounger=this.padObjects.find(({pad})=>pad.style==='lounger');
+      const backs=this.obstacleObjects.filter(({obstacle})=>obstacle.material==='wood');
+      lounger?.modelReady.then(model=>{if(model)for(const {group} of backs)group.visible=false;});
+    }
     this.exit = new THREE.Group(); this.exit.position.set(0, 15.4, 0); this.levelGroup.add(this.exit);
     const gateMat = glow(level.color, 1.6);
     box(this.exit, gateMat, 7.7, .08, .09, 0, .8);

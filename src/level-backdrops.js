@@ -69,7 +69,7 @@ function tree(g,x,y,z,h,color,snow=false){
   return root;
 }
 
-export function buildLevelBackdrop(parent,level){
+export function buildLevelBackdrop(parent,level,{obstacles=[]}={}){
   const g=new THREE.Group();g.name=`original-motif-${level.theme}`;parent.add(g);
   const p=artFor(level),theme=level.theme,animations=[],ambient=[];
   const iron=surface('#333b40',.45),steel=surface('#6e777c',.5),dark=surface('#20272c'),warm=surface('#8d7651');
@@ -133,7 +133,12 @@ export function buildLevelBackdrop(parent,level){
     for(const x of [-17,17])box(tableModel,surface('#665444'),x,-9,-2,.5,8,.5);
     box(tableModel,surface('#30483e'),0,-5.2,-3,40,.15,6);
     for(const z of [-5.8,-.8])box(tableModel,surface('#b7b7a5'),0,-5.08,z,39,.025,.06);
-    replaceModelProp(tableModel,'table',{bounds:new THREE.Box3(new THREE.Vector3(-20,-13,-6),new THREE.Vector3(20,-5.05,0))});
+    // One tabletop owns the visible surface; the rail's collision rectangle stays in physics.
+    const rails=obstacles.filter(({obstacle})=>obstacle.material==='table');
+    const tableTop=rails.length?rails[0].obstacle.y+rails[0].obstacle.h/2:-5.05;
+    replaceModelProp(tableModel,'table',{bounds:new THREE.Box3(new THREE.Vector3(-20,-13,-6),new THREE.Vector3(20,tableTop,0))}).then(model=>{
+      if(model)for(const {group} of rails)group.visible=false;
+    });
     for(const x of [-16,15]){
       const paddleModel=new THREE.Group();paddleModel.position.set(x,-3.7,-1);g.add(paddleModel);
       const paddle=sphere(paddleModel,surface('#6c5447'),0,0,0,1);paddle.scale.set(1.3,.1,.65);
@@ -143,10 +148,7 @@ export function buildLevelBackdrop(parent,level){
     for(let x=-33;x<=33;x+=6)box(g,surface('#473d32'),x,0,-17,.2,30,.2);
     placard(g,'TABLE 06 / MATCH IN PROGRESS',0,13,-16,19,'#b9ad93');
   }
-  if(theme==='teleport'){
-    const terrainModel=new THREE.Group();g.add(terrainModel);replaceModelProp(terrainModel,'teleportTerrain',{bounds:new THREE.Box3(new THREE.Vector3(-24,-14,-5),new THREE.Vector3(24,14,-3))});
-    for(const portal of level.portals){ring(g,iron,portal.x,portal.y,-2,1.65,.15);for(const side of [-1,1])box(g,steel,portal.x+side*1.9,portal.y,-3,.25,3.6,.3);}
-  }
+  // Teleport walls and rings are built once, from the actual collision layout.
   if(theme==='puzzle'||theme==='maze'){
     if(theme==='puzzle'){
       // Five octagonal bays around an open upper center, as in Puzzler.

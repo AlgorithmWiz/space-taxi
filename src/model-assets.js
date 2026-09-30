@@ -55,13 +55,13 @@ function request(name) {
 // Keep collision dimensions and the procedural fallback owned by the level.
 // Assets are cached across levels, while instances are attached only to living roots.
 export function replaceModelProp(root, name, {rotationY = 0, rotationZ = 0, bounds = null, keep = [], landingSurface = null} = {}) {
-  if (!enabled) return;
+  if (!enabled) return Promise.resolve(null);
   retain(name,root);
   const fallback = root.children.filter(child=>!keep.includes(child));
   const probe = root.clone(true);
   probe.position.set(0,0,0); probe.rotation.set(0,0,0); probe.scale.setScalar(1);
   const target = bounds || new THREE.Box3().setFromObject(probe);
-  request(name).then(asset => {
+  return request(name).then(asset => {
     if (!asset || root.userData.modelDisposed) return;
     const object = asset.scene.clone(true), holder = new THREE.Group();
     object.rotation.y = rotationY; object.rotation.z = rotationZ; holder.add(object);
@@ -79,6 +79,7 @@ export function replaceModelProp(root, name, {rotationY = 0, rotationZ = 0, boun
     holder.name = `Meshy ${name}`; root.add(holder);
     fallback.forEach(child => { child.visible = false; });
     root.userData.importedProp = name; scheduleCleanup();
+    return holder;
   });
 }
 
