@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {replaceModelProp} from './model-assets.js';
 
 function candyMap(color,spiral=false){
   const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
@@ -34,6 +35,7 @@ export function buildCandyCane(parent,spec){
   for(const t of [0,1]){
     const cap=new THREE.Mesh(new THREE.SphereGeometry(radius,24,16),new THREE.MeshPhysicalMaterial({color:'#e5d7b5',roughness:.28,clearcoat:.7}));cap.position.copy(curve.getPoint(t));parent.add(cap);
   }
+  replaceModelProp(parent, 'candy');
   return body;
 }
 
@@ -46,5 +48,6 @@ export function buildLollipop(parent,{x,y,r,color,tilt=0}){
   // A fine rolled edge gives the boiled sweet a rounded profile without a glowing rim.
   const edge=new THREE.Mesh(new THREE.TorusGeometry(r*.986,.035,8,80),new THREE.MeshStandardMaterial({color,roughness:.35}));g.add(edge);
   const collar=new THREE.Mesh(new THREE.CylinderGeometry(.14,.12,.45,14),new THREE.MeshStandardMaterial({color:'#d0c3a3',roughness:.5}));collar.position.y=-r+.02;g.add(collar);
+  replaceModelProp(g, 'lollipop');
   return g;
 }

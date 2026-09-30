@@ -1,0 +1,18 @@
+{
+  "id": "lollipop",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_lollipop-followup_01a0e96e",
+  "source_task_id": "01a0e96e-e5ac-71b2-a946-11e1bd16be04",
+  "remesh": {
+    "task_id": "01a0f33a-8364-723b-9313-f4ab8ef509ab",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_lollipop-followup_01a0e96e/lollipop-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_lollipop-followup_01a0e96e/lollipop-remesh-preview.png"
+    },
+    "triangles": 1454,
+    "bytes": 40259684,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

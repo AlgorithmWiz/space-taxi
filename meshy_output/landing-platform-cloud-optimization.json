@@ -1,0 +1,18 @@
+{
+  "id": "landing-platform-cloud",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_landing-platform-cloud-followu_01a0e96f",
+  "source_task_id": "01a0e96f-0206-7143-9c80-e53938fc2609",
+  "remesh": {
+    "task_id": "01a0f33a-83c8-716a-b85d-b454f974b522",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_landing-platform-cloud-followu_01a0e96f/landing-platform-cloud-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_landing-platform-cloud-followu_01a0e96f/landing-platform-cloud-remesh-preview.png"
+    },
+    "triangles": 3590,
+    "bytes": 38227632,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

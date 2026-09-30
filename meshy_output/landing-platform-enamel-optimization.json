@@ -1,0 +1,18 @@
+{
+  "id": "landing-platform-enamel",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_landing-platform-enamel-follow_01a0e96d",
+  "source_task_id": "01a0e96d-273b-74b5-bbd7-797a9818a318",
+  "remesh": {
+    "task_id": "01a0f338-52d2-71ee-ac4c-8d8228f5a0ce",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_landing-platform-enamel-follow_01a0e96d/landing-platform-enamel-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_landing-platform-enamel-follow_01a0e96d/landing-platform-enamel-remesh-preview.png"
+    },
+    "triangles": 805,
+    "bytes": 37092456,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

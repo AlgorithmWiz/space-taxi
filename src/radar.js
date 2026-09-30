@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {replaceModelProp} from './model-assets.js';
 
 function part(g,geo,mat,x=0,y=0,z=0){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);g.add(m);return m;}
 function rod(g,mat,a,b,r=.025){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),m=part(g,new THREE.CylinderGeometry(r,r,start.distanceTo(end),8),mat);m.position.copy(start).add(end).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());}
@@ -23,6 +24,7 @@ export function buildRadarDish(parent,x,y,index=0){
     const wave=part(dish,new THREE.TorusGeometry(1,.014,5,48),new THREE.MeshBasicMaterial({color:'#b8c0ae',transparent:true,opacity:0,depthWrite:false}),0,0,1.2);
     waves.push(wave);
   }
+  replaceModelProp(base, 'radar', {bounds: new THREE.Box3(new THREE.Vector3(-1.1,0,-1), new THREE.Vector3(1.1,4.2,1.2))});
   return {update(time){
     const phase=time*.42+index*1.63;
     swivel.rotation.y=Math.sin(phase)*1.08;

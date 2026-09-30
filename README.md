@@ -103,11 +103,19 @@ The taxi has a detailed utilitarian body, a swept dark-glass canopy, warm headli
 
 Landing surfaces use materials suited to their setting: cloud and canvas on the beach, foliage on the beanstalk, continuous snow in Blizzard, felt on the table-tennis stage, stone in the caves and textured metal in the machinery stages. Painted touchdown brackets and small destination lights keep landing surfaces readable. Waves, drifting snow, spores, portal motion and machinery provide scene-specific animation. The decorative orbital arch and shared cyberpunk city backdrop have been removed. Decorative ambient motion respects the system’s reduced-motion preference.
 
+## Imported Meshy models
+
+The classic taxi, all six passengers, and seven prop types now use the redesigned Meshy models. Props appear in Short -n- Sweet (platform, candy cane and lollipops), The Beach (cloud, lounger and parasol) and Interference (radar dishes). The fuel canister keeps its procedural model because the reduced Meshy version has surface artifacts. Other environments and purchased taxi skins keep their existing models.
+
+Browser derivatives in `assets/models/` total about 30 MiB versus 430 MiB for their source GLBs. Textures are capped at 1024 pixels for the taxi/passengers and 512 for props; meshes and animation tracks are retained. Assets load on demand from the same site, with procedural fallback if loading fails. `?models=classic` selects the original visuals. Source files and task history remain in `meshy_output/`; `scripts/prepare-models.py` rebuilds the derivatives with Python and Pillow.
+
+The characters use Meshy walking clips during boarding and departure. Their evaluated skinned feet are grounded each frame, including after resizing and stage transforms. Waiting poses and radio portraits retain the current base pose and procedural portraits, respectively. The classic taxi's baked landing feet remain visually extended.
+
 ## Passengers, explosions, and music
 
-Six recurring passengers have distinct names, suit colors, occupations, calls, and thank-you lines. Their models use adult proportions, shaped faces behind curved visors, hair or facial hair, blinking eyes, helmet radios, oxygen tanks and hoses, articulated fingers, elbows and knees, and layered boots. Fabric weave, seams, pockets, straps and crew badges add clothing detail. Job-specific equipment distinguishes the botanist’s plant canister, courier’s parcel, engineer’s wrench, tourist’s camera, cook’s work jacket, and medic’s kit. The ride callout uses a 144-pixel portrait rendered from the same model.
+Six recurring passengers have distinct names, suit colors, occupations, calls, and thank-you lines. The procedural fallback models use adult proportions, shaped faces behind curved visors, hair or facial hair, blinking eyes, helmet radios, oxygen tanks and hoses, articulated fingers, elbows and knees, and layered boots. Fabric weave, seams, pockets, straps and crew badges add clothing detail. Job-specific equipment distinguishes the botanist’s plant canister, courier’s parcel, engineer’s wrench, tourist’s camera, cook’s work jacket, and medic’s kit. The ride callout uses a 144-pixel portrait rendered from the same model.
 
-Passengers breathe, shift their weight, glance toward the taxi and hail intermittently. Articulated strides and counter-swinging arms animate boarding and departure. Browser speech gives each passenger a different pitch; callouts remain visible when sound is muted or speech is unavailable.
+Procedural fallback passengers breathe, shift their weight, glance toward the taxi and hail intermittently. Articulated strides and counter-swinging arms animate boarding and departure. Browser speech gives each passenger a different pitch; callouts remain visible when sound is muted or speech is unavailable.
 
 Crashes produce a bright fireball, two expanding shockwaves, tumbling taxi fragments, sparks, a brief light flash and camera shake, then drifting smoke. The effect reuses a bounded mesh pool, and its animation freezes when paused.
 

@@ -1,0 +1,18 @@
+{
+  "id": "landing-platform-lounger",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185329_landing-platform-lounger-follo_01a0e96f",
+  "source_task_id": "01a0e96f-b059-71e1-86fa-96f82ac13611",
+  "remesh": {
+    "task_id": "01a0f33c-637b-707f-8e70-9349fd605b73",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185329_landing-platform-lounger-follo_01a0e96f/landing-platform-lounger-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185329_landing-platform-lounger-follo_01a0e96f/landing-platform-lounger-remesh-preview.png"
+    },
+    "triangles": 2296,
+    "bytes": 42168412,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

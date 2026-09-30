@@ -1,0 +1,209 @@
+{
+  "results": [
+    {
+      "key": "passenger-atlas-engineer-rigged",
+      "invalid": 0,
+      "minY": 2.4319289596124366e-7,
+      "maxHeight": 1.699999209548056,
+      "maxWidth": 1.2216668536640158,
+      "baseHeight": 1.699999209548056,
+      "animated": false,
+      "duration": 0.30000001192092896,
+      "render": {
+        "frame": 28,
+        "calls": 2,
+        "triangles": 10323,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-atlas-engineer-walking",
+      "invalid": 0,
+      "minY": -0.04905749723733441,
+      "maxHeight": 1.7204915363690525,
+      "maxWidth": 0.8082973333973966,
+      "baseHeight": 1.711282343950945,
+      "animated": true,
+      "duration": 1.0666667222976685,
+      "render": {
+        "frame": 165,
+        "calls": 2,
+        "triangles": 10323,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-atlas-engineer-running",
+      "invalid": 0,
+      "minY": -0.06832329462957502,
+      "maxHeight": 1.7060934002584611,
+      "maxWidth": 0.7096351037391333,
+      "baseHeight": 1.6438968163460337,
+      "animated": true,
+      "duration": 0.6666666865348816,
+      "render": {
+        "frame": 302,
+        "calls": 2,
+        "triangles": 10323,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-pip-tourist-rigged",
+      "invalid": 0,
+      "minY": -1.43076509191094e-7,
+      "maxHeight": 1.7000004352166727,
+      "maxWidth": 0.8232595306655104,
+      "baseHeight": 1.7000004352166727,
+      "animated": false,
+      "duration": 0.30000001192092896,
+      "render": {
+        "frame": 431,
+        "calls": 2,
+        "triangles": 10298,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-pip-tourist-walking",
+      "invalid": 0,
+      "minY": -0.034213529951951004,
+      "maxHeight": 1.7131394545163332,
+      "maxWidth": 0.7339591946035628,
+      "baseHeight": 1.706055993686381,
+      "animated": true,
+      "duration": 1.0666667222976685,
+      "render": {
+        "frame": 568,
+        "calls": 2,
+        "triangles": 10298,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-pip-tourist-running",
+      "invalid": 0,
+      "minY": -0.06549700408835397,
+      "maxHeight": 1.6820517871612493,
+      "maxWidth": 0.6273122827774987,
+      "baseHeight": 1.6177245964688443,
+      "animated": true,
+      "duration": 0.6666666865348816,
+      "render": {
+        "frame": 713,
+        "calls": 2,
+        "triangles": 10298,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-sol-cook-rigged",
+      "invalid": 0,
+      "minY": -1.974888216042788e-7,
+      "maxHeight": 1.7000006211938705,
+      "maxWidth": 0.9432955717703275,
+      "baseHeight": 1.7000006211938705,
+      "animated": false,
+      "duration": 0.30000001192092896,
+      "render": {
+        "frame": 857,
+        "calls": 2,
+        "triangles": 10320,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-sol-cook-walking",
+      "invalid": 0,
+      "minY": -0.04839783697328846,
+      "maxHeight": 1.720466822823193,
+      "maxWidth": 0.791459453283261,
+      "baseHeight": 1.714180110192846,
+      "animated": true,
+      "duration": 1.0666667222976685,
+      "render": {
+        "frame": 991,
+        "calls": 2,
+        "triangles": 10320,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-sol-cook-running",
+      "invalid": 0,
+      "minY": -0.0771236539942092,
+      "maxHeight": 1.6755103544331234,
+      "maxWidth": 0.6687823205932465,
+      "baseHeight": 1.6344060454291722,
+      "animated": true,
+      "duration": 0.6666666865348816,
+      "render": {
+        "frame": 1127,
+        "calls": 2,
+        "triangles": 10320,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-rae-medic-rigged",
+      "invalid": 0,
+      "minY": -3.764658945541996e-7,
+      "maxHeight": 1.7000006486783337,
+      "maxWidth": 0.9376587420561857,
+      "baseHeight": 1.7000006486783337,
+      "animated": false,
+      "duration": 0.30000001192092896,
+      "render": {
+        "frame": 1258,
+        "calls": 2,
+        "triangles": 10337,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-rae-medic-walking",
+      "invalid": 0,
+      "minY": -0.02715942645643992,
+      "maxHeight": 1.6990447303076948,
+      "maxWidth": 0.7326747426187554,
+      "baseHeight": 1.6970606004382964,
+      "animated": true,
+      "duration": 1.0666667222976685,
+      "render": {
+        "frame": 1400,
+        "calls": 2,
+        "triangles": 10337,
+        "points": 0,
+        "lines": 82
+      }
+    },
+    {
+      "key": "passenger-rae-medic-running",
+      "invalid": 0,
+      "minY": -0.04968510709794938,
+      "maxHeight": 1.6766696081102572,
+      "maxWidth": 0.638955312301883,
+      "baseHeight": 1.6150946025973767,
+      "animated": true,
+      "duration": 0.6666666865348816,
+      "render": {
+        "frame": 1541,
+        "calls": 2,
+        "triangles": 10337,
+        "points": 0,
+        "lines": 82
+      }
+    }
+  ],
+  "errors": []
+}

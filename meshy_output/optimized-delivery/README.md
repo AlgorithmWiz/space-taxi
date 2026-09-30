@@ -1,14 +1,14 @@
 # Optimized Space Taxi assets
 
-Completed: optimized taxi, optimized and rigged Nova and Juno, bundled walking and running GLBs.
+As of September 30, 2026: 15 models optimized and all six passengers rigged. Atlas, Pip, Sol and Rae each include optimized, rigged, walking and running GLBs. Eight props optimized in this batch: fuel canister, radar dish, enamel platform, candy cane, lollipop, cloud platform, lounger and parasol.
 
-Cost: 3 remesh tasks × 5 credits + 2 rigging tasks × 5 credits = 25 credits reported by completed tasks. Final balance: 0.
+This batch consumed 80 credits (12 remeshes and four rigs, five credits each). Verified remaining balance: 0. Including the earlier taxi/Nova/Juno batch, optimization and rigging have consumed 105 credits.
 
-Triangle counts: taxi 13,789; Nova 10,395; Juno 10,344. Textures retained. Each passenger has 24 rig joints.
+Validation: GLB headers and lengths, triangle counts, texture references, skins, joint/weight attributes and animation tracks checked. The four new passengers were played in Chromium/Three.js; no errors or invalid animated bounds were reported. Walking/running views were inspected. Rigging supplied no separate preview; gallery images are remesh renders.
 
-Validation: GLB headers/lengths, actual triangle counts, texture references, skins, joint/weight attributes, and animation presence checked. Optimized previews visually checked. Rigging tasks provided no new preview; included images are remesh-stage renders. Animation deformation has not been visually playtested. 4K textures remain large (roughly 43–47 MiB for optimized static files).
+Limitations: fuel-canister remeshing introduced visible triangular surface artifacts; keep using the original until repaired. Original 4K textures remain large. Animation feet dip approximately 2.7–7.7 cm beneath the reference floor and need grounding during game integration. The game now uses compact derivatives of the taxi, all six passengers and seven props, with runtime foot grounding. The fuel-canister remesh is excluded.
 
-33 other generated models remain unoptimized; four other passengers remain unrigged. Original files are unchanged. No game integration performed.
+21 of the 36 generated models remain unoptimized. All six passengers are rigged. See catalog.json for all current file locations, triangle counts, task IDs, resource types, projects and actual charges; batch-2026-09-30.json covers the latest batch only.
 
 ## Files and task trail
 

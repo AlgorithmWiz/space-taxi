@@ -1,0 +1,39 @@
+{
+  "importedProps": [
+    "enamel",
+    "candy",
+    "lollipop"
+  ],
+  "models": {
+    "enamel": "ready",
+    "candy": "ready",
+    "lollipop": "ready",
+    "taxi": "ready",
+    "Nova": "ready"
+  },
+  "importedTaxi": true,
+  "importedPassengers": [],
+  "mode": "sector-complete",
+  "debug": false,
+  "sector": 0,
+  "x": -0.06865355897438404,
+  "y": 15.202165737121303,
+  "vx": 0.010873016932599483,
+  "vy": 3.5940870484767466,
+  "gear": false,
+  "landed": null,
+  "fuel": 90.39864999999719,
+  "lives": 3,
+  "score": 730,
+  "passenger": false,
+  "delivered": 1,
+  "exitOpen": true,
+  "status": "sector-complete",
+  "renderer": {
+    "frame": 4785,
+    "calls": 1,
+    "triangles": 1,
+    "points": 0,
+    "lines": 0
+  }
+}

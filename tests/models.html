@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>Model integration checks</title><link rel="icon" href="../favicon.svg">
+<script type="importmap">{"imports":{"three":"../vendor/three/build/three.module.js","three/addons/":"../vendor/three/addons/"}}</script>
+<style>body{margin:0;background:#101820}canvas{display:block}</style><div id="scene"></div>
+<script type="module">
+import * as THREE from 'three';
+import {World} from '../src/world.js';
+import {Flight} from '../src/physics.js';
+import {riderFor} from '../src/riders.js';
+import {modelStatus,importedProps} from '../src/model-assets.js';
+const world=new World(document.getElementById('scene')),flight=new Flight();
+window.fixture={world,flight,modelStatus,level(index){flight.reset(index);world.setLevel(index);},props(){return importedProps(world.levelGroup)},ground(){const p=world.padObjects.find(p=>p.person.visible)?.person;if(!p?.userData.modelObject)return null;return new THREE.Box3().setFromObject(p.userData.modelObject,true).min.y-p.getWorldPosition(new THREE.Vector3()).y;},expected(){return riderFor(flight.sector,flight.routeIndex).name}};
+let last=performance.now();function frame(now){world.update(Math.min(.04,(now-last)/1000),now/1000,flight,false);last=now;requestAnimationFrame(frame);}requestAnimationFrame(frame);
+</script>

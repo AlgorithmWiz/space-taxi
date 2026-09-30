@@ -15,7 +15,7 @@ import { SKINS, applyTaxiSkin } from './skins.js';
 import { createTaxi } from './taxi.js';
 import { artFor } from './art-direction.js';
 import { surfaceMaterial } from './surface-materials.js';
-import { updateModelTaxi, updateModelPassenger } from './model-assets.js';
+import { updateModelTaxi, updateModelPassenger, replaceModelProp } from './model-assets.js';
 
 const random = (seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; })(1984);
 const metal = (color, roughness = .55, metalness = .35) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
@@ -39,7 +39,7 @@ function labelTexture(text, color = '#c9ff9a', size = 128) {
 }
 function disposeGroup(group) {
   const geometries = new Set(), materials = new Set(), textures = new Set();
-  group.traverse(o => { if(o.userData.modelMixer){o.userData.modelMixer.stopAllAction();o.userData.modelMixer.uncacheRoot(o.userData.modelObject);} if(o.userData.sharedModelAsset)return; if (o.geometry) geometries.add(o.geometry); if (o.material) for (const mat of Array.isArray(o.material) ? o.material : [o.material]) { materials.add(mat); if (mat.map) textures.add(mat.map); } });
+  group.traverse(o => { o.userData.modelDisposed = true; if(o.userData.modelMixer){o.userData.modelMixer.stopAllAction();o.userData.modelMixer.uncacheRoot(o.userData.modelObject);} if(o.userData.sharedModelAsset)return; if (o.geometry) geometries.add(o.geometry); if (o.material) for (const mat of Array.isArray(o.material) ? o.material : [o.material]) { materials.add(mat); if (mat.map) textures.add(mat.map); } });
   geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.clear();
 }
 
@@ -173,6 +173,14 @@ export class World {
         box(group,markings,.55,.14,.02,x,-.28,1.77);
         for(let i=0;i<3;i++)box(group,edge,.07,.14,.025,x-.18+i*.18,-.28,1.79);
       }
+    }
+    const modelStyle = ['cloud','lounger','parasol'].includes(pad.style) ? pad.style : art.material === 'enamel' && !special ? 'enamel' : null;
+    if (modelStyle) {
+      const visual = new THREE.Group();
+      // Isolate the replaceable surface from the number, passenger and target marker.
+      for (const child of [...group.children]) visual.add(child);
+      group.add(visual);
+      replaceModelProp(visual, modelStyle, {rotationY: modelStyle === 'lounger' ? Math.PI : 0});
     }
     // Small painted touchdown brackets leave both the approach and pad silhouette clear.
     for(const side of [-1,1]){

@@ -1,0 +1,18 @@
+{
+  "id": "landing-platform-parasol",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185349_landing-platform-parasol-follo_01a0e970",
+  "source_task_id": "01a0e970-659f-71bb-bdbc-a23854a0e91f",
+  "remesh": {
+    "task_id": "01a0f33c-a4b1-7143-8bd9-6e5e4405368d",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185349_landing-platform-parasol-follo_01a0e970/landing-platform-parasol-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185349_landing-platform-parasol-follo_01a0e970/landing-platform-parasol-remesh-preview.png"
+    },
+    "triangles": 2957,
+    "bytes": 44474788,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

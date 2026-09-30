@@ -1,0 +1,28 @@
+{
+  "id": "passenger-atlas-engineer",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966",
+  "source_task_id": "01a0e966-6cb4-76a8-8704-8f2de7f132ee",
+  "remesh": {
+    "task_id": "01a0f330-dfd1-7743-8539-8db063e23192",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-remesh-preview.png"
+    },
+    "triangles": 10323,
+    "bytes": 48333668,
+    "textured": true,
+    "verified_for_rigging": true
+  },
+  "rigging": {
+    "task_id": "01a0f334-5198-7123-ad71-053acd5183c2",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "rigged": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-rigged.glb",
+      "walking": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-walking.glb",
+      "running": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-running.glb"
+    }
+  }
+}

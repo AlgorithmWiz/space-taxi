@@ -1,0 +1,196 @@
+[
+  {
+    "id": "landing-platform-cloud",
+    "file": "landing-platform-cloud.glb",
+    "source": "meshy_output/20260930_185128_landing-platform-cloud-followu_01a0e96f/landing-platform-cloud-optimized.glb",
+    "source_sha256": "625ff54a4bb2527dddd4ff5ec1f3750ac8f836d265080db631349b881537c4ec",
+    "sha256": "7d7657c8f08e177c9ef40eba84b7175dc9c9cb8581fa97af4184e97042a6f7fd",
+    "source_bytes": 38227632,
+    "bytes": 1084620,
+    "texture_max_edge": 512,
+    "triangles": 3590,
+    "bones": 0,
+    "animations": []
+  },
+  {
+    "id": "landing-platform-enamel",
+    "file": "landing-platform-enamel.glb",
+    "source": "meshy_output/20260930_184906_landing-platform-enamel-follow_01a0e96d/landing-platform-enamel-optimized.glb",
+    "source_sha256": "43d857880114acdd6390ec045808968255ab30cbb79e4043b48245040e6dc14f",
+    "sha256": "e6fcef1f450b75fc7b23fe7f8dcd0b53accbe3b4a39170250cdf8c4edb39e019",
+    "source_bytes": 37092456,
+    "bytes": 1049548,
+    "texture_max_edge": 512,
+    "triangles": 805,
+    "bones": 0,
+    "animations": []
+  },
+  {
+    "id": "landing-platform-lounger",
+    "file": "landing-platform-lounger.glb",
+    "source": "meshy_output/20260930_185329_landing-platform-lounger-follo_01a0e96f/landing-platform-lounger-optimized.glb",
+    "source_sha256": "c12253b57bc44ed00c4e20f46dfdf13563fc8f7fa0b5a9c81aa134c795f67d0b",
+    "sha256": "63d56159b14831967fa6e75fa6a4c1f89e4925b9156d72f2e723c2e1a2103db8",
+    "source_bytes": 42168412,
+    "bytes": 1380092,
+    "texture_max_edge": 512,
+    "triangles": 2296,
+    "bones": 0,
+    "animations": []
+  },
+  {
+    "id": "landing-platform-parasol",
+    "file": "landing-platform-parasol.glb",
+    "source": "meshy_output/20260930_185349_landing-platform-parasol-follo_01a0e970/landing-platform-parasol-optimized.glb",
+    "source_sha256": "a0b6ff2380d7e4b37a95776497593da7b6646be3e56865f4d0a52bd031140f37",
+    "sha256": "fa7388e3f04994aeb1b286a7abbf7ee64035a8d3985485536d6eca7b1b9fd997",
+    "source_bytes": 44474788,
+    "bytes": 1314488,
+    "texture_max_edge": 512,
+    "triangles": 2957,
+    "bones": 0,
+    "animations": []
+  },
+  {
+    "id": "lollipop",
+    "file": "lollipop.glb",
+    "source": "meshy_output/20260930_185128_lollipop-followup_01a0e96e/lollipop-optimized.glb",
+    "source_sha256": "7080532029106dc8013b4d55caf83287ed718b394fe1576815f984508d00da13",
+    "sha256": "747409de56e7a16f56fd9c84f9de9cd1de03969dc8eed6053a45952b7b61978d",
+    "source_bytes": 40259684,
+    "bytes": 1121772,
+    "texture_max_edge": 512,
+    "triangles": 1454,
+    "bones": 0,
+    "animations": []
+  },
+  {
+    "id": "obstacle-candy-cane",
+    "file": "obstacle-candy-cane.glb",
+    "source": "meshy_output/20260930_185106_obstacle-candy-cane-followup_01a0e96d/obstacle-candy-cane-optimized.glb",
+    "source_sha256": "33ec60b238c88497cdaea8fe1750030983fda481b16e544fea4b9fad7032474e",
+    "sha256": "442373d324113e57c909170acfc6a9538b621d0d732ad689031097679d4c055e",
+    "source_bytes": 42614156,
+    "bytes": 1129092,
+    "texture_max_edge": 512,
+    "triangles": 1570,
+    "bones": 0,
+    "animations": []
+  },
+  {
+    "id": "passenger-atlas-engineer",
+    "file": "passenger-atlas-engineer.glb",
+    "source": "meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-walking.glb",
+    "source_sha256": "60ef02133ea5816d20175591d226a000c2f00c8d3215bd8befb2d17d32734440",
+    "sha256": "21b9c044947a02ea506d50389f94ebb25dbe9d598d6834f2e115c98119e15dba",
+    "source_bytes": 19564580,
+    "bytes": 2882032,
+    "texture_max_edge": 1024,
+    "triangles": 10323,
+    "bones": 24,
+    "animations": [
+      "Armature|walking_man|baselayer"
+    ]
+  },
+  {
+    "id": "passenger-juno-courier",
+    "file": "passenger-juno-courier.glb",
+    "source": "meshy_output/20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-walking.glb",
+    "source_sha256": "a2ddc1e296cd0e2722b2b6c8f9650b24c5719eb2697dfec9347a2c6ce4466e83",
+    "sha256": "d2346851fa1cc5d0051778c85cabdb0e242156319e7b2ce64be58d4a9e9f53ad",
+    "source_bytes": 20303348,
+    "bytes": 2910804,
+    "texture_max_edge": 1024,
+    "triangles": 10344,
+    "bones": 24,
+    "animations": [
+      "Armature|walking_man|baselayer"
+    ]
+  },
+  {
+    "id": "passenger-nova-botanist",
+    "file": "passenger-nova-botanist.glb",
+    "source": "meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-walking.glb",
+    "source_sha256": "d289653865fad3c490efe7b961306de3d088ad4e95d8a6f73218f24dceb44d48",
+    "sha256": "7d6059e8c41ee06fc707bcc991e4073e136a088f2b1a12828291010f2972897b",
+    "source_bytes": 20339668,
+    "bytes": 2887880,
+    "texture_max_edge": 1024,
+    "triangles": 10395,
+    "bones": 24,
+    "animations": [
+      "Armature|walking_man|baselayer"
+    ]
+  },
+  {
+    "id": "passenger-pip-tourist",
+    "file": "passenger-pip-tourist.glb",
+    "source": "meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-walking.glb",
+    "source_sha256": "0df6e4518dc2b22eada97beae9726c3653add7ef704c3913f676068183e0f9cb",
+    "sha256": "b2e6b4048f3dbdf0ba793abf9c64916fecb8316e568409c1671c423ff543ea67",
+    "source_bytes": 18405048,
+    "bytes": 2609056,
+    "texture_max_edge": 1024,
+    "triangles": 10298,
+    "bones": 24,
+    "animations": [
+      "Armature|walking_man|baselayer"
+    ]
+  },
+  {
+    "id": "passenger-rae-medic",
+    "file": "passenger-rae-medic.glb",
+    "source": "meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-walking.glb",
+    "source_sha256": "727d2c7b3b560b2680c182408fc09d3e007dffe11496640a16baaf049a0e052f",
+    "sha256": "3fc2dd9cdf5fc90523843bc301b892f9c8b7f7c43b8e98f08ff8f6e828951d5c",
+    "source_bytes": 20312400,
+    "bytes": 2933388,
+    "texture_max_edge": 1024,
+    "triangles": 10337,
+    "bones": 24,
+    "animations": [
+      "Armature|walking_man|baselayer"
+    ]
+  },
+  {
+    "id": "passenger-sol-cook",
+    "file": "passenger-sol-cook.glb",
+    "source": "meshy_output/20260930_184107_passenger-sol-cook-followup_01a0e969/passenger-sol-cook-walking.glb",
+    "source_sha256": "dc72ef2009fc7d1b1944f53cf0fcb71e2a49ac2b5b40139f6ff9c82a391c0f93",
+    "sha256": "47e1e3038922dd1bf6cdf34d33dd57864d6e7f4d946b610b93c07acd10d3ea1f",
+    "source_bytes": 18813816,
+    "bytes": 2733848,
+    "texture_max_edge": 1024,
+    "triangles": 10320,
+    "bones": 24,
+    "animations": [
+      "Armature|walking_man|baselayer"
+    ]
+  },
+  {
+    "id": "radar-dish",
+    "file": "radar-dish.glb",
+    "source": "meshy_output/20260930_184906_radar-dish-followup_01a0e96c/radar-dish-optimized.glb",
+    "source_sha256": "1e7594fe82368f8947ec217a81814d85ffba83afc9a8cd62561f24c7220b58d5",
+    "sha256": "18359826f524aa4c8f31ee0cf26b581cc63fded410b7e66a711c2313fbf3e81f",
+    "source_bytes": 42734796,
+    "bytes": 1565368,
+    "texture_max_edge": 512,
+    "triangles": 5121,
+    "bones": 0,
+    "animations": []
+  },
+  {
+    "id": "taxi-classic",
+    "file": "taxi-classic.glb",
+    "source": "meshy_output/20260928_210000_taxi-classic_01a0e963/taxi-classic-optimized.glb",
+    "source_sha256": "2514a4889f1ea24a6ecd620d91fd8bdf4023e6ff53d6f01e49e9fc71b9fbbf67",
+    "sha256": "8a3b988e44a3f28d9653f2fe4fc2dcf155fd710e9ac36ce3a65b5d8543d75d9c",
+    "source_bytes": 45269200,
+    "bytes": 5488156,
+    "texture_max_edge": 1024,
+    "triangles": 13789,
+    "bones": 0,
+    "animations": []
+  }
+]

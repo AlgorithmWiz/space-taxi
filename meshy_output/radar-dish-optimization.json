@@ -1,0 +1,18 @@
+{
+  "id": "radar-dish",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_radar-dish-followup_01a0e96c",
+  "source_task_id": "01a0e96c-b7c8-75b4-a0cf-0e0e15233384",
+  "remesh": {
+    "task_id": "01a0f338-51a3-74b9-a7b2-c590188ae96f",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_radar-dish-followup_01a0e96c/radar-dish-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_radar-dish-followup_01a0e96c/radar-dish-remesh-preview.png"
+    },
+    "triangles": 5121,
+    "bytes": 42734796,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

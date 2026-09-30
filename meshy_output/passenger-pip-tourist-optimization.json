@@ -1,0 +1,28 @@
+{
+  "id": "passenger-pip-tourist",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969",
+  "source_task_id": "01a0e969-2fcc-7575-8562-9cc00dfb982d",
+  "remesh": {
+    "task_id": "01a0f330-f5c1-706f-9d50-94e658daf1fb",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-remesh-preview.png"
+    },
+    "triangles": 10298,
+    "bytes": 44253936,
+    "textured": true,
+    "verified_for_rigging": true
+  },
+  "rigging": {
+    "task_id": "01a0f334-16f3-715e-b8a1-b1f61bcbebf1",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "rigged": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-rigged.glb",
+      "walking": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-walking.glb",
+      "running": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-running.glb"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "passenger-rae-medic",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969",
+  "source_task_id": "01a0e969-eb4f-737e-892b-fbaaff2fffa1",
+  "remesh": {
+    "task_id": "01a0f333-a95a-75ac-b724-c021723bac48",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-remesh-preview.png"
+    },
+    "triangles": 10337,
+    "bytes": 48854676,
+    "textured": true,
+    "verified_for_rigging": true
+  },
+  "rigging": {
+    "task_id": "01a0f337-17d5-766e-acac-fdaea91e5aba",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "rigged": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-rigged.glb",
+      "walking": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-walking.glb",
+      "running": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-running.glb"
+    }
+  }
+}

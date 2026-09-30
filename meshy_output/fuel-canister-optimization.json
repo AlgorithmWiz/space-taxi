@@ -1,0 +1,18 @@
+{
+  "id": "fuel-canister",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_fuel-canister-followup_01a0e96b",
+  "source_task_id": "01a0e96b-b637-713d-b886-bd7a9ade0914",
+  "remesh": {
+    "task_id": "01a0f338-5294-74ca-8098-c0b43e4ea028",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_fuel-canister-followup_01a0e96b/fuel-canister-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_fuel-canister-followup_01a0e96b/fuel-canister-remesh-preview.png"
+    },
+    "triangles": 1418,
+    "bytes": 39600768,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}

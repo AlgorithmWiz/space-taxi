@@ -38,3 +38,8 @@ meshy_output/playtest/deps/package/examples/jsm/controls/*
 meshy_output/playtest/deps/package/examples/jsm/utils/*
 !meshy_output/playtest/deps/package/examples/jsm/utils/BufferGeometryUtils.js
 !meshy_output/playtest/deps/package/examples/jsm/utils/SkeletonUtils.js
+
+!meshy_output/optimized-delivery/batch-2026-09-30.json
+!meshy_output/playtest/results-remaining.json
+!meshy_output/playtest/game-integration.json
+!meshy_output/playtest/game-flight.json

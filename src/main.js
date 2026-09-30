@@ -13,7 +13,7 @@ import { FareWallet, WALLET_KEY } from './wallet.js';
 import { Garage } from './garage.js';
 import { approachingPickup, rideCallObstructs } from './ride-call.js';
 import { debugEnabled, adjacentDebugLevel } from './debug.js';
-import { modelStatus } from './model-assets.js';
+import { modelStatus, importedProps } from './model-assets.js';
 
 const $ = id => document.getElementById(id);
 const debug = debugEnabled(location.search);
@@ -366,7 +366,7 @@ try {
   requestAnimationFrame(frame);
   // Read-only telemetry makes browser smoke checks and issue reports reproducible.
   window.spaceTaxi = Object.freeze({
-    snapshot: () => ({ models: { ...modelStatus }, importedTaxi: !!world.importedTaxi?.visible, importedPassengers: world.padObjects.filter(p=>p.person.visible&&p.person.userData.modelObject).map(p=>p.person.userData.modelName), mode, debug, sector: flight.sector, x: flight.x, y: flight.y, vx: flight.vx, vy: flight.vy, gear: flight.gear, landed: flight.landed, fuel: flight.fuel, lives: flight.lives, score: flight.score, passenger: flight.passenger, target: flight.targetId, delivered: flight.delivered, exitOpen: flight.exitOpen, status: flight.status, renderer: world.renderer.info.render }),
+    snapshot: () => ({ importedProps: importedProps(world.levelGroup), models: { ...modelStatus }, importedTaxi: !!world.importedTaxi?.visible, importedPassengers: world.padObjects.filter(p=>p.person.visible&&p.person.userData.modelObject).map(p=>p.person.userData.modelName), mode, debug, sector: flight.sector, x: flight.x, y: flight.y, vx: flight.vx, vy: flight.vy, gear: flight.gear, landed: flight.landed, fuel: flight.fuel, lives: flight.lives, score: flight.score, passenger: flight.passenger, target: flight.targetId, delivered: flight.delivered, exitOpen: flight.exitOpen, status: flight.status, renderer: world.renderer.info.render }),
   });
   world.renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); if (mode === 'playing') showOverlay('paused'); fail(new Error('The graphics context was lost. Reload to restart.')); });
 } catch (error) { fail(error); }

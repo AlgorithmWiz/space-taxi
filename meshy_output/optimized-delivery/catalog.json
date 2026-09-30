@@ -1,87 +1,234 @@
 [
   {
-    "id": "taxi-classic",
-    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963",
-    "source_task_id": "01a0e963-3aa4-7314-bfad-54f111d422cc",
+    "id": "fuel-canister",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_fuel-canister-followup_01a0e96b",
+    "source_task_id": "01a0e96b-b637-713d-b886-bd7a9ade0914",
     "stages": [
       {
         "resource": "remesh",
-        "task_id": "01a0e987-8cef-70e9-8727-3125b736b215",
+        "task_id": "01a0f338-5294-74ca-8098-c0b43e4ea028",
         "consumed_credits": 5
       }
     ],
     "models": [
       {
         "kind": "optimized",
-        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963/taxi-classic-optimized.glb",
-        "archive_path": "taxi-classic-optimized.glb",
-        "triangles": 13789,
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_fuel-canister-followup_01a0e96b/fuel-canister-optimized.glb",
+        "archive_path": "fuel-canister-optimized.glb",
+        "triangles": 1418,
         "bones": 0,
         "animations": [],
-        "bytes": 45269200
+        "bytes": 39600768
       }
-    ]
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_fuel-canister-followup_01a0e96b/fuel-canister-remesh-preview.png",
+    "warning": "Visible surface artifacts after remeshing; use original until repaired."
   },
   {
-    "id": "passenger-nova-botanist",
-    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966",
-    "source_task_id": "01a0e966-5527-764e-b700-ad9f36f582bf",
+    "id": "landing-platform-cloud",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_landing-platform-cloud-followu_01a0e96f",
+    "source_task_id": "01a0e96f-0206-7143-9c80-e53938fc2609",
     "stages": [
       {
         "resource": "remesh",
-        "task_id": "01a0e987-98ba-7004-9c4e-de10b09c8b71",
+        "task_id": "01a0f33a-83c8-716a-b85d-b454f974b522",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_landing-platform-cloud-followu_01a0e96f/landing-platform-cloud-optimized.glb",
+        "archive_path": "landing-platform-cloud-optimized.glb",
+        "triangles": 3590,
+        "bones": 0,
+        "animations": [],
+        "bytes": 38227632
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_landing-platform-cloud-followu_01a0e96f/landing-platform-cloud-remesh-preview.png"
+  },
+  {
+    "id": "landing-platform-enamel",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_landing-platform-enamel-follow_01a0e96d",
+    "source_task_id": "01a0e96d-273b-74b5-bbd7-797a9818a318",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f338-52d2-71ee-ac4c-8d8228f5a0ce",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_landing-platform-enamel-follow_01a0e96d/landing-platform-enamel-optimized.glb",
+        "archive_path": "landing-platform-enamel-optimized.glb",
+        "triangles": 805,
+        "bones": 0,
+        "animations": [],
+        "bytes": 37092456
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_landing-platform-enamel-follow_01a0e96d/landing-platform-enamel-remesh-preview.png"
+  },
+  {
+    "id": "landing-platform-lounger",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185329_landing-platform-lounger-follo_01a0e96f",
+    "source_task_id": "01a0e96f-b059-71e1-86fa-96f82ac13611",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f33c-637b-707f-8e70-9349fd605b73",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185329_landing-platform-lounger-follo_01a0e96f/landing-platform-lounger-optimized.glb",
+        "archive_path": "landing-platform-lounger-optimized.glb",
+        "triangles": 2296,
+        "bones": 0,
+        "animations": [],
+        "bytes": 42168412
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185329_landing-platform-lounger-follo_01a0e96f/landing-platform-lounger-remesh-preview.png"
+  },
+  {
+    "id": "landing-platform-parasol",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185349_landing-platform-parasol-follo_01a0e970",
+    "source_task_id": "01a0e970-659f-71bb-bdbc-a23854a0e91f",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f33c-a4b1-7143-8bd9-6e5e4405368d",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185349_landing-platform-parasol-follo_01a0e970/landing-platform-parasol-optimized.glb",
+        "archive_path": "landing-platform-parasol-optimized.glb",
+        "triangles": 2957,
+        "bones": 0,
+        "animations": [],
+        "bytes": 44474788
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185349_landing-platform-parasol-follo_01a0e970/landing-platform-parasol-remesh-preview.png"
+  },
+  {
+    "id": "lollipop",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_lollipop-followup_01a0e96e",
+    "source_task_id": "01a0e96e-e5ac-71b2-a946-11e1bd16be04",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f33a-8364-723b-9313-f4ab8ef509ab",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_lollipop-followup_01a0e96e/lollipop-optimized.glb",
+        "archive_path": "lollipop-optimized.glb",
+        "triangles": 1454,
+        "bones": 0,
+        "animations": [],
+        "bytes": 40259684
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185128_lollipop-followup_01a0e96e/lollipop-remesh-preview.png"
+  },
+  {
+    "id": "obstacle-candy-cane",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185106_obstacle-candy-cane-followup_01a0e96d",
+    "source_task_id": "01a0e96d-e4a5-755b-87b9-5320491ba327",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f33a-2e7c-71b2-a6ea-73a4f4c11d22",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185106_obstacle-candy-cane-followup_01a0e96d/obstacle-candy-cane-optimized.glb",
+        "archive_path": "obstacle-candy-cane-optimized.glb",
+        "triangles": 1570,
+        "bones": 0,
+        "animations": [],
+        "bytes": 42614156
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185106_obstacle-candy-cane-followup_01a0e96d/obstacle-candy-cane-remesh-preview.png"
+  },
+  {
+    "id": "passenger-atlas-engineer",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966",
+    "source_task_id": "01a0e966-6cb4-76a8-8704-8f2de7f132ee",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f330-dfd1-7743-8539-8db063e23192",
         "consumed_credits": 5
       },
       {
         "resource": "rigging",
-        "task_id": "01a0e98a-cdd4-7652-9863-a809dbd32b6e",
+        "task_id": "01a0f334-5198-7123-ad71-053acd5183c2",
         "consumed_credits": 5
       }
     ],
     "models": [
       {
         "kind": "optimized",
-        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-optimized.glb",
-        "archive_path": "passenger-nova-botanist-optimized.glb",
-        "triangles": 10395,
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-optimized.glb",
+        "archive_path": "passenger-atlas-engineer-optimized.glb",
+        "triangles": 10323,
         "bones": 0,
         "animations": [],
-        "bytes": 49313136
+        "bytes": 48333668
       },
       {
         "kind": "rigged",
-        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-rigged.glb",
-        "archive_path": "passenger-nova-botanist-rigged.glb",
-        "triangles": 10395,
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-rigged.glb",
+        "archive_path": "passenger-atlas-engineer-rigged.glb",
+        "triangles": 10323,
         "bones": 24,
         "animations": [
           "Armature|clip0|baselayer"
         ],
-        "bytes": 20326888
+        "bytes": 19551800
       },
       {
         "kind": "walking",
-        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-walking.glb",
-        "archive_path": "passenger-nova-botanist-walking.glb",
-        "triangles": 10395,
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-walking.glb",
+        "archive_path": "passenger-atlas-engineer-walking.glb",
+        "triangles": 10323,
         "bones": 24,
         "animations": [
           "Armature|walking_man|baselayer"
         ],
-        "bytes": 20339668
+        "bytes": 19564580
       },
       {
         "kind": "running",
-        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-running.glb",
-        "archive_path": "passenger-nova-botanist-running.glb",
-        "triangles": 10395,
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-running.glb",
+        "archive_path": "passenger-atlas-engineer-running.glb",
+        "triangles": 10323,
         "bones": 24,
         "animations": [
           "Armature|running|baselayer"
         ],
-        "bytes": 20335056
+        "bytes": 19559964
       }
-    ]
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184058_passenger-atlas-engineer-follo_01a0e966/passenger-atlas-engineer-remesh-preview.png"
   },
   {
     "id": "passenger-juno-courier",
@@ -142,6 +289,303 @@
         ],
         "bytes": 20298724
       }
-    ]
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-remesh-preview.png"
+  },
+  {
+    "id": "passenger-nova-botanist",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966",
+    "source_task_id": "01a0e966-5527-764e-b700-ad9f36f582bf",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0e987-98ba-7004-9c4e-de10b09c8b71",
+        "consumed_credits": 5
+      },
+      {
+        "resource": "rigging",
+        "task_id": "01a0e98a-cdd4-7652-9863-a809dbd32b6e",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-optimized.glb",
+        "archive_path": "passenger-nova-botanist-optimized.glb",
+        "triangles": 10395,
+        "bones": 0,
+        "animations": [],
+        "bytes": 49313136
+      },
+      {
+        "kind": "rigged",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-rigged.glb",
+        "archive_path": "passenger-nova-botanist-rigged.glb",
+        "triangles": 10395,
+        "bones": 24,
+        "animations": [
+          "Armature|clip0|baselayer"
+        ],
+        "bytes": 20326888
+      },
+      {
+        "kind": "walking",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-walking.glb",
+        "archive_path": "passenger-nova-botanist-walking.glb",
+        "triangles": 10395,
+        "bones": 24,
+        "animations": [
+          "Armature|walking_man|baselayer"
+        ],
+        "bytes": 20339668
+      },
+      {
+        "kind": "running",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-running.glb",
+        "archive_path": "passenger-nova-botanist-running.glb",
+        "triangles": 10395,
+        "bones": 24,
+        "animations": [
+          "Armature|running|baselayer"
+        ],
+        "bytes": 20335056
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-remesh-preview.png"
+  },
+  {
+    "id": "passenger-pip-tourist",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969",
+    "source_task_id": "01a0e969-2fcc-7575-8562-9cc00dfb982d",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f330-f5c1-706f-9d50-94e658daf1fb",
+        "consumed_credits": 5
+      },
+      {
+        "resource": "rigging",
+        "task_id": "01a0f334-16f3-715e-b8a1-b1f61bcbebf1",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-optimized.glb",
+        "archive_path": "passenger-pip-tourist-optimized.glb",
+        "triangles": 10298,
+        "bones": 0,
+        "animations": [],
+        "bytes": 44253936
+      },
+      {
+        "kind": "rigged",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-rigged.glb",
+        "archive_path": "passenger-pip-tourist-rigged.glb",
+        "triangles": 10298,
+        "bones": 24,
+        "animations": [
+          "Armature|clip0|baselayer"
+        ],
+        "bytes": 18392264
+      },
+      {
+        "kind": "walking",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-walking.glb",
+        "archive_path": "passenger-pip-tourist-walking.glb",
+        "triangles": 10298,
+        "bones": 24,
+        "animations": [
+          "Armature|walking_man|baselayer"
+        ],
+        "bytes": 18405048
+      },
+      {
+        "kind": "running",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-running.glb",
+        "archive_path": "passenger-pip-tourist-running.glb",
+        "triangles": 10298,
+        "bones": 24,
+        "animations": [
+          "Armature|running|baselayer"
+        ],
+        "bytes": 18400428
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184102_passenger-pip-tourist-followup_01a0e969/passenger-pip-tourist-remesh-preview.png"
+  },
+  {
+    "id": "passenger-rae-medic",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969",
+    "source_task_id": "01a0e969-eb4f-737e-892b-fbaaff2fffa1",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f333-a95a-75ac-b724-c021723bac48",
+        "consumed_credits": 5
+      },
+      {
+        "resource": "rigging",
+        "task_id": "01a0f337-17d5-766e-acac-fdaea91e5aba",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-optimized.glb",
+        "archive_path": "passenger-rae-medic-optimized.glb",
+        "triangles": 10337,
+        "bones": 0,
+        "animations": [],
+        "bytes": 48854676
+      },
+      {
+        "kind": "rigged",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-rigged.glb",
+        "archive_path": "passenger-rae-medic-rigged.glb",
+        "triangles": 10337,
+        "bones": 24,
+        "animations": [
+          "Armature|clip0|baselayer"
+        ],
+        "bytes": 20299616
+      },
+      {
+        "kind": "walking",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-walking.glb",
+        "archive_path": "passenger-rae-medic-walking.glb",
+        "triangles": 10337,
+        "bones": 24,
+        "animations": [
+          "Armature|walking_man|baselayer"
+        ],
+        "bytes": 20312400
+      },
+      {
+        "kind": "running",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-running.glb",
+        "archive_path": "passenger-rae-medic-running.glb",
+        "triangles": 10337,
+        "bones": 24,
+        "animations": [
+          "Armature|running|baselayer"
+        ],
+        "bytes": 20307788
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184401_passenger-rae-medic-followup_01a0e969/passenger-rae-medic-remesh-preview.png"
+  },
+  {
+    "id": "passenger-sol-cook",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184107_passenger-sol-cook-followup_01a0e969",
+    "source_task_id": "01a0e969-6523-7728-8ce4-454d27fdc8ea",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f331-033d-7735-bd3c-6b9ec194a036",
+        "consumed_credits": 5
+      },
+      {
+        "resource": "rigging",
+        "task_id": "01a0f336-3499-751c-babe-27815a901758",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184107_passenger-sol-cook-followup_01a0e969/passenger-sol-cook-optimized.glb",
+        "archive_path": "passenger-sol-cook-optimized.glb",
+        "triangles": 10320,
+        "bones": 0,
+        "animations": [],
+        "bytes": 45128872
+      },
+      {
+        "kind": "rigged",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184107_passenger-sol-cook-followup_01a0e969/passenger-sol-cook-rigged.glb",
+        "archive_path": "passenger-sol-cook-rigged.glb",
+        "triangles": 10320,
+        "bones": 24,
+        "animations": [
+          "Armature|clip0|baselayer"
+        ],
+        "bytes": 18801028
+      },
+      {
+        "kind": "walking",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184107_passenger-sol-cook-followup_01a0e969/passenger-sol-cook-walking.glb",
+        "archive_path": "passenger-sol-cook-walking.glb",
+        "triangles": 10320,
+        "bones": 24,
+        "animations": [
+          "Armature|walking_man|baselayer"
+        ],
+        "bytes": 18813816
+      },
+      {
+        "kind": "running",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184107_passenger-sol-cook-followup_01a0e969/passenger-sol-cook-running.glb",
+        "archive_path": "passenger-sol-cook-running.glb",
+        "triangles": 10320,
+        "bones": 24,
+        "animations": [
+          "Armature|running|baselayer"
+        ],
+        "bytes": 18809200
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184107_passenger-sol-cook-followup_01a0e969/passenger-sol-cook-remesh-preview.png"
+  },
+  {
+    "id": "radar-dish",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_radar-dish-followup_01a0e96c",
+    "source_task_id": "01a0e96c-b7c8-75b4-a0cf-0e0e15233384",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0f338-51a3-74b9-a7b2-c590188ae96f",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_radar-dish-followup_01a0e96c/radar-dish-optimized.glb",
+        "archive_path": "radar-dish-optimized.glb",
+        "triangles": 5121,
+        "bones": 0,
+        "animations": [],
+        "bytes": 42734796
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_184906_radar-dish-followup_01a0e96c/radar-dish-remesh-preview.png"
+  },
+  {
+    "id": "taxi-classic",
+    "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963",
+    "source_task_id": "01a0e963-3aa4-7314-bfad-54f111d422cc",
+    "stages": [
+      {
+        "resource": "remesh",
+        "task_id": "01a0e987-8cef-70e9-8727-3125b736b215",
+        "consumed_credits": 5
+      }
+    ],
+    "models": [
+      {
+        "kind": "optimized",
+        "path": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963/taxi-classic-optimized.glb",
+        "archive_path": "taxi-classic-optimized.glb",
+        "triangles": 13789,
+        "bones": 0,
+        "animations": [],
+        "bytes": 45269200
+      }
+    ],
+    "preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260928_210000_taxi-classic_01a0e963/taxi-classic-remesh-preview.png"
   }
 ]

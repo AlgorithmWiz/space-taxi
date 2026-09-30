@@ -1,0 +1,159 @@
+{
+  "passengers": [
+    {
+      "name": "Nova",
+      "ground": 2.6645352591003757e-15
+    },
+    {
+      "name": "Juno",
+      "ground": 1.7763568394002505e-15
+    },
+    {
+      "name": "Atlas",
+      "ground": 2.6645352591003757e-15
+    },
+    {
+      "name": "Pip",
+      "ground": 8.881784197001252e-16
+    },
+    {
+      "name": "Sol",
+      "ground": 6.217248937900877e-15
+    },
+    {
+      "name": "Rae",
+      "ground": -1.7763568394002505e-15
+    }
+  ],
+  "candy": {
+    "props": [
+      "enamel",
+      "candy",
+      "lollipop"
+    ],
+    "render": {
+      "frame": 555,
+      "calls": 1,
+      "triangles": 1,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "beach": {
+    "props": [
+      "cloud",
+      "lounger",
+      "parasol"
+    ],
+    "render": {
+      "frame": 690,
+      "calls": 1,
+      "triangles": 1,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "radio": {
+    "props": [
+      "radar"
+    ],
+    "render": {
+      "frame": 825,
+      "calls": 1,
+      "triangles": 1,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "afterRestart": {
+    "props": [
+      "enamel",
+      "candy",
+      "lollipop"
+    ],
+    "render": {
+      "frame": 870,
+      "calls": 1,
+      "triangles": 1,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "liveGame": {
+    "importedProps": [
+      "cloud",
+      "lounger",
+      "parasol"
+    ],
+    "models": {
+      "enamel": "ready",
+      "candy": "ready",
+      "lollipop": "ready",
+      "taxi": "ready",
+      "Nova": "ready",
+      "cloud": "ready",
+      "lounger": "ready",
+      "parasol": "ready",
+      "Pip": "ready"
+    },
+    "importedTaxi": true,
+    "importedPassengers": [
+      "Pip"
+    ],
+    "mode": "playing",
+    "debug": true,
+    "sector": 1,
+    "x": 0,
+    "y": 6.818335381139145,
+    "vx": 0,
+    "vy": -1.0825563689477826,
+    "gear": false,
+    "landed": null,
+    "fuel": 99.98244999999997,
+    "lives": 3,
+    "score": 0,
+    "passenger": false,
+    "target": 1,
+    "delivered": 0,
+    "exitOpen": false,
+    "status": "playing",
+    "renderer": {
+      "frame": 300,
+      "calls": 1,
+      "triangles": 1,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "classic": {
+    "importedProps": [],
+    "models": {},
+    "importedTaxi": false,
+    "importedPassengers": [],
+    "mode": "playing",
+    "debug": false,
+    "sector": 0,
+    "x": -5,
+    "y": 1.4786067185906586,
+    "vx": 0,
+    "vy": -0.36594865112216796,
+    "gear": false,
+    "landed": null,
+    "fuel": 99.99414999999999,
+    "lives": 3,
+    "score": 0,
+    "passenger": false,
+    "target": 1,
+    "delivered": 0,
+    "exitOpen": false,
+    "status": "playing",
+    "renderer": {
+      "frame": 135,
+      "calls": 1,
+      "triangles": 1,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "errors": []
+}

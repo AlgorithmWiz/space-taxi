@@ -1,3 +1,13 @@
+# Game integration — 2026-09-30
+
+All six passengers and seven prop types are integrated into the game. Browser derivatives preserve geometry and rigs, with smaller embedded textures. Checks in `game-integration.json` cover all six standing/walking character roots, the candy/beach/radio props, repeated scene changes, the actual game UI, desktop/mobile rendering, and the original-model switch. No browser errors were reported in the normal-load checks. A separate forced-download-failure check confirmed the game stays playable using procedural taxi/passenger fallbacks. A stale inverse bind transform was corrected before measuring skinned feet; all six ground offsets were below 0.001 world units.
+
+A browser keyboard-input flight completed the first fare for 730 credits with all three taxis intact, advanced to the beach, and passed pause/resume. Its completion snapshot is `game-flight.json`.
+
+80 automated tests pass, including embedded GLB integrity and texture limits. Browser screenshots are `game-beach.png`, `game-candy.png`, `game-radio.png`, and `game-mobile.png`. Tests used Chromium software WebGL; hardware GPU performance was not benchmarked. Renderer counters from the postprocessing pipeline reflect the final pass, not complete scene totals.
+
+The fuel-canister remesh has surface artifacts and is not used in the game. Waiting characters use a base pose; the rigging outputs do not include an idle clip. Baked taxi feet remain extended visually. Raw source animation ground dips below are corrected by the game loader.
+
 # Animation playtest — 2026-09-28
 
 Result: both passengers load and animate correctly in an isolated Three.js r186 WebGL viewer, with minor ground-contact issues to address during game integration.

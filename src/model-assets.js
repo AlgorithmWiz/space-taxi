@@ -3,24 +3,57 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone } from 'three/addons/utils/SkeletonUtils.js';
 
 const files = {
-  taxi: '20260928_210000_taxi-classic_01a0e963/taxi-classic-optimized.glb',
-  Nova: '20260928_210316_passenger-nova-botanist_01a0e966/passenger-nova-botanist-walking.glb',
-  Juno: '20260928_210330_passenger-juno-courier_01a0e966/passenger-juno-courier-walking.glb',
+  taxi: 'taxi-classic',
+  Nova: 'passenger-nova-botanist', Juno: 'passenger-juno-courier',
+  Atlas: 'passenger-atlas-engineer', Pip: 'passenger-pip-tourist',
+  Sol: 'passenger-sol-cook', Rae: 'passenger-rae-medic',
+  enamel: 'landing-platform-enamel', cloud: 'landing-platform-cloud',
+  lounger: 'landing-platform-lounger', parasol: 'landing-platform-parasol',
+  candy: 'obstacle-candy-cane', lollipop: 'lollipop', radar: 'radar-dish',
 };
-const cache = new Map(), pending = new Set(), loader = new GLTFLoader();
+const cache = new Map(), pending = new Map(), loader = new GLTFLoader();
 const enabled = new URLSearchParams(location.search).get('models') !== 'classic';
 export const modelStatus = {};
 function request(name) {
-  if (!enabled || pending.has(name) || !files[name]) return;
-  pending.add(name); modelStatus[name] = 'loading';
-  // GitHub Pages serves LFS pointers; the media endpoint serves the binary assets.
-  const url = location.hostname.endsWith('github.io')
-    ? `https://media.githubusercontent.com/media/AlgorithmWiz/space-taxi/ab23e7688cc3eb924ce1a88e30e05f52c883767f/meshy_output/${files[name]}`
-    : new URL(`../meshy_output/${files[name]}`, import.meta.url).href;
-  loader.loadAsync(url).then(asset => {
+  if (!enabled || !files[name]) return Promise.resolve(null);
+  if (pending.has(name)) return pending.get(name);
+  modelStatus[name] = 'loading';
+  const url = new URL(`../assets/models/${files[name]}.glb`, import.meta.url).href;
+  const promise = loader.loadAsync(url).then(asset => {
     asset.scene.traverse(o => { o.userData.sharedModelAsset = true; });
-    cache.set(name, asset); modelStatus[name] = 'ready';
-  }).catch(error => { modelStatus[name] = 'fallback'; console.warn(`Using original ${name} model:`, error.message); });
+    cache.set(name, asset); modelStatus[name] = 'ready'; return asset;
+  }).catch(error => {
+    modelStatus[name] = 'fallback'; console.warn(`Using original ${name} model:`, error.message); return null;
+  });
+  pending.set(name, promise); return promise;
+}
+
+// Keep collision dimensions and the procedural fallback owned by the level.
+// Assets are cached across levels, while instances are attached only to living roots.
+export function replaceModelProp(root, name, {rotationY = 0, bounds = null} = {}) {
+  const fallback = [...root.children];
+  const probe = root.clone(true);
+  probe.position.set(0,0,0); probe.rotation.set(0,0,0); probe.scale.setScalar(1);
+  const target = bounds || new THREE.Box3().setFromObject(probe);
+  request(name).then(asset => {
+    if (!asset || root.userData.modelDisposed) return;
+    const object = asset.scene.clone(true), holder = new THREE.Group();
+    object.rotation.y = rotationY; holder.add(object);
+    const source = new THREE.Box3().setFromObject(holder);
+    const size = source.getSize(new THREE.Vector3());
+    const scale = target.getSize(new THREE.Vector3()).divide(size);
+    holder.scale.copy(scale);
+    holder.position.copy(target.min).sub(source.min.multiply(scale));
+    holder.name = `Meshy ${name}`; root.add(holder);
+    fallback.forEach(child => { child.visible = false; });
+    root.userData.importedProp = name;
+  });
+}
+
+export function importedProps(group) {
+  const names = new Set();
+  group.traverse(o => { if (o.userData.importedProp) names.add(o.userData.importedProp); });
+  return [...names];
 }
 export function updateModelTaxi(world) {
   request('taxi');
@@ -67,6 +100,8 @@ export function updateModelPassenger(root, profile, time, walk, x) {
     object.rotation.y = moving ? data.modelFacing || Math.PI / 2 : 0;
     // Ground the evaluated skinned feet each frame, including the walk's vertical bob.
     object.position.y = 0; root.updateWorldMatrix(true, true);
+    // SkinnedMesh updates its inverse bind transform in updateMatrixWorld.
+    object.updateMatrixWorld(true);
     const bounds = new THREE.Box3().setFromObject(object, true);
     const rootPosition = root.getWorldPosition(new THREE.Vector3());
     const rootScale = root.getWorldScale(new THREE.Vector3());

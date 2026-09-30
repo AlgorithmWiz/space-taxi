@@ -1,0 +1,18 @@
+{
+  "id": "obstacle-candy-cane",
+  "project": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185106_obstacle-candy-cane-followup_01a0e96d",
+  "source_task_id": "01a0e96d-e4a5-755b-87b9-5320491ba327",
+  "remesh": {
+    "task_id": "01a0f33a-2e7c-71b2-a6ea-73a4f4c11d22",
+    "consumed_credits": 5,
+    "status": "SUCCEEDED",
+    "files": {
+      "optimized": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185106_obstacle-candy-cane-followup_01a0e96d/obstacle-candy-cane-optimized.glb",
+      "remesh-preview": "/media/pirate/EXTERNAL/Space Taxi/meshy_output/20260930_185106_obstacle-candy-cane-followup_01a0e96d/obstacle-candy-cane-remesh-preview.png"
+    },
+    "triangles": 1570,
+    "bytes": 42614156,
+    "textured": true,
+    "verified_for_rigging": true
+  }
+}
