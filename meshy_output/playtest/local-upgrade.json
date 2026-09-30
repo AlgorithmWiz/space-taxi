@@ -1,0 +1,999 @@
+{
+  "credits_used": 0,
+  "models": 36,
+  "prop_types": 29,
+  "browser_bytes": 25704088,
+  "local_optimized_models": 22,
+  "local_source_triangles": 17260664,
+  "local_triangles": 148202,
+  "checks": {
+    "levels": [
+      {
+        "level": 0,
+        "props": [
+          "enamel",
+          "candy",
+          "lollipop"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 5,
+          "unused": 0,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 90,
+          "calls": 67,
+          "triangles": 32396,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 354,
+          "textures": 35
+        }
+      },
+      {
+        "level": 1,
+        "props": [
+          "cloud",
+          "lounger",
+          "parasol",
+          "pole",
+          "wood"
+        ],
+        "ground": 1.7763568394002505e-15,
+        "cache": {
+          "ready": 11,
+          "unused": 4,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 120,
+          "calls": 57,
+          "triangles": 40809,
+          "points": 240,
+          "lines": 32
+        },
+        "memory": {
+          "geometries": 405,
+          "textures": 55
+        }
+      },
+      {
+        "level": 2,
+        "props": [
+          "concrete"
+        ],
+        "ground": -8.881784197001252e-16,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 150,
+          "calls": 706,
+          "triangles": 50802,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 897,
+          "textures": 55
+        }
+      },
+      {
+        "level": 3,
+        "props": [
+          "metal",
+          "fuel"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 10,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 180,
+          "calls": 230,
+          "triangles": 151021,
+          "points": 240,
+          "lines": 50
+        },
+        "memory": {
+          "geometries": 473,
+          "textures": 74
+        }
+      },
+      {
+        "level": 4,
+        "props": [
+          "leaf",
+          "stem",
+          "vine"
+        ],
+        "ground": -1.7763568394002505e-15,
+        "cache": {
+          "ready": 10,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 210,
+          "calls": 200,
+          "triangles": 107483,
+          "points": 240,
+          "lines": 1380
+        },
+        "memory": {
+          "geometries": 672,
+          "textures": 70
+        }
+      },
+      {
+        "level": 5,
+        "props": [
+          "felt",
+          "tableRail",
+          "net",
+          "pong",
+          "table",
+          "paddle"
+        ],
+        "ground": 4.440892098500626e-16,
+        "cache": {
+          "ready": 14,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 240,
+          "calls": 73,
+          "triangles": 82173,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 235,
+          "textures": 72
+        }
+      },
+      {
+        "level": 6,
+        "props": [
+          "rock",
+          "portal",
+          "teleportTerrain"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 11,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 270,
+          "calls": 242,
+          "triangles": 246898,
+          "points": 240,
+          "lines": 340
+        },
+        "memory": {
+          "geometries": 434,
+          "textures": 81
+        }
+      },
+      {
+        "level": 7,
+        "props": [
+          "stone",
+          "wallMetal",
+          "crystalSwitch"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 10,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 300,
+          "calls": 159,
+          "triangles": 139227,
+          "points": 240,
+          "lines": 70
+        },
+        "memory": {
+          "geometries": 494,
+          "textures": 83
+        }
+      },
+      {
+        "level": 8,
+        "props": [
+          "bastion"
+        ],
+        "ground": -1.7763568394002505e-15,
+        "cache": {
+          "ready": 8,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 330,
+          "calls": 442,
+          "triangles": 76465,
+          "points": 240,
+          "lines": 78
+        },
+        "memory": {
+          "geometries": 778,
+          "textures": 82
+        }
+      },
+      {
+        "level": 9,
+        "props": [
+          "fuel"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 360,
+          "calls": 186,
+          "triangles": 37277,
+          "points": 240,
+          "lines": 113
+        },
+        "memory": {
+          "geometries": 338,
+          "textures": 71
+        }
+      },
+      {
+        "level": 10,
+        "props": [
+          "metal",
+          "wallMetal"
+        ],
+        "ground": -8.881784197001252e-16,
+        "cache": {
+          "ready": 10,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 390,
+          "calls": 136,
+          "triangles": 97376,
+          "points": 240,
+          "lines": 96
+        },
+        "memory": {
+          "geometries": 330,
+          "textures": 71
+        }
+      },
+      {
+        "level": 11,
+        "props": [
+          "metal"
+        ],
+        "ground": -8.881784197001252e-16,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 420,
+          "calls": 99,
+          "triangles": 83951,
+          "points": 2110,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 290,
+          "textures": 63
+        }
+      },
+      {
+        "level": 12,
+        "props": [
+          "metal",
+          "fuel"
+        ],
+        "ground": 5.551115123125783e-17,
+        "cache": {
+          "ready": 9,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 450,
+          "calls": 386,
+          "triangles": 156100,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 629,
+          "textures": 77
+        }
+      },
+      {
+        "level": 13,
+        "props": [
+          "metal"
+        ],
+        "ground": -1.7763568394002505e-15,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 480,
+          "calls": 180,
+          "triangles": 109897,
+          "points": 1990,
+          "lines": 43
+        },
+        "memory": {
+          "geometries": 389,
+          "textures": 69
+        }
+      },
+      {
+        "level": 14,
+        "props": [
+          "metal"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 510,
+          "calls": 116,
+          "triangles": 80012,
+          "points": 240,
+          "lines": 34
+        },
+        "memory": {
+          "geometries": 272,
+          "textures": 59
+        }
+      },
+      {
+        "level": 15,
+        "props": [
+          "pine"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 540,
+          "calls": 153,
+          "triangles": 91398,
+          "points": 390,
+          "lines": 1216
+        },
+        "memory": {
+          "geometries": 312,
+          "textures": 63
+        }
+      },
+      {
+        "level": 16,
+        "props": [
+          "concrete",
+          "fuel",
+          "radar"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 11,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 570,
+          "calls": 288,
+          "triangles": 103639,
+          "points": 240,
+          "lines": 1272
+        },
+        "memory": {
+          "geometries": 579,
+          "textures": 88
+        }
+      },
+      {
+        "level": 17,
+        "props": [
+          "stone",
+          "portal"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 10,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 600,
+          "calls": 159,
+          "triangles": 83383,
+          "points": 240,
+          "lines": 522
+        },
+        "memory": {
+          "geometries": 316,
+          "textures": 73
+        }
+      },
+      {
+        "level": 18,
+        "props": [
+          "concrete"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 630,
+          "calls": 688,
+          "triangles": 50586,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 880,
+          "textures": 73
+        }
+      },
+      {
+        "level": 19,
+        "props": [
+          "metal",
+          "crystalSwitch"
+        ],
+        "ground": -1.7763568394002505e-15,
+        "cache": {
+          "ready": 9,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 660,
+          "calls": 153,
+          "triangles": 115345,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 500,
+          "textures": 81
+        }
+      },
+      {
+        "level": 20,
+        "props": [
+          "metal",
+          "wallMetal"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 9,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 690,
+          "calls": 137,
+          "triangles": 125280,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 472,
+          "textures": 79
+        }
+      },
+      {
+        "level": 21,
+        "props": [
+          "metal"
+        ],
+        "ground": -1.7763568394002505e-15,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 720,
+          "calls": 251,
+          "triangles": 114691,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 461,
+          "textures": 78
+        }
+      },
+      {
+        "level": 22,
+        "props": [
+          "concrete",
+          "wallMetal"
+        ],
+        "ground": 4.440892098500626e-16,
+        "cache": {
+          "ready": 10,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 750,
+          "calls": 118,
+          "triangles": 59920,
+          "points": 240,
+          "lines": 31
+        },
+        "memory": {
+          "geometries": 295,
+          "textures": 76
+        }
+      },
+      {
+        "level": 23,
+        "props": [
+          "metal",
+          "fuel"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 10,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 780,
+          "calls": 324,
+          "triangles": 250299,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 550,
+          "textures": 87
+        }
+      },
+      {
+        "level": 24,
+        "props": [
+          "stone"
+        ],
+        "ground": 4.440892098500626e-16,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 810,
+          "calls": 89,
+          "triangles": 52636,
+          "points": 240,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 263,
+          "textures": 74
+        }
+      },
+      {
+        "level": 25,
+        "props": [
+          "metal"
+        ],
+        "ground": 0,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 840,
+          "calls": 128,
+          "triangles": 81027,
+          "points": 1990,
+          "lines": 30
+        },
+        "memory": {
+          "geometries": 310,
+          "textures": 75
+        }
+      },
+      {
+        "level": 26,
+        "props": [
+          "rock"
+        ],
+        "ground": -8.881784197001252e-16,
+        "cache": {
+          "ready": 9,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 870,
+          "calls": 204,
+          "triangles": 55580,
+          "points": 240,
+          "lines": 150
+        },
+        "memory": {
+          "geometries": 387,
+          "textures": 85
+        }
+      },
+      {
+        "level": 27,
+        "props": [
+          "metal",
+          "fuel"
+        ],
+        "ground": 8.881784197001252e-16,
+        "cache": {
+          "ready": 9,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "render": {
+          "frame": 900,
+          "calls": 157,
+          "triangles": 83649,
+          "points": 1990,
+          "lines": 270
+        },
+        "memory": {
+          "geometries": 345,
+          "textures": 79
+        }
+      }
+    ],
+    "motions": [
+      {
+        "name": "Nova",
+        "worstGroundOffset": 1.3889058791960451e-09,
+        "waveDistance": 0.7388782108227859,
+        "pausedDrift": 0.00010991844708458963
+      },
+      {
+        "name": "Juno",
+        "worstGroundOffset": 1.0464855648706362e-09,
+        "waveDistance": 0.754122785892716,
+        "pausedDrift": 0.00010734383679414166
+      },
+      {
+        "name": "Atlas",
+        "worstGroundOffset": 1.299781615671236e-09,
+        "waveDistance": 0.7663299079582901,
+        "pausedDrift": 0.0001288600335348093
+      },
+      {
+        "name": "Pip",
+        "worstGroundOffset": 1.0524798810251923e-09,
+        "waveDistance": 0.779899650629352,
+        "pausedDrift": 9.02747577118533e-05
+      },
+      {
+        "name": "Sol",
+        "worstGroundOffset": 2.7427926596601537e-10,
+        "waveDistance": 0.8303264205607991,
+        "pausedDrift": 9.914195764586414e-05
+      },
+      {
+        "name": "Rae",
+        "worstGroundOffset": 8.644596150020334e-10,
+        "waveDistance": 0.8035656865839664,
+        "pausedDrift": 0.00010171752523129528
+      }
+    ],
+    "gear": {
+      "deployed": 2.3166,
+      "retracted": 2.4977593972377394
+    },
+    "errors": []
+  },
+  "runtime": {
+    "quality": {
+      "high": {
+        "frameMedian": 59.40000000037253,
+        "frameP95": 114.19999999925494,
+        "bloom": true,
+        "pixelRatio": 1.25,
+        "buffer": [
+          487.5,
+          1055
+        ],
+        "render": {
+          "frame": 1155,
+          "calls": 92,
+          "triangles": 35696,
+          "points": 240,
+          "lines": 30
+        }
+      },
+      "low": {
+        "frameMedian": 28.5,
+        "frameP95": 45.30000000074506,
+        "bloom": false,
+        "pixelRatio": 1.25,
+        "buffer": [
+          487.5,
+          1055
+        ],
+        "render": {
+          "frame": 160,
+          "calls": 79,
+          "triangles": 35683,
+          "points": 240,
+          "lines": 30
+        }
+      }
+    },
+    "memory": [
+      {
+        "cache": {
+          "ready": 11,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "gpu": {
+          "geometries": 252,
+          "textures": 56
+        }
+      },
+      {
+        "cache": {
+          "ready": 10,
+          "unused": 5,
+          "loading": 0,
+          "queued": 0
+        },
+        "gpu": {
+          "geometries": 390,
+          "textures": 55
+        }
+      },
+      {
+        "cache": {
+          "ready": 11,
+          "unused": 6,
+          "loading": 0,
+          "queued": 0
+        },
+        "gpu": {
+          "geometries": 252,
+          "textures": 56
+        }
+      }
+    ],
+    "reducedMotion": 2.141214269059922e-09,
+    "race": {
+      "level": 1,
+      "props": [
+        "cloud",
+        "lounger",
+        "parasol",
+        "pole",
+        "wood"
+      ],
+      "cache": {
+        "ready": 12,
+        "unused": 6,
+        "loading": 0,
+        "queued": 0
+      }
+    },
+    "fallback": {
+      "modelCache": {
+        "ready": 0,
+        "unused": 0,
+        "loading": 0,
+        "queued": 0
+      },
+      "importedProps": [],
+      "models": {
+        "enamel": "fallback",
+        "candy": "fallback",
+        "lollipop": "fallback",
+        "taxi": "fallback",
+        "Nova": "fallback",
+        "stone": "fallback",
+        "wallMetal": "fallback",
+        "crystalSwitch": "fallback",
+        "Pip": "fallback"
+      },
+      "importedTaxi": false,
+      "importedPassengers": [],
+      "mode": "playing",
+      "debug": true,
+      "sector": 7,
+      "x": 0,
+      "y": 6.981656290683342,
+      "vx": 0,
+      "vy": -0.3379814643752411,
+      "gear": false,
+      "landed": null,
+      "fuel": 99.99459999999999,
+      "lives": 3,
+      "score": 0,
+      "passenger": false,
+      "target": 1,
+      "delivered": 0,
+      "exitOpen": false,
+      "status": "playing",
+      "renderer": {
+        "frame": 165,
+        "calls": 501,
+        "triangles": 34216,
+        "points": 240,
+        "lines": 142
+      }
+    },
+    "errors": []
+  },
+  "cpu_before": {
+    "viewport": [
+      390,
+      844
+    ],
+    "pixelRatio": 1,
+    "idle": {
+      "median": 6.8999999994412065,
+      "p95": 9.5
+    },
+    "walking": {
+      "median": 5.7000000001862645,
+      "p95": 6.2000000001862645
+    },
+    "render": {
+      "frame": 120,
+      "calls": 69,
+      "triangles": 35420,
+      "points": 240,
+      "lines": 30
+    },
+    "memory": {
+      "geometries": 357,
+      "textures": 38
+    }
+  },
+  "cpu_after": {
+    "viewport": [
+      390,
+      844
+    ],
+    "pixelRatio": 1,
+    "idle": {
+      "median": 1.1000000014901161,
+      "p95": 2.300000000745058
+    },
+    "walking": {
+      "median": 1.1000000014901161,
+      "p95": 2.199999999254942
+    },
+    "render": {
+      "frame": 26,
+      "calls": 57,
+      "triangles": 35419,
+      "points": 240,
+      "lines": 30
+    },
+    "memory": {
+      "geometries": 359,
+      "textures": 28
+    }
+  },
+  "flight": {
+    "modelCache": {
+      "ready": 5,
+      "unused": 0,
+      "loading": 0,
+      "queued": 0
+    },
+    "landingGearExtension": 3.2653618371328135e-17,
+    "importedProps": [
+      "enamel",
+      "candy",
+      "lollipop"
+    ],
+    "models": {
+      "enamel": "ready",
+      "candy": "ready",
+      "lollipop": "ready",
+      "taxi": "ready",
+      "Nova": "ready"
+    },
+    "importedTaxi": true,
+    "importedPassengers": [],
+    "mode": "sector-complete",
+    "debug": false,
+    "sector": 0,
+    "x": -0.06865355897438404,
+    "y": 15.202165737121303,
+    "vx": 0.010873016932599483,
+    "vy": 3.5940870484767466,
+    "gear": false,
+    "landed": null,
+    "fuel": 90.41769999999718,
+    "lives": 3,
+    "score": 730,
+    "passenger": false,
+    "delivered": 1,
+    "exitOpen": true,
+    "status": "sector-complete",
+    "renderer": {
+      "frame": 4785,
+      "calls": 106,
+      "triangles": 24999,
+      "points": 240,
+      "lines": 30
+    }
+  },
+  "notes": [
+    "Chromium software WebGL; physical-phone frame rates not measured.",
+    "Pine uses aggressive simplification; close-up foliage is angular.",
+    "Idle/wave and taxi gear animation live in game code, not baked GLB clips."
+  ]
+}

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {replaceModelProp} from './model-assets.js';
 import { beamSegments } from './environment.js';
 import { surfaceMaterial } from './surface-materials.js';
 import { buildCandyCane } from './candy-props.js';
@@ -20,6 +21,8 @@ export function buildObstacle(parent,o,color,theme){
   const g=new THREE.Group();g.position.set(o.x,o.y,0);g.rotation.z=o.angle||0;parent.add(g);
   if(o.material==='candy'){buildCandyCane(g,o);return g;}
   if(CAVE_THEMES.has(theme)){buildCaveWall(g,o,theme);return g;}
+  const imported={pole:'pole',stem:'stem',table:'tableRail',net:'net',wood:'wood'}[o.material]||(!o.material&&o.kind!=='rock'?'wallMetal':null);
+  const attach=()=>{if(imported)replaceModelProp(g,imported,{rotationZ:imported==='wallMetal'&&o.w>o.h?Math.PI/2:0,bounds:new THREE.Box3(new THREE.Vector3(-o.w/2,-o.h/2,-.55),new THREE.Vector3(o.w/2,o.h/2,.55))});};
   if(o.kind==='rock'){
     // The beveled box retains the same silhouette as its collision rectangle.
     const m=box(g,surfaceMaterial('rock','#62636a'),0,0,-.3,o.w,o.h,2.2);
@@ -33,12 +36,12 @@ export function buildObstacle(parent,o,color,theme){
     return g;
   }
   if(o.material==='pole'){
-    add(g,new THREE.CylinderGeometry(o.w*.45,o.w*.5,o.h,20),material('#948f79'),0,0,0);return g;
+    add(g,new THREE.CylinderGeometry(o.w*.45,o.w*.5,o.h,20),material('#948f79'),0,0,0);attach();return g;
   }
   if(o.material==='stem'){
     add(g,new THREE.CylinderGeometry(o.w*.4,o.w*.5,o.h,12),surfaceMaterial('leaf',colors.stem));
     for(let y=-o.h/2+.4;y<o.h/2;y+=1.8){const joint=torus(g,material('#748453'),0,y,0,.39,.018);joint.rotation.x=Math.PI/2;}
-    return g;
+    attach();return g;
   }
   const body=box(g,surfaceMaterial(kind,colors[o.material]||'#535a61'),0,0,-.1,o.w,o.h,1.1);
   const edges=new THREE.LineSegments(new THREE.EdgesGeometry(body.geometry),new THREE.LineBasicMaterial({color:'#b9b3a8',transparent:true,opacity:.16}));body.add(edges);
@@ -48,7 +51,7 @@ export function buildObstacle(parent,o,color,theme){
       for(let x=-o.w/2+.65;x<o.w/2;x+=1.3)box(g,material('#393936'),x,y+.6,.49,.04,1.2,.05);
     }
   }
-  return g;
+  attach();return g;
 }
 
 export function buildHazard(parent,h,color){
@@ -62,6 +65,7 @@ export function buildHazard(parent,h,color){
     if(h.kind==='star')for(let i=0;i<4;i++){const ray=box(g,material(tint,2),0,0,0,h.radius*3,.06,.06);ray.rotation.z=i*Math.PI/4;}
     if(h.kind==='rebound')torus(g,material(tint,2),0,0,0,h.radius*1.45,.025);
   }
+  if(h.kind==='pong')replaceModelProp(g,'pong');
   return g;
 }
 
@@ -84,16 +88,19 @@ export function buildMechanisms(parent,level){
   });
   const portals=(level.portals||[]).map((p,i)=>{
     const g=new THREE.Group();g.position.set(p.x,p.y,0);parent.add(g);
-    const ring=torus(g,material(p.color,2),0,0,.3,1.15,.095);
-    const rim=torus(g,material('#476075'),0,0,0,1.35,.1);
-    const face=add(g,new THREE.CircleGeometry(1.05,48),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{time:{value:0},tint:{value:new THREE.Color(p.color)}},vertexShader:'varying vec2 p;void main(){p=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 p;uniform float time;uniform vec3 tint;void main(){float r=length(p);float spiral=.5+.5*sin(atan(p.y,p.x)*5.+r*12.-time*3.);gl_FragColor=vec4(tint,(1.-r)*spiral*.4);}' }));
+    const portalModel=new THREE.Group();g.add(portalModel);
+    const ring=torus(portalModel,material(p.color,2),0,0,.3,1.15,.095);
+    replaceModelProp(portalModel,'portal',{bounds:new THREE.Box3(new THREE.Vector3(-1.35,-1.35,-.2),new THREE.Vector3(1.35,1.35,.2))});
+    const rim=torus(g,material(p.color,.8),0,0,0,1.35,.1);
+    const face=add(g,new THREE.CircleGeometry(1.05,48),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{time:{value:0},tint:{value:new THREE.Color(p.color)}},vertexShader:'varying vec2 p;void main(){p=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 p;uniform float time;uniform vec3 tint;void main(){float r=length(p);float spiral=.5+.5*sin(atan(p.y,p.x)*5.+r*12.-time*3.);gl_FragColor=vec4(tint,(1.-r)*spiral*.4);}' }),0,0,.24);
     sign(g,`${i+1} → ${p.to+1}`,0,-1.8,.3,p.color,2.4);
     return {g,ring,rim,face};
   });
   const switches=(level.switches||[]).map(s=>{
     const g=new THREE.Group();g.position.set(s.x,s.y,0);parent.add(g);
-    const gem=add(g,new THREE.OctahedronGeometry(.43),material('#e3ffe2',1.7));torus(g,material('#c6f778',1),0,0,0,.85,.025);
-    sign(g,s.label,0,-1.2,.5,'#dcf5c8',2.2);return {g,gem,spec:s};
+    const gem=add(g,new THREE.OctahedronGeometry(.43),material('#e3ffe2',1.7));
+    const crystal=new THREE.Group();g.add(crystal);crystal.add(gem);replaceModelProp(crystal,'crystalSwitch',{bounds:new THREE.Box3(new THREE.Vector3(-.6,-.6,-.15),new THREE.Vector3(.6,.6,.15))});const indicator=torus(g,material('#c6f778',1),0,0,.25,.85,.025);
+    sign(g,s.label,0,-1.2,.5,'#dcf5c8',2.2);return {g,gem,crystal,indicator,spec:s};
   });
   return {update(time,switchFlags,resetTime){
     for(const b of beams){
@@ -102,7 +109,7 @@ export function buildMechanisms(parent,level){
       if(b.wire)b.wire.material.opacity=.2+Math.sin(time*2)*.08;
     }
     for(const p of portals){p.ring.rotation.z=time*.3;p.face.material.uniforms.time.value=time;}
-    for(const s of switches){s.gem.rotation.y=time;s.gem.rotation.z=time*.5;const active=s.spec.toggles?.every(flag=>switchFlags.has(flag));s.gem.material.color.set(active?'#c6ff8f':'#edf7ff');}
+    for(const s of switches){s.crystal.rotation.y=Math.sin(time)*.25;s.crystal.rotation.z=Math.sin(time*.5)*.12;const active=s.spec.toggles?.every(flag=>switchFlags.has(flag));s.gem.material.color.set(active?'#c6ff8f':'#edf7ff');s.indicator.material.color.set(active?'#c6ff8f':'#edf7ff');s.indicator.scale.setScalar(active?1.18:1);}
   }};
 }
 

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {replaceModelProp} from './model-assets.js';
 import {artFor} from './art-direction.js';
 import {surfaceMaterial} from './surface-materials.js';
 import {padPose,obstaclePose,windAngle} from './environment.js';
@@ -114,6 +115,7 @@ export function buildLevelBackdrop(parent,level){
       for(let i=0;i<15;i++)tree(g,-36+i*5,-17,-19,9+(i*7%13),'#304b36');
       const vine=new THREE.Group();vine.position.y=-13;g.add(vine);
       tube(vine,Array.from({length:70},(_,i)=>[Math.sin(i*.63)*.35,i*26/69,-.4+Math.cos(i*.63)*.25]),.1,surface('#596d3f'));
+      replaceModelProp(vine,'vine',{bounds:new THREE.Box3(new THREE.Vector3(-.8,0,-.8),new THREE.Vector3(.8,26,.8))});
       animations.push(t=>{vine.scale.y=obstaclePose(level.obstacles[0],t).h/26;});
       for(const pad of level.pads){
         const side=Math.sign(pad.x),inner=pad.x-side*pad.w/2;
@@ -127,14 +129,22 @@ export function buildLevelBackdrop(parent,level){
     for(let i=0;i<18;i++){const spore=sphere(g,unlit('#b2be96',.4),Math.sin(i*2.4)*22,-12+i*1.6,-9,.025);ambient.push(t=>{spore.position.y=-12+(i*1.6+t*.1)%29;});}
   }
   if(theme==='pong'){
-    for(const x of [-17,17])box(g,surface('#665444'),x,-9,-2,.5,8,.5);
-    for(const x of [-16,15]){const paddle=sphere(g,surface(x<0?'#6c5447':'#4b5666'),x,-3.7,-1,1);paddle.scale.set(1.3,.1,.65);box(g,warm,x+(x<0?-1.2:1.2),-3.7,-1,1.2,.16,.25);}
+    const tableModel=new THREE.Group();g.add(tableModel);
+    for(const x of [-17,17])box(tableModel,surface('#665444'),x,-9,-2,.5,8,.5);
+    box(tableModel,surface('#30483e'),0,-5.2,-3,40,.15,6);
+    for(const z of [-5.8,-.8])box(tableModel,surface('#b7b7a5'),0,-5.08,z,39,.025,.06);
+    replaceModelProp(tableModel,'table',{bounds:new THREE.Box3(new THREE.Vector3(-20,-13,-6),new THREE.Vector3(20,-5.05,0))});
+    for(const x of [-16,15]){
+      const paddleModel=new THREE.Group();paddleModel.position.set(x,-3.7,-1);g.add(paddleModel);
+      const paddle=sphere(paddleModel,surface('#6c5447'),0,0,0,1);paddle.scale.set(1.3,.1,.65);
+      box(paddleModel,warm,x<0?-1.2:1.2,0,0,1.2,.16,.25);
+      replaceModelProp(paddleModel,'paddle',{rotationY:x<0?Math.PI:0});
+    }
     for(let x=-33;x<=33;x+=6)box(g,surface('#473d32'),x,0,-17,.2,30,.2);
-    box(g,surface('#30483e'),0,-5.2,-3,40,.15,6);
-    for(const z of [-5.8,-.8])box(g,surface('#b7b7a5'),0,-5.08,z,39,.025,.06);
     placard(g,'TABLE 06 / MATCH IN PROGRESS',0,13,-16,19,'#b9ad93');
   }
   if(theme==='teleport'){
+    const terrainModel=new THREE.Group();g.add(terrainModel);replaceModelProp(terrainModel,'teleportTerrain',{bounds:new THREE.Box3(new THREE.Vector3(-24,-14,-5),new THREE.Vector3(24,14,-3))});
     for(const portal of level.portals){ring(g,iron,portal.x,portal.y,-2,1.65,.15);for(const side of [-1,1])box(g,steel,portal.x+side*1.9,portal.y,-3,.25,3.6,.3);}
   }
   if(theme==='puzzle'||theme==='maze'){
@@ -226,7 +236,7 @@ export function buildLevelBackdrop(parent,level){
     terrain(g,theme==='snow'?'#788b97':'#464b4a',-1,-34,12,6);terrain(g,theme==='snow'?'#4c6469':'#373e39',-9,-22,7,3);
     for(let i=0;i<15;i++){const pine=tree(g,-39+i*5.5,-15,-14,4+(i*7%6),'#38483e',theme==='snow');if(theme==='snow')ambient.push(t=>pine.rotation.z=windAngle(t+i*.2)*.7);}
     if(theme==='snow'){
-      for(const o of level.obstacles){const pine=tree(g,o.x,o.y-o.h/2,0,o.h,'#536856',true);pine.userData.collisionTree=true;animations.push(t=>pine.rotation.z=windAngle(t));}
+      for(const o of level.obstacles){const pine=tree(g,o.x,o.y-o.h/2,0,o.h,'#536856',true);pine.userData.collisionTree=true;replaceModelProp(pine,'pine');animations.push(t=>pine.rotation.z=windAngle(t));}
       for(let i=0;i<18;i++){const drift=sphere(g,surface('#aebcb8'),-29+i*3.4,-10.6,-3.5,1.1);drift.scale.set(2,.5,1.5);}
       const points=new Float32Array(150*3);for(let i=0;i<150;i++)points.set([(i*13.7)%65-32,(i*6.7)%39-14,-5-i%12],i*3);
       const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(points,3));const snow=new THREE.Points(geo,new THREE.PointsMaterial({color:'#d6dcd7',size:.05,transparent:true,opacity:.6}));g.add(snow);ambient.push(t=>{snow.position.y=-(t*.8%6);snow.position.x=Math.sin(t*.3)*1.5;});

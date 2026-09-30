@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {replaceModelProp} from './model-assets.js';
 import {surfaceMaterial} from './surface-materials.js';
 const mat=(color,roughness=.85,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 function part(g,geo,m,x=0,y=0,z=0){const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);g.add(o);return o;}
@@ -77,9 +78,10 @@ export function buildFuelCanister(parent,item){
   for(const y of [-.55,.38])part(g,new THREE.TorusGeometry(.35,.05,8,16),dark,0,y,0).rotation.x=Math.PI/2;
   part(g,new THREE.CylinderGeometry(.14,.14,.18,12),dark,0,.53,0);
   rod(g,[-.25,.4,0],[-.25,.72,0],.045,dark);rod(g,[.25,.4,0],[.25,.72,0],.045,dark);rod(g,[-.25,.72,0],[.25,.72,0],.045,dark);
-  part(g,new THREE.BoxGeometry(.47,.35,.035),label,0,-.04,.375);
+  const plate=part(g,new THREE.BoxGeometry(.55,.43,.035),label,0,-.04,.45);
   const c=document.createElement('canvas');c.width=192;c.height=128;const ctx=c.getContext('2d');ctx.fillStyle='#222e2f';ctx.textAlign='center';ctx.font='bold 42px sans-serif';ctx.fillText(`+${item.amount}`,96,51);ctx.font='bold 24px sans-serif';ctx.fillText('FUEL',96,90);
   const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;
-  part(g,new THREE.PlaneGeometry(.43,.3),new THREE.MeshBasicMaterial({map,transparent:true}),0,-.04,.398);
+  const text=part(g,new THREE.PlaneGeometry(.49,.37),new THREE.MeshBasicMaterial({map,transparent:true}),0,-.04,.471);
+  replaceModelProp(g,'fuel',{keep:[plate,text],bounds:new THREE.Box3(new THREE.Vector3(-.4,-.55,-.4),new THREE.Vector3(.4,.77,.4))});
   return g;
 }

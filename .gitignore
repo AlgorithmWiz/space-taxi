@@ -43,3 +43,6 @@ meshy_output/playtest/deps/package/examples/jsm/utils/*
 !meshy_output/playtest/results-remaining.json
 !meshy_output/playtest/game-integration.json
 !meshy_output/playtest/game-flight.json
+
+__pycache__/
+!meshy_output/playtest/local-upgrade.json

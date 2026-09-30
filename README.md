@@ -103,13 +103,19 @@ The taxi has a detailed utilitarian body, a swept dark-glass canopy, warm headli
 
 Landing surfaces use materials suited to their setting: cloud and canvas on the beach, foliage on the beanstalk, continuous snow in Blizzard, felt on the table-tennis stage, stone in the caves and textured metal in the machinery stages. Painted touchdown brackets and small destination lights keep landing surfaces readable. Waves, drifting snow, spores, portal motion and machinery provide scene-specific animation. The decorative orbital arch and shared cyberpunk city backdrop have been removed. Decorative ambient motion respects the system’s reduced-motion preference.
 
-## Imported Meshy models
+## Imported models and local optimization
 
-The classic taxi, all six passengers, and seven prop types now use the redesigned Meshy models. Props appear in Short -n- Sweet (platform, candy cane and lollipops), The Beach (cloud, lounger and parasol) and Interference (radar dishes). The fuel canister keeps its procedural model because the reduced Meshy version has surface artifacts. Other environments and purchased taxi skins keep their existing models.
+All 36 generated assets now have browser versions: the classic taxi, six passengers and 29 prop types. The campaign uses the props across its existing levels, including fuel pickups, landing surfaces, beanstalk foliage, table tennis, snowy trees, switches and portals. The fuel canister was rebuilt locally from its intact original, replacing the damaged paid remesh. Physics geometry, controls, fares and difficulty rules are unchanged; imported decks are aligned to their central landing surface and labelled with the current pad number.
 
-Browser derivatives in `assets/models/` total about 30 MiB versus 430 MiB for their source GLBs. Textures are capped at 1024 pixels for the taxi/passengers and 512 for props; meshes and animation tracks are retained. Assets load on demand from the same site, with procedural fallback if loading fails. `?models=classic` selects the original visuals. Source files and task history remain in `meshy_output/`; `scripts/prepare-models.py` rebuilds the derivatives with Python and Pillow.
+The remaining 21 models plus the fuel repair were optimized locally with [gltfpack 1.3](https://github.com/zeux/meshoptimizer/releases/tag/v1.3): about 17.26 million source triangles became 148,202. Most simplifications use a 1.5% relative error limit; the pine uses a more aggressive reduction to 11,092 triangles after visual review. Its foliage looks more angular close up. Originals and task histories remain in `meshy_output/`. This work used no Meshy API calls or credits.
 
-The characters use Meshy walking clips during boarding and departure. Their evaluated skinned feet are grounded each frame, including after resizing and stage transforms. Waiting poses and radio portraits retain the current base pose and procedural portraits, respectively. The classic taxi's baked landing feet remain visually extended.
+The complete browser set in `assets/models/` is approximately 24.5 MiB. Textures are limited to 1024 pixels for the taxi/passengers and 512 for props. The existing fourteen models now use WebP color textures; their data maps use lossless WebP. Assets load from the same site, at most two downloads concurrently. The cache retains active models and at most six unused models, disposing GPU resources on eviction. Failed downloads retain the procedural fallback; `?models=classic` selects those visuals explicitly.
+
+Passengers blend between walking and an idle pose with breathing, head movement and waving. Reduced-motion preference disables idle gestures. Boot vertices provide grounding without evaluating the full mesh every frame. Boarding and departure use eased movement. Taxi foot plates and struts telescope as the landing gear moves; purchased skins and their garage previews retain the procedural vehicle.
+
+Screens at most 700 pixels wide skip bloom and cap render resolution at 1.25 device pixels per CSS pixel; desktop retains bloom. `?quality=high` and `?quality=low` override bloom for comparison. Renderer diagnostics now report all passes in a frame. The radio portraits remain procedural.
+
+Rebuild the first fourteen browser models with `python3 scripts/prepare-models.py` (Pillow required). Rebuild the other 22 with `GLTFPACK=/path/to/gltfpack python3 scripts/optimize-local-models.py`, using the pinned 1.3 binary. These scripts are local asset tools and do not call Meshy. The manifest records source paths, hashes, polygon counts and output sizes.
 
 ## Passengers, explosions, and music
 

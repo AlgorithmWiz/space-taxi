@@ -1,3 +1,13 @@
+# Local upgrade verification — September 30, 2026
+
+The game uses all 36 optimized assets, including 29 distinct prop types observed across the 28 levels. Local GLB preview checks covered all 22 newly processed files (the remaining 21 plus the fuel repair). Original files were retained; no Meshy requests or credits were used.
+
+Browser checks cover every level, all six character rigs through 90 samples of standing/walking/blending, waving, landing-gear extension/retraction, garage portraits, mobile resizing, reduced motion, repeated scene changes, delayed downloads, and failed-download fallback. Full-mesh foot audits were within 0.001 world units. A keyboard-controlled first fare completed with all three taxis intact, awarded 730 credits, advanced to the beach, and passed pause/resume. 80 automated tests pass, including embedded-buffer/image validation for all 36 browser GLBs and the existing campaign collision/control checks.
+
+In the same 390×844 Chromium software-WebGL fixture, passenger update median fell from roughly 6–7 ms to 1.1 ms. At device scale factor 2 (render cap 1.25), bloom-on median frame time was 59.4 ms versus 28.5 ms without bloom. These measurements characterize this software renderer, not physical-phone frame rates. Repeated level cycles stayed within six unused cached assets; GPU counts did not grow monotonically. Lower-detail pine foliage is angular at close range. Idle gestures and taxi gear deformation are game-side animation, not additional baked GLB clips.
+
+`local-upgrade.json` contains the detailed test results and before/after measurements. `local-levels.jpg` shows all levels; `local-assets.jpg` shows the reviewed models; `local-wave.jpg` shows the new idle gesture. The historical checks below predate these changes and describe source-file limitations now corrected by the game.
+
 # Game integration — 2026-09-30
 
 All six passengers and seven prop types are integrated into the game. Browser derivatives preserve geometry and rigs, with smaller embedded textures. Checks in `game-integration.json` cover all six standing/walking character roots, the candy/beach/radio props, repeated scene changes, the actual game UI, desktop/mobile rendering, and the original-model switch. No browser errors were reported in the normal-load checks. A separate forced-download-failure check confirmed the game stays playable using procedural taxi/passenger fallbacks. A stale inverse bind transform was corrected before measuring skinned feet; all six ground offsets were below 0.001 world units.

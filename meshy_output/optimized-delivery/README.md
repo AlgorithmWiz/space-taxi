@@ -1,14 +1,14 @@
-# Optimized Space Taxi assets
+# Meshy-stage optimization archive
 
-As of September 30, 2026: 15 models optimized and all six passengers rigged. Atlas, Pip, Sol and Rae each include optimized, rigged, walking and running GLBs. Eight props optimized in this batch: fuel canister, radar dish, enamel platform, candy cane, lollipop, cloud platform, lounger and parasol.
+The paid Meshy batch produced 15 optimized models and all six passengers rigged. Atlas, Pip, Sol and Rae each include optimized, rigged, walking and running GLBs. Eight props optimized in this batch: fuel canister, radar dish, enamel platform, candy cane, lollipop, cloud platform, lounger and parasol.
 
 This batch consumed 80 credits (12 remeshes and four rigs, five credits each). Verified remaining balance: 0. Including the earlier taxi/Nova/Juno batch, optimization and rigging have consumed 105 credits.
 
 Validation: GLB headers and lengths, triangle counts, texture references, skins, joint/weight attributes and animation tracks checked. The four new passengers were played in Chromium/Three.js; no errors or invalid animated bounds were reported. Walking/running views were inspected. Rigging supplied no separate preview; gallery images are remesh renders.
 
-Limitations: fuel-canister remeshing introduced visible triangular surface artifacts; keep using the original until repaired. Original 4K textures remain large. Animation feet dip approximately 2.7–7.7 cm beneath the reference floor and need grounding during game integration. The game now uses compact derivatives of the taxi, all six passengers and seven props, with runtime foot grounding. The fuel-canister remesh is excluded.
+Limitations: fuel-canister remeshing introduced visible triangular surface artifacts; keep using the original until repaired. Original 4K textures remain large. Animation feet dip approximately 2.7–7.7 cm beneath the reference floor and need grounding during game integration. The game now uses all 36 assets with runtime grounding and a repaired fuel canister. The damaged paid fuel-canister remesh is retained for provenance only.
 
-21 of the 36 generated models remain unoptimized. All six passengers are rigged. See catalog.json for all current file locations, triangle counts, task IDs, resource types, projects and actual charges; batch-2026-09-30.json covers the latest batch only.
+The remaining 21 models have since been optimized locally, and the fuel canister has a repaired local derivative. All 36 browser models are listed in `../../assets/models/manifest.json`; this catalog retains only the historical paid Meshy stages. All six passengers are rigged. See catalog.json for all current file locations, triangle counts, task IDs, resource types, projects and actual charges; batch-2026-09-30.json covers the latest batch only.
 
 ## Files and task trail
 

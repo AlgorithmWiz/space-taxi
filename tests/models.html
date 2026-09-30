@@ -6,8 +6,8 @@ import * as THREE from 'three';
 import {World} from '../src/world.js';
 import {Flight} from '../src/physics.js';
 import {riderFor} from '../src/riders.js';
-import {modelStatus,importedProps} from '../src/model-assets.js';
+import {modelStatus,importedProps,modelCacheInfo} from '../src/model-assets.js';
 const world=new World(document.getElementById('scene')),flight=new Flight();
-window.fixture={world,flight,modelStatus,level(index){flight.reset(index);world.setLevel(index);},props(){return importedProps(world.levelGroup)},ground(){const p=world.padObjects.find(p=>p.person.visible)?.person;if(!p?.userData.modelObject)return null;return new THREE.Box3().setFromObject(p.userData.modelObject,true).min.y-p.getWorldPosition(new THREE.Vector3()).y;},expected(){return riderFor(flight.sector,flight.routeIndex).name}};
-let last=performance.now();function frame(now){world.update(Math.min(.04,(now-last)/1000),now/1000,flight,false);last=now;requestAnimationFrame(frame);}requestAnimationFrame(frame);
+window.fixture={world,flight,modelStatus,modelCacheInfo,render:true,level(index){flight.reset(index);world.setLevel(index);},props(){return importedProps(world.levelGroup)},ground(){const p=world.padObjects.find(p=>p.person.visible)?.person;if(!p?.userData.modelObject)return null;return new THREE.Box3().setFromObject(p.userData.modelObject,true).min.y-p.getWorldPosition(new THREE.Vector3()).y;},expected(){return riderFor(flight.sector,flight.routeIndex).name}};
+let last=performance.now();function frame(now){if(fixture.render)world.update(Math.min(.04,(now-last)/1000),now/1000,flight,false);last=now;requestAnimationFrame(frame);}requestAnimationFrame(frame);
 </script>

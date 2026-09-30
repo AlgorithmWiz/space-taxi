@@ -15,7 +15,7 @@ import { SKINS, applyTaxiSkin } from './skins.js';
 import { createTaxi } from './taxi.js';
 import { artFor } from './art-direction.js';
 import { surfaceMaterial } from './surface-materials.js';
-import { updateModelTaxi, updateModelPassenger, replaceModelProp } from './model-assets.js';
+import { updateModelTaxi, updateModelPassenger, replaceModelProp, releaseModelInstance } from './model-assets.js';
 
 const random = (seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; })(1984);
 const metal = (color, roughness = .55, metalness = .35) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
@@ -39,13 +39,14 @@ function labelTexture(text, color = '#c9ff9a', size = 128) {
 }
 function disposeGroup(group) {
   const geometries = new Set(), materials = new Set(), textures = new Set();
-  group.traverse(o => { o.userData.modelDisposed = true; if(o.userData.modelMixer){o.userData.modelMixer.stopAllAction();o.userData.modelMixer.uncacheRoot(o.userData.modelObject);} if(o.userData.sharedModelAsset)return; if (o.geometry) geometries.add(o.geometry); if (o.material) for (const mat of Array.isArray(o.material) ? o.material : [o.material]) { materials.add(mat); if (mat.map) textures.add(mat.map); } });
+  group.traverse(o => { o.userData.modelDisposed = true; releaseModelInstance(o); if(o.isSkinnedMesh)o.skeleton.dispose(); if(o.userData.modelMixer){o.userData.modelMixer.stopAllAction();o.userData.modelMixer.uncacheRoot(o.userData.modelDriver||o.userData.modelObject);} if(o.userData.sharedModelAsset)return; if (o.geometry) geometries.add(o.geometry); if (o.material) for (const mat of Array.isArray(o.material) ? o.material : [o.material]) { materials.add(mat); if (mat.map) textures.add(mat.map); } });
   geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.clear();
 }
 
 export class World {
   constructor(container) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    this.renderer.info.autoReset=false;
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.08;
     this.renderer.setClearColor(0x080e19); container.appendChild(this.renderer.domElement);
@@ -68,7 +69,10 @@ export class World {
   }
   resize() {
     const w = innerWidth, h = innerHeight, aspect = w / h;
-    this.renderer.setSize(w, h); this.composer.setSize(w, h);
+    const quality=new URLSearchParams(location.search).get('quality');
+    this.bloom.enabled=quality==='high'||(quality!=='low'&&w>700);
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio,w<=700?1.25:1.7));
+    this.renderer.setSize(w, h); this.composer.setPixelRatio(this.renderer.getPixelRatio()); this.composer.setSize(w, h);
     this.aspect = aspect;
     const halfHeight = Math.max(18.5, 26 / aspect);
     this.camera.left = -halfHeight * aspect; this.camera.right = halfHeight * aspect;
@@ -126,7 +130,7 @@ export class World {
     });
     scene.add(model); const portraits = {};
     try {
-      for (const skin of SKINS) { applyTaxiSkin(model, skin); renderer.render(scene, camera); portraits[skin.id] = renderer.domElement.toDataURL('image/png'); }
+      for (const skin of SKINS) { applyTaxiSkin(model, skin); if(this.importedTaxi){for(const part of model.children){if(part.name==='Meshy taxi')part.visible=skin.id==='classic';else if(!part.isLight&&!part.material?.name?.includes('engine'))part.visible=skin.id!=='classic'&&(!part.userData.pattern||part.userData.pattern===skin.pattern);}} renderer.render(scene, camera); portraits[skin.id] = renderer.domElement.toDataURL('image/png'); }
     } finally {
       materials.forEach(material => material.dispose()); renderer.dispose(); renderer.forceContextLoss();
     }
@@ -156,6 +160,7 @@ export class World {
       }
       for(let y=-1.9;y>-pad.depth;y-=2.7)box(group,edge,pad.w,.08,.06,0,y,1.6);
     }
+    const supports = ['tower','island'].includes(pad.kind) ? [...group.children] : [];
     if(organic){
       const leaf=mesh(new THREE.SphereGeometry(1,24,12),deck,group,0,-.25,-.1);leaf.scale.set(pad.w/2,.25,1.75);
       box(group,markings,pad.w*.88,.018,.035,0,-.04,.1);
@@ -174,13 +179,13 @@ export class World {
         for(let i=0;i<3;i++)box(group,edge,.07,.14,.025,x-.18+i*.18,-.28,1.79);
       }
     }
-    const modelStyle = ['cloud','lounger','parasol'].includes(pad.style) ? pad.style : art.material === 'enamel' && !special ? 'enamel' : null;
+    const modelStyle = ['cloud','lounger','parasol','bastion'].includes(pad.style) ? pad.style : organic ? 'leaf' : pad.kind==='terrain' ? null : ({enamel:'enamel',felt:'felt',metal:'metal',ceramic:'metal',rock:'rock',stone:'stone',concrete:'concrete'})[art.material];
     if (modelStyle) {
       const visual = new THREE.Group();
       // Isolate the replaceable surface from the number, passenger and target marker.
-      for (const child of [...group.children]) visual.add(child);
+      for (const child of [...group.children]) if(!supports.includes(child)) visual.add(child);
       group.add(visual);
-      replaceModelProp(visual, modelStyle, {rotationY: modelStyle === 'lounger' ? Math.PI : 0});
+      replaceModelProp(visual, modelStyle, {rotationY: modelStyle === 'lounger' ? Math.PI : 0, landingSurface:0});
     }
     // Small painted touchdown brackets leave both the approach and pad silhouette clear.
     for(const side of [-1,1]){
@@ -188,7 +193,8 @@ export class World {
       for(const z of [-.6,.7])box(group,markings,.45,.015,.06,side*(Math.min(2.2,pad.w*.3)-.18),.008,z);
     }
     const number=mesh(new THREE.PlaneGeometry(1.55,.78),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#dad3bb'),transparent:true,depthWrite:false}),group,0,.01,.1);number.rotation.x=-Math.PI/2;
-    mesh(new THREE.PlaneGeometry(1.05,.52),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#d9d3c4'),transparent:true}),group,0,-.28,1.81);
+    if(modelStyle&&!['leaf','cloud','lounger','parasol'].includes(modelStyle))box(group,metal('#263238'),1.15,.56,.055,0,-.28,1.81);
+    mesh(new THREE.PlaneGeometry(1.05,.52),new THREE.MeshBasicMaterial({map:labelTexture(String(pad.id),'#d9d3c4'),transparent:true}),group,0,-.28,1.85);
     const pulse=box(group,new THREE.MeshBasicMaterial({color:theme,transparent:true,opacity:.22,depthWrite:false}),.16,.04,.02,0,-.17,1.82);
     const halo=mesh(new THREE.RingGeometry(.7,.72,32),new THREE.MeshBasicMaterial({color:theme,transparent:true,opacity:.1,side:THREE.DoubleSide,depthWrite:false}),group,0,-.63,0);halo.rotation.x=Math.PI/2;halo.visible=false;
     const beacon=new THREE.Group();group.add(beacon);
@@ -343,15 +349,15 @@ export class World {
       person.visible = !isMenu && pose.active && !flight.passenger && flight.route?.[0] === pad.id;
       const approach=person.visible&&flight.landed===pad.id?Math.min(1,flight.serviceTime/.9):0;
       const home=person.userData.homeX;
-      posePassenger(person,{time:levelTime,profile:riderFor(this.index,flight.routeIndex),x:THREE.MathUtils.lerp(home,flight.x-pose.x,approach),walk:approach>0?1:0,boarding:Math.max(0,(approach-.7)/.3),look:(flight.x-pose.x-home)*.04});
-      if(person.visible)updateModelPassenger(person,riderFor(this.index,flight.routeIndex),levelTime,approach>0?1:0,person.position.x);
+      posePassenger(person,{time:levelTime,profile:riderFor(this.index,flight.routeIndex),x:THREE.MathUtils.lerp(home,flight.x-pose.x,THREE.MathUtils.smoothstep(approach,0,1)),walk:approach>0?1:0,boarding:Math.max(0,(approach-.7)/.3),look:(flight.x-pose.x-home)*.04});
+      if(person.visible)updateModelPassenger(person,riderFor(this.index,flight.routeIndex),levelTime,approach>0?1:0,person.position.x,this.reducedMotion.matches);
     }
     for(let i=this.departures.length-1;i>=0;i--){
       const d=this.departures[i],age=flight.time-d.start,pose=padPose(d.pad,levelTime);
       if(age>3){disposeGroup(d.person);this.levelGroup.remove(d.person);this.departures.splice(i,1);continue;}
-      const x=THREE.MathUtils.lerp(d.from,-d.pad.w*.33,Math.min(1,age/2));
+      const x=THREE.MathUtils.lerp(d.from,-d.pad.w*.33,THREE.MathUtils.smoothstep(age/2,0,1));
       posePassenger(d.person,{time:levelTime,profile:d.profile,x:pose.x+x,walk:age<2?1:0,departing:true});
-      updateModelPassenger(d.person,d.profile,levelTime,age<2?1:0,d.person.position.x);
+      updateModelPassenger(d.person,d.profile,levelTime,age<2?1:0,d.person.position.x,this.reducedMotion.matches);
       d.person.position.y=pose.y;d.person.scale.setScalar(PASSENGER_SCALE*Math.min(1,(3-age)*2));
     }
     this.hazardObjects.forEach((h, i) => {
@@ -362,6 +368,6 @@ export class World {
     this.mechanisms.update(levelTime, isMenu ? new Set() : flight.switches, isMenu ? levelTime - 6 : flight.resetTime);
     this.dressing.update(levelTime, ambientTime);
     this.exit.visible = !isMenu && flight.exitOpen;
-    this.composer.render(dt);
+    this.renderer.info.reset(); this.composer.render(dt);
   }
 }
