@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {QUALITY} from './graphics-quality.js';
+import {HIGH_DETAIL_ASSETS} from './high-detail-assets.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {preparePassengerMotion, animatePassenger, prepareTaxiGear} from './model-motion.js';
 import { clone } from 'three/addons/utils/SkeletonUtils.js';
@@ -26,7 +28,7 @@ export const modelStatus = {};
 const users = new Map(), queue = []; let active = 0, cleanupTimer;
 function trimCache() {
   const idle=[...cache.keys()].filter(name=>!users.get(name));
-  while(idle.length>6){
+  while(idle.length>(QUALITY==='highest'?0:6)){
     const name=idle.shift(),asset=cache.get(name),geometries=new Set(),materials=new Set(),textures=new Set();
     asset.scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){materials.add(m);for(const v of Object.values(m))if(v?.isTexture)textures.add(v);}});
     geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
@@ -37,11 +39,18 @@ function trimCache() {
 function scheduleCleanup(){clearTimeout(cleanupTimer);cleanupTimer=setTimeout(trimCache,0);}
 function retain(name,root){users.set(name,(users.get(name)||0)+1);root.userData.modelLease=name;}
 export function releaseModelInstance(root){const name=root.userData.modelLease;if(!name)return;users.set(name,Math.max(0,(users.get(name)||1)-1));delete root.userData.modelLease;scheduleCleanup();}
-export function modelCacheInfo(){return {ready:cache.size,unused:[...cache.keys()].filter(n=>!users.get(n)).length,loading:active,queued:queue.length};}
+export function modelCacheInfo(){return {ready:cache.size,unused:[...cache.keys()].filter(n=>!users.get(n)).length,loading:active,queued:queue.length,quality:QUALITY};}
 // Advance this revision when browser GLBs change; stale HTTP entries must not win.
-const assetURL=name=>new URL(`../assets/models/${files[name]}.glb?v=40d4582`,import.meta.url).href;
+export function modelAssetURL(name){
+  const path=QUALITY==='highest'?HIGH_DETAIL_ASSETS[files[name]]:null;
+  if(path)return location.hostname.endsWith('github.io')
+    ? `https://media.githubusercontent.com/media/AlgorithmWiz/space-taxi/main/${path}`
+    : new URL('../'+path,import.meta.url).href;
+  return new URL(`../assets/models/${files[name]}.glb?v=40d4582`,import.meta.url).href;
+}
+const assetURL=modelAssetURL;
 async function loadAsset(name){
-  const response=await fetch(assetURL(name),{signal:AbortSignal.timeout(15000),cache:'force-cache'});
+  const response=await fetch(assetURL(name),{signal:AbortSignal.timeout(QUALITY==='highest'?180000:15000),cache:'force-cache'});
   if(!response.ok)throw new Error(`Asset download failed (${response.status})`);
   return loader.parseAsync(await response.arrayBuffer(),new URL('../assets/models/',import.meta.url).href);
 }
@@ -62,7 +71,7 @@ export async function settleModelLoads(root){
 }
 let prefetchStarted=false;
 export function prefetchModelFiles(){
-  if(!enabled||prefetchStarted||navigator.connection?.saveData)return;
+  if(QUALITY==='highest'||!enabled||prefetchStarted||navigator.connection?.saveData)return;
   prefetchStarted=true;
   // Warm the browser HTTP cache without retaining decoded scenes or GPU textures.
   (async()=>{
@@ -73,7 +82,7 @@ export function prefetchModelFiles(){
   }})();
 }
 function pump(){
-  while(active<4&&queue.length){const {name,resolve}=queue.shift();active++;
+  while(active<(QUALITY==='highest'?2:4)&&queue.length){const {name,resolve}=queue.shift();active++;
     loadAsset(name).then(asset=>{
       asset.scene.traverse(o=>{o.userData.sharedModelAsset=true;for(const material of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){if(material.isMeshStandardMaterial)material.metalness=Math.min(material.metalness,.45);}});cache.set(name,asset);modelStatus[name]='ready';resolve(asset);
     }).catch(error=>{modelStatus[name]='fallback';console.warn(`Using original ${name} model:`,error.message);resolve(null);}).finally(()=>{active--;pump();scheduleCleanup();});

@@ -1,3 +1,4 @@
+import {QUALITY,QUALITY_KEY} from './graphics-quality.js';
 import { Flight, SHIP } from './physics.js';
 import { LEVELS, CLASSIC_COUNT } from './levels.js';
 import { EXIT, padPose } from './environment.js';
@@ -31,7 +32,7 @@ let sceneLoading=true,sceneTicket=0;
 async function prepareScene(){
   const ticket=++sceneTicket;sceneLoading=true;keys.clear();touch.clear();
   $('scene-loading').classList.remove('hidden');
-  $('scene-loading-detail').textContent=LEVELS[world.index].name;
+  $('scene-loading-detail').textContent=LEVELS[world.index].name+(QUALITY==='highest'?' · Loading source models…':'');
   document.getElementById('scene').setAttribute('aria-busy','true');
   try{
     await prepareCoreModels(LEVELS[world.index].routes.map((_,i)=>riderFor(world.index,i).name));await settleModelLoads(world.levelGroup);
@@ -192,7 +193,7 @@ function gear() {
   $('gear-button').blur();
 }
 function openHelp() {
-  if ($('help-dialog').open) return;
+  if ($('graphics-dialog').open || $('help-dialog').open) return;
   manualPaused = mode === 'playing';
   if (manualPaused) { mode = 'manual'; keys.clear(); touch.clear(); audio.thrust(0); }
   $('help-dialog').showModal();
@@ -249,6 +250,16 @@ $('start-button').addEventListener('click', start);
 $('gear-button').addEventListener('click', gear);
 $('sound-button').addEventListener('click', toggleSound);
 $('pause-button').addEventListener('click', () => mode === 'playing' ? showOverlay('paused') : mode === 'paused' && resume());
+$('graphics-button').addEventListener('click',()=>{
+  if(mode==='playing')showOverlay('paused');
+  $('graphics-quality').value=QUALITY;$('graphics-dialog').showModal();
+});
+$('close-graphics').addEventListener('click',()=>$('graphics-dialog').close());
+$('apply-graphics').addEventListener('click',()=>{
+  const quality=$('graphics-quality').value;
+  try{localStorage.setItem(QUALITY_KEY,quality);sessionStorage.setItem('graphics-departure',String(world.index));}catch{}
+  const url=new URL(location.href);url.searchParams.set('quality',quality);location.assign(url.href);
+});
 $('help-button').addEventListener('click', openHelp); $('close-help').addEventListener('click', closeHelp); $('manual-ready').addEventListener('click', closeHelp);
 $('help-dialog').addEventListener('close', () => { if (manualPaused) { manualPaused = false; mode = 'playing'; keys.clear(); touch.clear(); } });
 $('continue-button').addEventListener('click', () => {
@@ -284,7 +295,7 @@ document.querySelectorAll('[data-sector]').forEach(button => button.addEventList
 }));
 const mapping = { KeyW: 'up', ArrowUp: 'up', KeyA: 'left', ArrowLeft: 'left', KeyS: 'down', ArrowDown: 'down', KeyD: 'right', ArrowRight: 'right' };
 window.addEventListener('keydown', event => {
-  if ($('help-dialog').open || $('atlas-dialog').open || $('scores-dialog').open || $('garage-dialog').open || ['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName)) return;
+  if ($('graphics-dialog').open || $('help-dialog').open || $('atlas-dialog').open || $('scores-dialog').open || $('garage-dialog').open || ['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName)) return;
   if(debug && ['PageUp','PageDown'].includes(event.code)) {
     event.preventDefault();if(!event.repeat)navigateDebug(adjacentDebugLevel(Number($('debug-level').value),event.code==='PageDown'?1:-1,LEVELS.length));return;
   }
@@ -388,11 +399,12 @@ try {
     hudClock += dt;
     if (mode !== 'menu' && hudClock >= .05) { updateHud(); hudClock = 0; }
   }
+  try{const departure=sessionStorage.getItem('graphics-departure');sessionStorage.removeItem('graphics-departure');if(departure!==null&&LEVELS[Number(departure)])selectLevel(Number(departure));}catch{}
   prepareScene();
   requestAnimationFrame(frame);
   // Read-only telemetry makes browser smoke checks and issue reports reproducible.
   window.spaceTaxi = Object.freeze({
-    snapshot: () => ({ sceneLoading, time:flight.time, speedGateOpen:flight.speedGateOpen, mazePhase:flight.level.returnTerrain?(flight.passenger?'return':'outbound'):null, modelCache: modelCacheInfo(), landingGearExtension: world.importedTaxi?.userData.gearExtension, importedProps: importedProps(world.levelGroup), models: { ...modelStatus }, importedTaxi: !!world.importedTaxi?.visible, importedPassengers: world.padObjects.filter(p=>p.person.visible&&p.person.userData.modelObject).map(p=>p.person.userData.modelName), mode, debug, sector: flight.sector, x: flight.x, y: flight.y, vx: flight.vx, vy: flight.vy, gear: flight.gear, landed: flight.landed, fuel: flight.fuel, lives: flight.lives, score: flight.score, passenger: flight.passenger, target: flight.targetId, delivered: flight.delivered, exitOpen: flight.exitOpen, status: flight.status, renderer: world.renderer.info.render }),
+    snapshot: () => ({ graphics:{quality:QUALITY,samples:world.composer.renderTarget1.samples,fxaa:world.fxaa.enabled,pixelRatio:world.renderer.getPixelRatio()},sceneLoading, time:flight.time, speedGateOpen:flight.speedGateOpen, mazePhase:flight.level.returnTerrain?(flight.passenger?'return':'outbound'):null, modelCache: modelCacheInfo(), landingGearExtension: world.importedTaxi?.userData.gearExtension, importedProps: importedProps(world.levelGroup), models: { ...modelStatus }, importedTaxi: !!world.importedTaxi?.visible, importedPassengers: world.padObjects.filter(p=>p.person.visible&&p.person.userData.modelObject).map(p=>p.person.userData.modelName), mode, debug, sector: flight.sector, x: flight.x, y: flight.y, vx: flight.vx, vy: flight.vy, gear: flight.gear, landed: flight.landed, fuel: flight.fuel, lives: flight.lives, score: flight.score, passenger: flight.passenger, target: flight.targetId, delivered: flight.delivered, exitOpen: flight.exitOpen, status: flight.status, renderer: world.renderer.info.render }),
   });
   world.renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); if (mode === 'playing') showOverlay('paused'); fail(new Error('The graphics context was lost. Reload to restart.')); });
 } catch (error) { fail(error); }

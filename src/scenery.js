@@ -92,9 +92,20 @@ export function buildMechanisms(parent,level){
     const ring=torus(portalModel,material(p.color,2),0,0,.3,1.15,.095);
     replaceModelProp(portalModel,'portal',{bounds:new THREE.Box3(new THREE.Vector3(-1.35,-1.35,-.2),new THREE.Vector3(1.35,1.35,.2))});
     const rim=torus(g,material(p.color,.8),0,0,0,1.35,.1);
-    const face=add(g,new THREE.CircleGeometry(1.05,48),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{time:{value:0},tint:{value:new THREE.Color(p.color)}},vertexShader:'varying vec2 p;void main(){p=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 p;uniform float time;uniform vec3 tint;void main(){float r=length(p);float spiral=.5+.5*sin(atan(p.y,p.x)*5.+r*12.-time*3.);gl_FragColor=vec4(tint,(1.-r)*spiral*.4);}' }),0,0,.24);
+    const face=add(g,new THREE.CircleGeometry(1.08,96),new THREE.ShaderMaterial({depthWrite:true,side:THREE.DoubleSide,uniforms:{time:{value:0},tint:{value:new THREE.Color(p.color)}},vertexShader:'varying vec2 p;void main(){p=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:`varying vec2 p;uniform float time;uniform vec3 tint;
+      void main(){float r=length(p),a=atan(p.y,p.x);float twist=a+log(max(.025,r))*2.8-time*.65;
+      float arms=pow(.5+.5*sin(twist*5.),5.);float rings=pow(.5+.5*sin(r*38.-time*3.+a*2.),12.);
+      float rim=exp(-pow((r-.93)*24.,2.));float centre=smoothstep(.06,.46,r);
+      vec3 c=vec3(.006,.011,.024)+tint*(arms*.65+rings*.3)*centre*(1.-r*.45);
+      c+=tint*rim*1.8+vec3(.55,.68,.8)*pow(arms,3.)*.16*centre;gl_FragColor=vec4(c,1.);}`}),0,0,.31);
+    const halo=add(g,new THREE.PlaneGeometry(3.8,3.8),new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{tint:{value:new THREE.Color(p.color)}},vertexShader:'varying vec2 v;void main(){v=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 v;uniform vec3 tint;void main(){float r=length(v);gl_FragColor=vec4(tint,exp(-pow((r-.66)*12.,2.))*.22);}' }),0,0,.34);
+    const arcs=new THREE.Group();g.add(arcs);
+    for(let j=0;j<3;j++){const arc=add(arcs,new THREE.TorusGeometry(1.48,.018,6,48,1.25),material(p.color,2),0,0,.35);arc.rotation.z=j*Math.PI*2/3;}
+    const positions=[];for(let j=0;j<36;j++){const a=j*2.39996,r=1.45+(j%7)*.07;positions.push(Math.cos(a)*r,Math.sin(a)*r,.4);}
+    const dustGeometry=new THREE.BufferGeometry();dustGeometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+    const dust=new THREE.Points(dustGeometry,new THREE.PointsMaterial({color:p.color,size:.035,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false}));g.add(dust);
     sign(g,`${i+1} → ${p.to+1}`,0,-1.8,.3,p.color,2.4);
-    return {g,ring,rim,face};
+    return {g,ring,rim,face,arcs,dust};
   });
   let speedGate=null;
   if(level.speedGate){
@@ -108,14 +119,14 @@ export function buildMechanisms(parent,level){
     const crystal=new THREE.Group();g.add(crystal);crystal.add(gem);replaceModelProp(crystal,'crystalSwitch',{bounds:new THREE.Box3(new THREE.Vector3(-.6,-.6,-.15),new THREE.Vector3(.6,.6,.15))});const indicator=torus(g,material('#c6f778',1),0,0,.25,.85,.025);
     sign(g,s.label,0,-1.2,.5,'#dcf5c8',2.2);return {g,gem,crystal,indicator,spec:s};
   });
-  return {update(time,switchFlags,resetTime,speedGateOpen=false){
+  return {update(time,switchFlags,resetTime,speedGateOpen=false,reducedMotion=false){
     if(speedGate)speedGate.visible=!speedGateOpen;
     for(const b of beams){
       const segments=beamSegments(b.spec,time,switchFlags,resetTime);
       b.meshes.forEach((m,i)=>{const s=segments[i];m.visible=!!s&&s.ax===undefined;if(m.visible){m.position.set(s.x,s.y,.05);m.scale.set(Math.max(.01,s.w),Math.max(.01,s.h),['shutter','curtain'].includes(b.spec.kind)?1.2:.22);}});
       if(b.wire)b.wire.material.opacity=.2+Math.sin(time*2)*.08;
     }
-    for(const p of portals){p.ring.rotation.z=time*.3;p.face.material.uniforms.time.value=time;}
+    for(const p of portals){const t=reducedMotion?0:time;p.ring.rotation.z=t*.3;p.face.material.uniforms.time.value=t;p.arcs.rotation.z=-t*.2;p.dust.rotation.z=t*.13;}
     for(const s of switches){s.crystal.rotation.y=Math.sin(time)*.25;s.crystal.rotation.z=Math.sin(time*.5)*.12;const active=s.spec.toggles?.every(flag=>switchFlags.has(flag));s.gem.material.color.set(active?'#c6ff8f':'#edf7ff');s.indicator.material.color.set(active?'#c6ff8f':'#edf7ff');s.indicator.scale.setScalar(active?1.18:1);}
   }};
 }

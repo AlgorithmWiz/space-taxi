@@ -1,3 +1,4 @@
+import {puzzleLayout} from './puzzler.js';
 import { BONUS_LEVELS } from './bonus-levels.js';
 import { EXIT } from './environment.js';
 import { shootingStarsTerrain, caveWallOutline, snowGround, umbrellaHull } from './terrain-layouts.js';
@@ -36,10 +37,8 @@ const originals = [
     color:'#ba9bff',obstacles:[w(-1,0,1.2,28),w(-13,-.4,21,.9),w(12,-5.6,24,.9),w(12,1.5,24,.9)],
     portals:[{x:-18,y:9,to:1,color:'#b497ff'},{x:-18,y:-4,to:0,color:'#b497ff'},{x:-7,y:-4,to:3,color:'#78e3e6'},{x:7,y:-8,to:2,color:'#78e3e6'},{x:20,y:-8,to:5,color:'#ffb773'},{x:19,y:-.5,to:4,color:'#ffb773'},{x:7,y:-.5,to:7,color:'#f994d0'},{x:8,y:8,to:6,color:'#f994d0'}],
   }),
-  classic('Puzzler','puzzle','Touch the glowing switches. Matching doors toggle together.',[p(1,18,6,8),p(2,17,-9,8),p(3,0,-10,8),p(4,-17,-9,8),p(5,-18,6,8)],{
-    color:'#dfb5fc',spawn:{x:0,y:7},obstacles:[w(-10.5,8.5,.8,6),w(10.5,8.5,.8,6),w(-17,2.6,14,.8),w(17,2.6,14,.8),w(-10.5,-9,.8,6),w(10.5,-9,.8,6)],
-    beams:[{gate:'a',x:10.5,y:4,w:.22,h:4},{gate:'b',x:10.5,y:-3.2,w:.22,h:5.5},{gate:'c',x:0,y:-6,w:20.2,h:.22},{gate:'d',x:-10.5,y:-3.2,w:.22,h:5.5},{gate:'e',x:-10.5,y:4,w:.22,h:4}],
-    switches:[{x:6,y:5.5,toggles:['a','b'],label:'A+B'},{x:6,y:-.2,toggles:['b','c'],label:'B+C'},{x:0,y:-2.5,toggles:['c','d'],label:'C+D'},{x:-6,y:-.2,toggles:['d','e'],label:'D+E'},{x:-6,y:5.5,toggles:['e'],label:'E'}],
+  classic('Puzzler','puzzle','Five switches link eleven doors. Deliveries change the puzzle.',[p(1,17,8,7),p(2,17,-10.5,7),p(3,0,-10.5,7),p(4,-17,-10.5,7),p(5,-17,8,7)],{
+    color:'#dfb5fc',spawn:{x:0,y:8},fuelRate:.48,...puzzleLayout(),
   }),
   classic('Crossfire','cannon','Watch both cannons. Pads 2 and 6 are exposed to incoming fire.',[
     p(1,-20.2,9.8,7.6,{style:'bastion'}),p(2,-20.2,2.8,7.6,{style:'bastion'}),p(3,-20.2,-5.4,7.6,{style:'bastion'}),

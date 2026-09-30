@@ -1,3 +1,5 @@
+import {beachScenery,cityScenery} from './scene-upgrades.js';
+import {PUZZLE_ROOMS} from './puzzler.js';
 import * as THREE from 'three';
 import {replaceModelProp} from './model-assets.js';
 import {interiorBackdrop,landscapeMaterial} from './backdrop-materials.js';
@@ -95,21 +97,14 @@ export function buildLevelBackdrop(parent,level,{obstacles=[]}={}){
   }
   if(theme==='beach'){
     terrain(g,'#40484a',-8,-35,5,5);terrain(g,'#53524c',-13,-28,3,2);
-    const water=mesh(g,new THREE.PlaneGeometry(150,65),new THREE.ShaderMaterial({uniforms:{time:{value:0}},vertexShader:'varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 v;uniform float time;void main(){float wave=pow(.5+.5*sin(v.y*460.+sin(v.x*23.+time*.2)*2.),20.);float shine=exp(-pow((v.x-.67)*9.,2.));vec3 c=mix(vec3(.035,.095,.12),vec3(.14,.21,.23),v.y);c+=vec3(.2,.17,.11)*wave*shine*.35;gl_FragColor=vec4(c,1.);}' }),0,-42,-18);ambient.push(t=>water.material.uniforms.time.value=t);
+    ambient.push(beachScenery(g));
     // The landing objects themselves are built with their pads, so there is no
     // separate generic platform laid over the cloud, chair or umbrella.
     const drink=mesh(g,new THREE.CylinderGeometry(.2,.16,.8,14),surface('#9aab9d'),-7,-7.55,-1.4);
     line(g,[[-7,-7.25,-1.4],[-6.9,-6.85,-1.4],[-6.7,-6.65,-1.4]],'#cdc6b4',.9);
   }
   if(theme==='city'||theme==='reverse'){
-    const map=wallTexture('stone',theme==='city'?'#3c454c':'#56483e');
-    for(let layer=0;layer<2;layer++)for(let i=0;i<14;i++){
-      const x=-44+i*6.6,w=4+(i%3),h=13+((i*13+level.number*7)%19),z=-32+layer*10;
-      const building=box(g,new THREE.MeshStandardMaterial({map,color:layer?'#8a949c':'#596773',roughness:.95}),x,-39+h/2,z,w,h+38,3);
-      for(let y=-13;y<-20+h;y+=2.2)for(let dx=-w/2+.6;dx<w/2-.3;dx+=1.3)if((Math.floor(y)+i+Math.round(dx*10))%3===0)box(g,unlit(theme==='city'?'#a69c7f':'#ce9d73',.35),x+dx,y,z+1.52,.32,.6,.025);
-      if(i%3===0)box(g,iron,x,-20+h+.9,z,w*.55,1.8,2);
-      building.userData.background=true;
-    }
+    cityScenery(g,theme==='reverse');
   }
   if(theme==='training'){
     for(const x of [-26,-13,0,13,26])box(g,iron,x,0,-16,.4,35,1);
@@ -160,7 +155,7 @@ export function buildLevelBackdrop(parent,level,{obstacles=[]}={}){
   if(theme==='puzzle'||theme==='maze'){
     if(theme==='puzzle'){
       // Five octagonal bays around an open upper center, as in Puzzler.
-      for(const [x,y,w,h,c]of[[-17,8,13,11,'#7c5450'],[17,8,13,11,'#a39d71'],[-17,-6,13,15,'#946b52'],[0,-6,20,15,'#76607f'],[17,-6,13,15,'#586482']]){
+      for(const {x,y,w,h,color:c} of PUZZLE_ROOMS){
         const cut=2,pts=[[-w/2+cut,-h/2],[w/2-cut,-h/2],[w/2,-h/2+cut],[w/2,h/2-cut],[w/2-cut,h/2],[-w/2+cut,h/2],[-w/2,h/2-cut],[-w/2,-h/2+cut]];
         const shape=new THREE.Shape();pts.forEach(([px,py],i)=>i?shape.lineTo(px,py):shape.moveTo(px,py));shape.closePath();
         mesh(g,new THREE.ShapeGeometry(shape),surface('#26292b'),x,y,-10);

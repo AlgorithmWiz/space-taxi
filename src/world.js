@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {GRAPHICS,QUALITY} from './graphics-quality.js';
+import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js';
+import {FXAAShader} from 'three/addons/shaders/FXAAShader.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { LEVELS } from './levels.js';
 import { padPose, levelHazardPose, obstaclePose, fuelCanisterPose } from './environment.js';
@@ -53,9 +56,11 @@ export class World {
     this.scene = new THREE.Scene(); this.scene.fog = new THREE.FogExp2(0x0b1422, .005);
     this.camera = new THREE.OrthographicCamera(-30, 30, 18, -18, .1, 250);
     this.camera.position.set(0, 6, 65); this.camera.lookAt(0, 1, 0);
-    this.composer = new EffectComposer(this.renderer); this.composer.addPass(new RenderPass(this.scene, this.camera));
+    const target=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:Math.min(GRAPHICS.samples,this.renderer.capabilities.maxSamples)});
+    this.composer = new EffectComposer(this.renderer,target); this.composer.addPass(new RenderPass(this.scene, this.camera));
     this.bloom = new UnrealBloomPass(new THREE.Vector2(1280, 800), .18, .45, 1.15);
     this.composer.addPass(this.bloom); this.composer.addPass(new OutputPass());
+    this.fxaa=new ShaderPass(FXAAShader);this.composer.addPass(this.fxaa);
     this.ambientLight = new THREE.HemisphereLight(0xd0d7dd, 0x17171a, 1.6); this.scene.add(this.ambientLight);
     const key = new THREE.DirectionalLight(0xffefd8, 2.2); key.position.set(-12, 20, 30); this.scene.add(key);
     this.rimLight = new THREE.DirectionalLight(0xc4cbd1, 1.1); this.rimLight.position.set(5, 4, -12); this.scene.add(this.rimLight);
@@ -69,10 +74,10 @@ export class World {
   }
   resize() {
     const w = innerWidth, h = innerHeight, aspect = w / h;
-    const quality=new URLSearchParams(location.search).get('quality');
-    this.bloom.enabled=quality==='high'||(quality!=='low'&&w>700);
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio,w<=700?1.25:1.7));
+    this.bloom.enabled=GRAPHICS.bloom&&(QUALITY==='highest'||w>700);
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio,QUALITY==='balanced'&&w<=700?1.25:GRAPHICS.pixelRatio));
     this.renderer.setSize(w, h); this.composer.setPixelRatio(this.renderer.getPixelRatio()); this.composer.setSize(w, h);
+    this.fxaa.uniforms.resolution.value.set(1/(w*this.renderer.getPixelRatio()),1/(h*this.renderer.getPixelRatio()));
     this.aspect = aspect;
     const halfHeight = Math.max(18.5, 26 / aspect);
     this.camera.left = -halfHeight * aspect; this.camera.right = halfHeight * aspect;
@@ -387,7 +392,7 @@ export class World {
       h.position.set(pos.x, pos.y, 0); h.visible = pos.active !== false;
       if (!isPaused) { h.rotation.x += dt * .3; h.rotation.z += dt * .4; }
     });
-    this.mechanisms.update(levelTime, isMenu ? new Set() : flight.switches, isMenu ? levelTime - 6 : flight.resetTime, !isMenu && flight.speedGateOpen);
+    this.mechanisms.update(levelTime, isMenu ? new Set() : flight.switches, isMenu ? levelTime - 6 : flight.resetTime, !isMenu && flight.speedGateOpen,this.reducedMotion.matches);
     this.dressing.update(levelTime, ambientTime);
     this.exit.visible = !isMenu && flight.exitOpen;
     this.renderer.info.reset(); this.composer.render(dt);

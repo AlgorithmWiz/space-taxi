@@ -45,9 +45,9 @@ test('portal travel carries passenger and fuel, with a cooldown preventing loops
   f.interact();assert.equal(f.y,-4);assert.ok(f.portalCooldown>0);
 });
 test('puzzle switches toggle matching doors once per contact',()=>{
-  const f=new Flight();f.reset(7);f.x=6;f.y=5.2;f.interact();assert.ok(f.switches.has('a'));assert.ok(f.switches.has('b'));
-  f.interact();assert.ok(f.switches.has('a'));f.x=0;f.interact();f.x=6;f.interact();assert.equal(f.switches.has('a'),false);
-  assert.equal(beamSegments(f.level.beams[0],0,new Set(['a'])).length,0);
+  const f=new Flight();f.reset(7);f.x=-5;f.y=.2;f.interact();assert.ok(f.switches.has('1-left'));assert.ok(f.switches.has('3-left'));
+  f.interact();assert.ok(f.switches.has('1-left'));f.x=0;f.y=8;f.interact();f.x=-5;f.y=.2;f.interact();assert.equal(f.switches.has('1-left'),false);
+  assert.equal(beamSegments(f.level.beams[0],0,new Set(['1-left'])).length,0);
 });
 test('magnet gravity, black-hole attraction, reversed controls and turbo thrust affect flight',()=>{
   const m=new Flight();m.reset(10);m.x=-8;m.y=1;m.landed=null;advance(m,.2);assert.ok(m.vy>0);

@@ -1,3 +1,4 @@
+import {shiftPuzzleDoors} from './puzzler.js';
 import { LEVELS, MYSTERY_INDEX, BONUS_START } from './levels.js';
 import { EXIT, clamp, padPose, levelHazardPose, obstaclePose, intersectsPolygon, fuelCanisterPose, beamSegments, intersectsRect, distanceToSegment, environmentalForce } from './environment.js';
 export { clamp } from './environment.js';
@@ -127,8 +128,7 @@ export class Flight {
     } else {
       const earned=this.fare, riderIndex=this.routeIndex; this.score+=earned; this.delivered++; this.routeIndex++; this.passenger=false;
       if(this.level.theme==='puzzle'){
-        const gates=this.level.beams.filter(b=>b.gate),gate=gates[this.routeIndex%gates.length]?.gate;
-        if(gate){this.switches.has(gate)?this.switches.delete(gate):this.switches.add(gate);this.emit('puzzle-change');}
+        this.switches=shiftPuzzleDoors(this.switches,pad.id);this.emit('puzzle-change');
       }
       if(!this.route) this.exitOpen=true;
       this.emit('fare-earned',{earned,riderIndex,runId:this.runId,sector:this.sector});

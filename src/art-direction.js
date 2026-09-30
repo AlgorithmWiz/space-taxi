@@ -1,7 +1,7 @@
 // Original stage motifs with restrained, material-led lighting. No shared city skin.
 const profiles = {
   candy: ['Confectionery after closing','#161318','#44332f','#c6aa88','#6a5550','enamel',false,.35],
-  beach: ['Atlantic dusk','#172a35','#746758','#c1b79a','#665b49','timber',false,.8],
+  beach: ['Atlantic afternoon','#285b79','#9cbfc7','#d4c394','#8c795b','timber',false,.65],
   city: ['Concrete skyline','#121b27','#465563','#b8c7ce','#4a5055','concrete',false,.5],
   training: ['Flight test hangar','#0d1319','#26323d','#cfbd83','#525960','metal',false,0],
   garden: ['The giant beanstalk','#101e19','#3e5040','#a9b483','#4c6440','leaf',false,.5],
