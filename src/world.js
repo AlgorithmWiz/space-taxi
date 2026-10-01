@@ -1,3 +1,4 @@
+import {createExitGate,updateExitGate} from './exit-gate.js';
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -277,12 +278,7 @@ export class World {
       const backs=this.obstacleObjects.filter(({obstacle})=>obstacle.material==='wood');
       lounger?.modelReady.then(model=>{if(model)for(const {group} of backs)group.visible=false;});
     }
-    this.exit = new THREE.Group(); this.exit.position.set(0, 15.4, 0); this.levelGroup.add(this.exit);
-    const gateMat = glow(level.color, 1.6);
-    box(this.exit, gateMat, 7.7, .08, .09, 0, .8);
-    for (const x of [-4, 4]) { box(this.exit, gateMat, .1, 1.7, .15, x); box(this.exit, metal(0x41606e), .35, 2.4, .45, x * 1.06); }
-    mesh(new THREE.PlaneGeometry(2.6, 1.3), new THREE.MeshBasicMaterial({ map: labelTexture('EXIT ↑'), transparent: true, depthWrite: false }), this.exit, 0, 1.1, .3);
-    this.exit.visible = false;
+    this.exit=createExitGate();this.levelGroup.add(this.exit);
     // Fine perimeter marks indicate the horizontal flight bounds.
     const lineMat = new THREE.LineBasicMaterial({ color: 0x7596ae, transparent: true, opacity: .13 });
     const coordinates = [];
@@ -395,6 +391,7 @@ export class World {
     this.mechanisms.update(levelTime, isMenu ? new Set() : flight.switches, isMenu ? levelTime - 6 : flight.resetTime, !isMenu && flight.speedGateOpen,this.reducedMotion.matches);
     this.dressing.update(levelTime, ambientTime);
     this.exit.visible = !isMenu && flight.exitOpen;
+    updateExitGate(this.exit,levelTime,this.reducedMotion.matches);
     this.renderer.info.reset(); this.composer.render(dt);
   }
 }
