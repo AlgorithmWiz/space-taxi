@@ -5,6 +5,7 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 records=json.loads((ROOT/'meshy_output/optimized-delivery/catalog.json').read_text())
 manifest=[m for m in json.loads((ROOT/'assets/models/manifest.json').read_text()) if m.get('optimizer')] if (ROOT/'assets/models/manifest.json').exists() else []
 for record in records:
+    if any(m['id']==record['id'] and m.get('refinement') for m in manifest): continue
     if record['id']=='fuel-canister': continue  # Remesh has visible surface artifacts.
     passenger=record['id'].startswith('passenger-')
     model=next(m for m in record['models'] if m['kind']==('walking' if passenger else 'optimized'))

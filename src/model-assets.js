@@ -4,6 +4,7 @@ import {HIGH_DETAIL_ASSETS} from './high-detail-assets.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {preparePassengerMotion, animatePassenger, prepareTaxiGear} from './model-motion.js';
 import { clone } from 'three/addons/utils/SkeletonUtils.js';
+import {modelFit, PROP_FITS} from './model-fit.js';
 
 const files = {
   taxi: 'taxi-classic',
@@ -46,9 +47,13 @@ export function modelAssetURL(name){
   if(path)return location.hostname.endsWith('github.io')
     ? `https://media.githubusercontent.com/media/AlgorithmWiz/space-taxi/main/${path}`
     : new URL('../'+path,import.meta.url).href;
-  return new URL(`../assets/models/${files[name]}.glb?v=40d4582`,import.meta.url).href;
+  return new URL(`../assets/models/${files[name]}.glb?v=20261001-refined`,import.meta.url).href;
 }
 const assetURL=modelAssetURL;
+let textureAnisotropy=1;
+export function configureModelTextures(renderer){
+  textureAnisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),QUALITY==='low'?1:8);
+}
 async function loadAsset(name){
   const response=await fetch(assetURL(name),{signal:AbortSignal.timeout(QUALITY==='highest'?180000:15000),cache:'force-cache'});
   if(!response.ok)throw new Error(`Asset download failed (${response.status})`);
@@ -84,7 +89,10 @@ export function prefetchModelFiles(){
 function pump(){
   while(active<(QUALITY==='highest'?2:4)&&queue.length){const {name,resolve}=queue.shift();active++;
     loadAsset(name).then(asset=>{
-      asset.scene.traverse(o=>{o.userData.sharedModelAsset=true;for(const material of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){if(material.isMeshStandardMaterial)material.metalness=Math.min(material.metalness,.45);}});cache.set(name,asset);modelStatus[name]='ready';resolve(asset);
+      asset.scene.traverse(o=>{o.userData.sharedModelAsset=true;for(const material of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){
+        if(material.isMeshStandardMaterial)material.metalness=Math.min(material.metalness,.45);
+        for(const texture of Object.values(material))if(texture?.isTexture)texture.anisotropy=textureAnisotropy;
+      }});cache.set(name,asset);modelStatus[name]='ready';resolve(asset);
     }).catch(error=>{modelStatus[name]='fallback';console.warn(`Using original ${name} model:`,error.message);resolve(null);}).finally(()=>{active--;pump();scheduleCleanup();});
   }
 }
@@ -97,7 +105,7 @@ function request(name) {
 
 // Keep collision dimensions and the procedural fallback owned by the level.
 // Assets are cached across levels, while instances are attached only to living roots.
-export function replaceModelProp(root, name, {rotationY = 0, rotationZ = 0, bounds = null, keep = [], landingSurface = null} = {}) {
+export function replaceModelProp(root, name, {rotationY = 0, rotationZ = 0, bounds = null, keep = [], landingSurface = null, fit = PROP_FITS[name] || 'stretch'} = {}) {
   if (!enabled) return Promise.resolve(null);
   retain(name,root);
   const fallback = root.children.filter(child=>!keep.includes(child));
@@ -110,9 +118,11 @@ export function replaceModelProp(root, name, {rotationY = 0, rotationZ = 0, boun
     object.rotation.y = rotationY; object.rotation.z = rotationZ; holder.add(object);
     const source = new THREE.Box3().setFromObject(holder);
     const size = source.getSize(new THREE.Vector3());
-    const scale = target.getSize(new THREE.Vector3()).divide(size);
+    const scale = new THREE.Vector3().fromArray(modelFit(size.toArray(),target.getSize(new THREE.Vector3()).toArray(),fit));
     holder.scale.copy(scale);
-    holder.position.copy(target.min).sub(source.min.multiply(scale));
+    holder.position.copy(target.getCenter(new THREE.Vector3())).sub(source.getCenter(new THREE.Vector3()).multiply(scale));
+    // Stand props on the fallback's floor, with their silhouette centered in X/Z.
+    holder.position.y=target.min.y-source.min.y*scale.y;
     if(landingSurface!==null){
       holder.updateMatrixWorld(true);
       const ray=new THREE.Raycaster(new THREE.Vector3(0,target.max.y+10,0),new THREE.Vector3(0,-1,0));

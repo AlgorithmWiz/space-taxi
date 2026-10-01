@@ -2,11 +2,13 @@ import * as THREE from 'three';
 const point = new THREE.Vector3(), rootPosition = new THREE.Vector3(), rootScale = new THREE.Vector3();
 const parentRotation = new THREE.Quaternion(), deltaRotation = new THREE.Quaternion(), axis = new THREE.Vector3();
 const forward = new THREE.Vector3(0,0,1);
-function turnInWorld(bone, radians) {
+const modelRotation = new THREE.Quaternion();
+function turnInWorld(bone, radians, object) {
   if (!bone) return;
   bone.parent.updateWorldMatrix(true,false);
   bone.parent.getWorldQuaternion(parentRotation).invert();
-  axis.copy(forward).applyQuaternion(parentRotation);
+  object.getWorldQuaternion(modelRotation);
+  axis.copy(forward).applyQuaternion(modelRotation).applyQuaternion(parentRotation);
   deltaRotation.setFromAxisAngle(axis,radians); bone.quaternion.premultiply(deltaRotation);
 }
 export function preparePassengerMotion(object, driver) {
@@ -29,13 +31,15 @@ export function animatePassenger(data, root, time, walk, x, reducedMotion = fals
   // Always sample the authored walk, then blend every joint back towards its rest pose.
   data.modelAction.play();data.modelMixer.setTime(time);
   for(const b of motion.bones){b.node.position.lerpVectors(b.position,b.sample.position,motion.weight);b.node.quaternion.slerpQuaternions(b.rotation,b.sample.quaternion,motion.weight);b.node.scale.lerpVectors(b.scale,b.sample.scale,motion.weight);}
-  const idle=(1-motion.weight)*(reducedMotion?0:1), phase=time%7;
+  const resting=1-motion.weight, idle=resting*(reducedMotion?0:1), phase=time%7;
   const wave=phase<2.8?Math.sin(phase/2.8*Math.PI):0;
   const spine=motion.byName.Spine,head=motion.byName.Head;
   if(spine)spine.scale.x*=1+Math.sin(time*1.8)*.008*idle;
   if(head)head.rotateY(Math.sin(time*.7)*.06*idle);
-  turnInWorld(motion.byName.LeftArm,wave*1.4*idle);
-  turnInWorld(motion.byName.LeftForeArm,wave*(.8+Math.sin(time*7)*.18)*idle);
+  // Lower the rig's A-pose arms at rest, including with reduced motion enabled.
+  turnInWorld(motion.byName.LeftArm,-.48*resting+wave*1.85*idle,object);
+  turnInWorld(motion.byName.RightArm,.48*resting,object);
+  turnInWorld(motion.byName.LeftForeArm,wave*(.8+Math.sin(time*7)*.18)*idle,object);
   const dx=x-(data.modelLastX??x);
   if(moving&&Math.abs(dx)>.0001)data.modelFacing=Math.sign(dx)*Math.PI/2;
   const facing=moving?(data.modelFacing??Math.PI/2):0;

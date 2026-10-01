@@ -19,7 +19,7 @@ import { SKINS, applyTaxiSkin } from './skins.js';
 import { createTaxi } from './taxi.js';
 import { artFor } from './art-direction.js';
 import { surfaceMaterial } from './surface-materials.js';
-import { updateModelTaxi, updateModelPassenger, replaceModelProp, releaseModelInstance } from './model-assets.js';
+import { updateModelTaxi, updateModelPassenger, replaceModelProp, releaseModelInstance, configureModelTextures } from './model-assets.js';
 
 const random = (seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; })(1984);
 const metal = (color, roughness = .55, metalness = .35) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
@@ -50,6 +50,7 @@ function disposeGroup(group) {
 export class World {
   constructor(container) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    configureModelTextures(this.renderer);
     this.renderer.info.autoReset=false;
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.08;
